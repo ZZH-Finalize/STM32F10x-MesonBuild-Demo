@@ -16,17 +16,17 @@ assert(meson.get_external_property('target_mcu', '').contains('stm32f10'),
 )
 
 # stm32 lib path
-dir_prefix = 'STM32F10x_StdPeriph_Lib_V3.6.0/Libraries/'
+dir_prefix = 'STM32_StdLib/'
 
 # stm32 lib include dirs
 incs = [
-    'CMSIS/CM3/CoreSupport',
-    'CMSIS/CM3/DeviceSupport/ST/STM32F10x',
-    'STM32F10x_StdPeriph_Driver/inc'
+    'CMSIS/CoreSupport',
+    'CMSIS/DeviceSupport',
+    'Driver/inc'
 ]
 
 # peripheral drvs
-stm32_mod_path = 'STM32F10x_StdPeriph_Driver/src/stm32f10x_@0@.c'
+stm32_mod_path = 'Driver/src/stm32f10x_@0@.c'
 stm32_modules = {
     'adc': true, 'bkp': true, 'can': true, 'cec': true, 'crc': true,
     'dac': true, 'dbgmcu': true, 'dma': true, 'exti': true, 'flash': true,
@@ -37,10 +37,10 @@ stm32_modules = {
 
 # other support files
 stm32_std_lib_srcs = [
-    'CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_stm32f10x_md.s',
-    'CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c',
-    'CMSIS/CM3/CoreSupport/core_cm3.c',
-    'STM32F10x_StdPeriph_Driver/src/misc.c',
+    'CMSIS/DeviceSupport/startup/startup_stm32f10x_md.s',
+    'CMSIS/DeviceSupport/system_stm32f10x.c',
+    'CMSIS/CoreSupport/core_cm3.c',
+    'Driver/src/misc.c',
 ]
 
 # add enabled module files to compile list
