@@ -78,7 +78,9 @@ size_tool = find_program('size')
 gdb_tool = find_program('gdb')
 
 proj_name = meson.project_name()
-exe_sufix = meson.get_external_property('exe_sufix')
+src_dir = meson.current_source_dir()
+build_dir = meson.current_build_dir()
+exe_sufix = meson.get_external_property('exe_sufix', 'elf')
 
 # c_args apply to all src files
 c_args = [
@@ -118,11 +120,13 @@ target_dict = {
         'c_args': ['-O2'],
         'link_args': ['-Wl,-Map,memory.map'],
         'linker_script': 'linker.ld',
+        'download': true,
     }
 }
 
 top_objs = []
 dbg_target = ''
+dl_target = ''
 
 # generate all target build setup
 foreach target_name, options : target_dict
@@ -136,7 +140,7 @@ foreach target_name, options : target_dict
         configuration: mem_cfg
     )
 
-    lds = '-T' + (meson.current_build_dir() / lds)
+    lds = '-T' + (build_dir / lds)
 
     exe = executable(exe_name, target_srcs,
         include_directories : inc_dirs,
@@ -150,7 +154,7 @@ foreach target_name, options : target_dict
         command: [
             objdump_tool.full_path(),
             '-SD',
-            meson.current_build_dir() / exe.name()
+            build_dir / exe.name()
         ],
         output: [exe.name().split('.')[0] + '.s']
     )
@@ -159,7 +163,7 @@ foreach target_name, options : target_dict
         depends: dis,
         command: [
             size_tool.full_path(),
-            meson.current_build_dir() / exe.name(),
+            build_dir / exe.name(),
         ]
     )
 
@@ -170,14 +174,18 @@ foreach target_name, options : target_dict
         command : [
             objcopy_tool.full_path(),
             '-O', 'binary',
-            meson.current_build_dir() / exe.name(),
-            meson.current_build_dir() / '@OUTPUT@'
+            build_dir / exe.name(),
+            build_dir / '@OUTPUT@'
         ],
         output: [exe.name().split('.')[0] + '.bin']
     )
 
     if options.get('debug', false)
-        dbg_target = exe.name()
+        dbg_target = exe
+    endif
+
+    if options.get('download', false)
+        dl_target = bin
     endif
 
 endforeach
@@ -194,7 +202,7 @@ configure_file(
     input: 'proj_files' / 'workspace_demo.json',
     output: proj_name + '.code-workspace',
     configuration: {
-        'debug_file': dbg_target,
+        'debug_file': dbg_target.name(),
         'gdb_path': gdb_tool.full_path(),
         'cross_file': cross_file
     },
@@ -207,4 +215,20 @@ configure_file(
     configuration: {
         'flash_base': mem_cfg['flash_base']
     }
+)
+
+# download target
+dl_cmd = '"reset halt;wait_halt;flash write_image erase '
+dl_cmd += dl_target.full_path() + ' '
+dl_cmd += mem_cfg['flash_base']
+
+run_target('download',
+    depends: dl_target,
+    command: [
+        'openocd',
+        '-f', 'openocd_cfg' / 'stm32f1x.cfg',
+        '-f', 'openocd_cfg' / 'stlink.cfg',
+        '-c', 'init', 
+        '-c', dl_cmd
+    ]
 )
