@@ -1,6 +1,6 @@
 project('demo', 'c',
-    version : '0.1',
-    default_options : ['warning_level=3']
+    version: '0.1',
+    default_options: ['warning_level=3']
 )
 
 # check cross compile
@@ -105,7 +105,7 @@ mem_cfg = {
 
 # all target description
 target_dict = {
-    'dbg' : {
+    'dbg': {
         'c_args': [
             '-D__DEBUG',
             '-DVECT_TAB_SRAM',
@@ -116,7 +116,7 @@ target_dict = {
         'linker_script': 'linker_ram.ld',
         'debug': true,
     },
-    'rel' : {
+    'rel': {
         'c_args': ['-O2'],
         'link_args': ['-Wl,-Map,memory.map'],
         'linker_script': 'linker.ld',
@@ -143,9 +143,9 @@ foreach target_name, options : target_dict
     lds = '-T' + (build_dir / lds)
 
     exe = executable(exe_name, target_srcs,
-        include_directories : inc_dirs,
+        include_directories: inc_dirs,
         c_args: c_args + options.get('c_args', []),
-        link_args : link_args + lds + options.get('link_args', [])
+        link_args: link_args + lds + options.get('link_args', [])
     )
 
     dis = custom_target(target_name + '_dis',
@@ -171,7 +171,7 @@ foreach target_name, options : target_dict
 
     bin = custom_target(target_name + '_bin',
         depends: dis,
-        command : [
+        command: [
             objcopy_tool.full_path(),
             '-O', 'binary',
             build_dir / exe.name(),
