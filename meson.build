@@ -10,10 +10,20 @@ assert(meson.is_cross_build(),
 )
 
 # check compile for STM32
-assert(meson.get_external_property('target_mcu', '').contains('stm32f10'),
-    'This project is only for STM32 F10x series\n' + 
+target_mcu = meson.get_external_property('target_mcu', 'null')
+assert(target_mcu.contains('stm32f10'),
+    'This project is only for STM32 F10x series(your select: @0@)\n'.format(target_mcu) + 
     'Please select your MCU cross file in cross_files subdir'
 )
+
+# check specific device info
+capacity = meson.get_external_property('capacity', 'null')
+allowed_capacity_list = ['LD', 'LD_VL', 'MD', 'MD_VL',
+                         'HD', 'HD_VL', 'XL', 'CL']
+if false == allowed_capacity_list.contains(capacity)
+    error('Unsupport capacity (your selection: @0@)\r\n'.format(capacity),
+            'supported capacities are: ', allowed_capacity_list)
+endif
 
 # stm32 lib path
 dir_prefix = 'STM32_StdLib/'
@@ -85,7 +95,7 @@ exe_sufix = meson.get_external_property('exe_sufix', 'elf')
 # c_args apply to all src files
 c_args = [
     '-mcpu=' + host_machine.cpu(),
-    '-DSTM32F10X_MD',
+    '-DSTM32F10X_' + capacity,
     '-DUSE_STDPERIPH_DRIVER',
     '-DPROJECT_VERSION=' + '"' + meson.project_version() + '"',
 ]
@@ -197,7 +207,7 @@ run_target('top_all',
 )
 
 # generate vscode workspace file
-cross_file = 'cross_files' / meson.get_external_property('target_mcu') + '.cfg'
+cross_file = 'cross_files' / target_mcu + '.ini'
 configure_file(
     input: 'proj_files' / 'workspace_demo.json',
     output: proj_name + '.code-workspace',

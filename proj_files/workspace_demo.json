@@ -12,6 +12,8 @@
         },
         "mesonbuild.configureOptions": [
             "--cross-file",
+            "cross_files/stm32f10x.ini",
+            "--cross-file",
             "@cross_file@"
         ]
     },
