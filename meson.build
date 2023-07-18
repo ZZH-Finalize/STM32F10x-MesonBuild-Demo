@@ -131,7 +131,7 @@ foreach target_name, options : target_dict
     lds = target_name + '_' + options['linker_script']
 
     configure_file(
-        input: options['linker_script'],
+        input: 'linker_sct' / options['linker_script'],
         output: lds,
         configuration: mem_cfg
     )
@@ -191,7 +191,7 @@ run_target('top_all',
 # generate vscode workspace file
 cross_file = 'cross_files' / meson.get_external_property('target_mcu') + '.cfg'
 configure_file(
-    input: 'workspace_demo.json',
+    input: 'proj_files' / 'workspace_demo.json',
     output: proj_name + '.code-workspace',
     configuration: {
         'debug_file': dbg_target,
@@ -202,7 +202,7 @@ configure_file(
 
 # generate download script
 configure_file(
-    input: 'download_demo.sh',
+    input: 'proj_files' / 'download_demo.sh',
     output: 'download.sh',
     configuration: {
         'flash_base': mem_cfg['flash_base']
