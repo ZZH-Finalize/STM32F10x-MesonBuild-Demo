@@ -3,6 +3,8 @@
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_usart.h"
 
+#include "delay.h"
+
 
 void clock_init(void)
 {
@@ -60,7 +62,7 @@ int main()
 
     while (1)
     {
-        for (uint32_t i = 0; i < sizeof(msg); i++)
+        for (uint32_t i = 0; i < sizeof(msg)-1; i++)
         {
             USART_SendData(USART1, msg[i]);
             while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TC));
@@ -68,8 +70,7 @@ int main()
         }
 
         // for delay
-        for (uint32_t i = 0; i < 20000; i++)
-            asm volatile("nop");
+        delay_ms_sw(100);
     }
 
     return 0;

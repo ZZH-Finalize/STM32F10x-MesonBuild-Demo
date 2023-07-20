@@ -62,11 +62,14 @@ endforeach
 
 # applicaton src files
 app_srcs = [
-   'main.c'
+   'main.c',
+   'util/delay.c'
 ]
 
 srcs = app_srcs
-inc_dirs = []
+inc_dirs = [
+    'util'
+]
 
 # append stm32 lib src files to all src list
 foreach src : stm32_std_lib_srcs

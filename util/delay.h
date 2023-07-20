@@ -1,0 +1,12 @@
+#pragma once
+
+#include <stdint.h>
+#include <stddef.h>
+
+#define NO_OPT __attribute__((optimize("O0")))
+
+void NO_OPT delay_us_sw(uint32_t us);
+void NO_OPT delay_ms_sw(uint32_t ms);
+
+void NO_OPT delay_us_hw(uint32_t us);
+void NO_OPT delay_ms_hw(uint32_t ms);
