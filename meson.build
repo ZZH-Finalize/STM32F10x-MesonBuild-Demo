@@ -228,17 +228,20 @@ configure_file(
 )
 
 # download target
-dl_cmd = '"reset halt;wait_halt;flash write_image erase '
+dl_cmd = 'flash write_image erase '
 dl_cmd += dl_target.full_path() + ' '
-dl_cmd += mem_cfg['flash_base']
+dl_cmd += mem_cfg['flash_base'] + ' '
+
+message('dl_cmd: ', dl_cmd)
 
 run_target('download',
     depends: dl_target,
     command: [
         'openocd',
-        '-f', 'openocd_cfg' / 'stm32f1x.cfg',
-        '-f', 'openocd_cfg' / 'stlink.cfg',
-        '-c', 'init', 
-        '-c', dl_cmd
+        '-f', '..' / 'openocd_cfg' / 'stlink.cfg',
+        '-f', '..' / 'openocd_cfg' / 'stm32f1x.cfg',
+        '-c init;reset halt;wait_halt;',
+        '-c', dl_cmd,
+        '-c reset; shutdown;'
     ]
 )
