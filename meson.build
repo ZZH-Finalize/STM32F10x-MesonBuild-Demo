@@ -232,16 +232,22 @@ dl_cmd = 'flash write_image erase '
 dl_cmd += dl_target.full_path() + ' '
 dl_cmd += mem_cfg['flash_base'] + ' '
 
-message('dl_cmd: ', dl_cmd)
 
-run_target('download',
-    depends: dl_target,
-    command: [
-        'openocd',
-        '-f', '..' / 'openocd_cfg' / 'stlink.cfg',
-        '-f', '..' / 'openocd_cfg' / 'stm32f1x.cfg',
-        '-c init;reset halt;wait_halt;',
-        '-c', dl_cmd,
-        '-c reset; shutdown;'
-    ]
-)
+supported_tools = {
+    'stlink': 'stlink.cfg',
+    'dap': 'cmsis-dap.cfg'
+}
+
+foreach tool, cfg : supported_tools
+    run_target(tool + ' - download',
+        depends: dl_target,
+        command: [
+            'openocd',
+            '-f', '..' / 'openocd_cfg' / cfg,
+            '-f', '..' / 'openocd_cfg' / 'stm32f1x.cfg',
+            '-c init;reset halt;wait_halt;',
+            '-c', dl_cmd,
+            '-c reset; shutdown;'
+        ]
+    )
+endforeach
