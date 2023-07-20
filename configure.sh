@@ -22,6 +22,8 @@ fi
 echo project_name: $project_name
 echo cross_file: $cross_file
 
+rm *.code-workspace
+rm -rf builddir
 sed -i "1c project('$project_name', 'c'," meson.build
 meson setup builddir --cross-file cross_files/stm32f10x.ini --cross-file $cross_file
 cp builddir/*.code-workspace .
