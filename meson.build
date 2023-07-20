@@ -12,7 +12,7 @@ assert(meson.is_cross_build(),
 # check compile for STM32
 target_mcu = meson.get_external_property('target_mcu', 'null')
 assert(target_mcu.contains('stm32f10'),
-    'This project is only for STM32 F10x series(your select: @0@)\n'.format(target_mcu) + 
+    'This project is only for STM32 F10x series(your selection: @0@)\n'.format(target_mcu) + 
     'Please select your MCU cross file in cross_files subdir'
 )
 

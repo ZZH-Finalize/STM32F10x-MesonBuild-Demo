@@ -27,4 +27,4 @@ rm -rf builddir
 sed -i "1c project('$project_name', 'c'," meson.build
 meson setup builddir --cross-file cross_files/stm32f10x.ini --cross-file $cross_file
 cp builddir/*.code-workspace .
-echo "configure done." `ls *.code-workspace` "is your vscode project file"
+echo "configure done.\n" `ls *.code-workspace` "is your vscode project file"
