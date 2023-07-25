@@ -1,3 +1,0 @@
-[submodule "util/z-fft"]
-	path = util/z-fft
-	url = git@github.com:ZZH-Finzlize/z-fft.git
