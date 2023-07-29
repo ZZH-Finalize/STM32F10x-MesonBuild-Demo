@@ -204,6 +204,10 @@
                         "text": "-enable-pretty-printing",
                         "ignoreFailures": true
                     },
+                    {
+                        "text": "set output-radix 16",
+                        "description": "设置默认十六进制显示所有的数据"
+                    }
                 ],
                 "postRemoteConnectCommands": [
                     {
@@ -265,6 +269,10 @@
                         "text": "-enable-pretty-printing",
                         "ignoreFailures": true
                     },
+                    {
+                        "text": "set output-radix 16",
+                        "description": "设置默认十六进制显示所有的数据"
+                    }
                 ],
                 "postRemoteConnectCommands": [
                     {
