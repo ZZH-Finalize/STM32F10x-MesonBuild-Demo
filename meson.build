@@ -47,7 +47,7 @@ stm32_modules = {
 
 # other support files
 stm32_std_lib_srcs = [
-    'CMSIS/DeviceSupport/startup/startup_stm32f10x_md.s',
+    # 'CMSIS/DeviceSupport/startup/startup_stm32f10x_md.s',
     'CMSIS/DeviceSupport/system_stm32f10x.c',
     'CMSIS/CoreSupport/core_cm3.c',
     'Driver/src/misc.c',
@@ -62,8 +62,9 @@ endforeach
 
 # applicaton src files
 app_srcs = [
-   'app/main.c',
-   'util/delay/delay.c'
+    'start_files/startup_stm32f10x_md.c',
+    'app/main.c',
+    'util/delay/delay.c'
 ]
 
 srcs = app_srcs
@@ -103,7 +104,8 @@ c_args = [
     '-DUSE_STDPERIPH_DRIVER',
     '-DPROJECT_VERSION=' + '"' + meson.project_version() + '"',
     '-std=gnu99',
-    '-mthumb',
+    '-fdata-sections',
+    '-ffunction-sections',
 ]
 
 # link args apply to the project
@@ -129,7 +131,7 @@ target_dict = {
             '-Wa,-g3'
         ],
         'link_args': ['-Wl,-Map,memory_ram.map'],
-        'linker_script': 'linker_ram.ld',
+        'linker_script': 'linker_ram_new.ld',
         'debug': true,
     },
     'rel': {
