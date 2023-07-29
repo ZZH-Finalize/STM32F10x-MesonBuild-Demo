@@ -5,8 +5,8 @@ ENTRY(Reset_Handler)
 
 MEMORY
 {
-    /* FLASH  (r):  ORIGIN = @flash_base@, LENGTH = @flash_size@ */
-    RAM   (rw):  ORIGIN = @ram_base@, LENGTH = @ram_size@
+    /* FLASH  (rx):  ORIGIN = @flash_base@, LENGTH = @flash_size@ */
+    RAM   (rwx):  ORIGIN = @ram_base@, LENGTH = @ram_size@
 }
 
 SECTIONS

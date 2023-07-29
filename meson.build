@@ -102,6 +102,8 @@ c_args = [
     '-DSTM32F10X_' + capacity,
     '-DUSE_STDPERIPH_DRIVER',
     '-DPROJECT_VERSION=' + '"' + meson.project_version() + '"',
+    '-std=gnu99',
+    '-mthumb',
 ]
 
 # link args apply to the project

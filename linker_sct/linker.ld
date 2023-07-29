@@ -5,8 +5,8 @@ ENTRY(Reset_Handler)
 
 MEMORY
 {
-    FLASH  (r):  ORIGIN = @flash_base@, LENGTH = @flash_size@
-    RAM   (rw):  ORIGIN = @ram_base@, LENGTH = @ram_size@
+    FLASH  (rx):  ORIGIN = @flash_base@, LENGTH = @flash_size@
+    RAM   (rwx):  ORIGIN = @ram_base@, LENGTH = @ram_size@
 }
 
 
@@ -58,7 +58,7 @@ SECTIONS
     . = ALIGN(. != 0 ? 32 / 8 : 1);
     _ebss = .;
     _bss_end__ = .; __bss_end__ = .;
-  } > RAM
+  } > RAM AT > RAM
 
 
   /* Read-only sections, merged into text segment: */
