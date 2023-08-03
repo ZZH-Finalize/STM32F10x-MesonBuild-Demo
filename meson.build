@@ -104,8 +104,8 @@ c_args = [
     '-DUSE_STDPERIPH_DRIVER',
     '-DPROJECT_VERSION=' + '"' + meson.project_version() + '"',
     '-std=gnu99',
-    # '-fdata-sections',
-    # '-ffunction-sections',
+    '-fdata-sections',
+    '-ffunction-sections',
 ]
 
 # link args apply to the project
