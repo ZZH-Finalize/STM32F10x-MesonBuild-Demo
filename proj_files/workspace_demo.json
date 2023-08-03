@@ -124,7 +124,7 @@
                 "miDebuggerPath": "@gdb_path@",
                 "miDebuggerServerAddress": "127.0.0.1:3333",
                 "hardwareBreakpoints": {
-                    "limit": 8,
+                    "limit": 6,
                     "require": false
                 },
                 "stopAtEntry": false,
@@ -147,7 +147,15 @@
                 "postRemoteConnectCommands": [
                     {
                         "text": "monitor adapter srst pulse_width 20",
+                        "description": "复位芯片(硬复位)"
+                    },
+                    {
+                        "text": "monitor reset",
                         "description": "复位芯片"
+                    },
+                    {
+                        "text": "monitor halt",
+                        "description": "暂停运行"
                     },
                     {
                         "text": "monitor init",
@@ -170,12 +178,7 @@
                     {
                         "text": "b HardFault_Handler",
                         "description": "进入内核异常时停止"
-                    },
-                    // {
-                    //     "text": "c",
-                    //     "ignoreFailures": true,
-                    //     "description": "开始执行"
-                    // }
+                    }
                 ]
             },
             {
@@ -190,7 +193,7 @@
                 "miDebuggerPath": "@gdb_path@",
                 "miDebuggerServerAddress": "127.0.0.1:3333",
                 "hardwareBreakpoints": {
-                    "limit": 8,
+                    "limit": 6,
                     "require": false
                 },
                 "targetArchitecture": "arm",
@@ -212,14 +215,22 @@
                 "postRemoteConnectCommands": [
                     {
                         "text": "monitor adapter srst pulse_width 20",
+                        "description": "复位芯片(硬复位)"
+                    },
+                    {
+                        "text": "monitor reset",
                         "description": "复位芯片"
+                    },
+                    {
+                        "text": "monitor halt",
+                        "description": "暂停运行"
                     },
                     {
                         "text": "monitor init",
                         "description": "初始化"
                     },
                     {
-                        "text": "monitor adapter speed 80000",
+                        "text": "monitor adapter speed 40000",
                         "description": "提高JTAG速度",
                         "ignoreFailures": true
                     },
@@ -235,12 +246,7 @@
                     {
                         "text": "b HardFault_Handler",
                         "description": "进入内核异常时停止"
-                    },
-                    // {
-                    //     "text": "c",
-                    //     "ignoreFailures": true,
-                    //     "description": "开始执行"
-                    // }
+                    }
                 ]
             },
             {
@@ -255,8 +261,8 @@
                 "miDebuggerPath": "@gdb_path@",
                 "miDebuggerServerAddress": "127.0.0.1:3333",
                 "hardwareBreakpoints": {
-                    "limit": 8,
-                    "require": false
+                    "limit": 6,
+                    "require": true
                 },
                 "targetArchitecture": "arm",
                 "launchCompleteCommand": "exec-continue",

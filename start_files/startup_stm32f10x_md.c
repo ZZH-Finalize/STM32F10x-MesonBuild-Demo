@@ -109,7 +109,7 @@ NULL_HANDLER(USBWakeUp_IRQHandler)
 
 #define BootRAM 0xF108F85F
 
-ISR_VEC uint32_t isr_vectors[] = {
+ISR_VEC volatile uint32_t isr_vectors[] = {
     (uint32_t) __stack,
     (uint32_t) Reset_Handler,
     (uint32_t) NMI_Handler,
