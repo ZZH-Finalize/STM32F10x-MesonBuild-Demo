@@ -64,7 +64,7 @@ LOOP_HANDLER(HardFault_Handler);
 LOOP_HANDLER(MemManage_Handler);
 LOOP_HANDLER(BusFault_Handler);
 LOOP_HANDLER(UsageFault_Handler);
-;
+
 NULL_HANDLER(SVC_Handler);
 NULL_HANDLER(DebugMon_Handler);
 NULL_HANDLER(PendSV_Handler);
