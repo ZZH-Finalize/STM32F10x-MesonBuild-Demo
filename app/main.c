@@ -52,6 +52,44 @@ void usart_init(void)
     USART_Cmd(USART1, ENABLE);
 }
 
+void nvic_init()
+{
+    NVIC_SetPriorityGrouping(NVIC_PriorityGroup_4);
+
+    NVIC_InitTypeDef init_param = {
+        .NVIC_IRQChannel = USART1_IRQn,
+        .NVIC_IRQChannelCmd = ENABLE,
+        .NVIC_IRQChannelPreemptionPriority = 12,
+        .NVIC_IRQChannelSubPriority = 14
+    };
+
+    NVIC_Init(&init_param);
+    // USART_ITConfig(USART1, USART_IT_TC, ENABLE);
+    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+}
+
+void USART1_IRQHandler(void)
+{
+    static uint8_t flag = 0;
+    
+    if (USART_GetITStatus(USART1, USART_IT_RXNE))
+    {
+        USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+        // USART_ClearITPendingBit(USART1, USART_IT_TC);
+        
+        (void) USART1->DR;
+
+        if (flag)
+            GPIO_SetBits(GPIOC, GPIO_Pin_13);
+        else
+            GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+
+        flag = !flag;
+    }
+
+    // asm volatile('')
+}
+
 int main()
 {
     const char msg[] = { "Hello World!\r\n" };
@@ -59,6 +97,7 @@ int main()
     clock_init();
     gpio_init();
     usart_init();
+    nvic_init();
 
     while (1)
     {

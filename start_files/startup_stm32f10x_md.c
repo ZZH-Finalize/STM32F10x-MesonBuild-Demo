@@ -22,7 +22,7 @@ GNU_WEAK void Default_Handler(void)
 {
     while (1)
     {
-
+        *(uint32_t*) 0xE000ED0C = 0x5FA0005;
     }
 }
 
@@ -169,14 +169,14 @@ ISR_VEC volatile uint32_t isr_vectors[] = {
     (uint32_t) EXTI15_10_IRQHandler,
     (uint32_t) RTCAlarm_IRQHandler,
     (uint32_t) USBWakeUp_IRQHandler,
-    // (uint32_t) 0,
-    // (uint32_t) 0,
-    // (uint32_t) 0,
-    // (uint32_t) 0,
-    // (uint32_t) 0,
-    // (uint32_t) 0,
-    // (uint32_t) 0,
-    // (uint32_t) BootRAM,
+    (uint32_t) 0,
+    (uint32_t) 0,
+    (uint32_t) 0,
+    (uint32_t) 0,
+    (uint32_t) 0,
+    (uint32_t) 0,
+    (uint32_t) 0,
+    (uint32_t) BootRAM,
 };
 
 const uint32_t isr_vector_size = ARRAY_SIZE(isr_vectors);
