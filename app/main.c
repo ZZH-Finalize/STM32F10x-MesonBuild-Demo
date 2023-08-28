@@ -12,6 +12,8 @@ void clock_init(void)
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 }
 
 void gpio_init(void)
@@ -21,6 +23,15 @@ void gpio_init(void)
     };
 
     GPIO_DeInit(GPIOA);
+    GPIO_DeInit(GPIOB);
+    GPIO_DeInit(GPIOC);
+
+    // 推挽输出
+    init_param.GPIO_Mode = GPIO_Mode_Out_PP;
+
+    // Led
+    init_param.GPIO_Pin = GPIO_Pin_13;
+    GPIO_Init(GPIOC, &init_param);
 
     // 复用推挽
     init_param.GPIO_Mode = GPIO_Mode_AF_PP;
@@ -68,28 +79,6 @@ void nvic_init()
     USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 }
 
-void USART1_IRQHandler(void)
-{
-    static uint8_t flag = 0;
-    
-    if (USART_GetITStatus(USART1, USART_IT_RXNE))
-    {
-        USART_ClearITPendingBit(USART1, USART_IT_RXNE);
-        // USART_ClearITPendingBit(USART1, USART_IT_TC);
-        
-        (void) USART1->DR;
-
-        if (flag)
-            GPIO_SetBits(GPIOC, GPIO_Pin_13);
-        else
-            GPIO_ResetBits(GPIOC, GPIO_Pin_13);
-
-        flag = !flag;
-    }
-
-    // asm volatile('')
-}
-
 int main()
 {
     const char msg[] = { "Hello World!\r\n" };
@@ -101,7 +90,7 @@ int main()
 
     while (1)
     {
-        for (uint32_t i = 0; i < sizeof(msg)-1; i++)
+        for (uint32_t i = 0; i < sizeof(msg) - 1; i++)
         {
             USART_SendData(USART1, msg[i]);
             while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TC));

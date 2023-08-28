@@ -64,6 +64,7 @@ endforeach
 app_srcs = [
     'start_files/startup_stm32f10x_md.c',
     'app/main.c',
+    'app/isr.c',
     'util/delay/delay.c'
 ]
 
