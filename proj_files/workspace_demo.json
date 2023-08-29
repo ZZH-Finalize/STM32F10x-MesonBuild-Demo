@@ -146,22 +146,6 @@
                 ],
                 "postRemoteConnectCommands": [
                     {
-                        "text": "monitor adapter srst pulse_width 20",
-                        "description": "复位芯片(硬复位)"
-                    },
-                    {
-                        "text": "monitor reset",
-                        "description": "复位芯片"
-                    },
-                    {
-                        "text": "monitor halt",
-                        "description": "暂停运行"
-                    },
-                    {
-                        "text": "monitor init",
-                        "description": "初始化"
-                    },
-                    {
                         "text": "monitor adapter speed 40000",
                         "description": "提高JTAG速度",
                         "ignoreFailures": true
@@ -169,6 +153,18 @@
                     {
                         "text": "load",
                         "description": "加载到目标芯片"
+                    },
+                    {
+                        "text": "monitor reset",
+                        "description": "复位芯片"
+                    },
+                    {
+                        "text": "monitor halt",
+                        "description": "暂停CPU"
+                    },
+                    {
+                        "text": "monitor init",
+                        "description": "初始化"
                     },
                     {
                         "text": "tb main",
