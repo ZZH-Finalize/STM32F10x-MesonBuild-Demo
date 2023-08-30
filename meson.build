@@ -63,9 +63,11 @@ endforeach
 # applicaton src files
 app_srcs = [
     'start_files/startup_stm32f10x_md.c',
+    'util/delay/delay.c',
+    'util/value_ops.c',
+    'util/strarg.c',
     'app/main.c',
     'app/isr.c',
-    'util/delay/delay.c'
 ]
 
 srcs = app_srcs
@@ -230,8 +232,7 @@ configure_file(
         'cross_file': cross_file,
         'dfp_file': dfp_file,
         'device_name': device_name,
-        'debugger_file': debugger_file,
-        'debugger_file_ini': debugger_file.split('.')[0] + '.ini'
+        'debugger_file': debugger_file
     },
 )
 

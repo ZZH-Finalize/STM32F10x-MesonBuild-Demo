@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "util/linker_tools.h"
 #include "util/gnu_attributes.h"
-#include "util/value.h"
+#include "util/value_ops.h"
 
 #include "system_stm32f10x.h"
 extern int main(void);
