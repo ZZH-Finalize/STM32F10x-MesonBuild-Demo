@@ -60,12 +60,17 @@ foreach module, enable : stm32_modules
     endif
 endforeach
 
+# utils
+util_srcs = [
+    'mem_mana/mem_alloc.c',
+    'delay/delay.c',
+    'value_ops.c',
+    'strarg.c',
+]
+
 # applicaton src files
 app_srcs = [
     'start_files/startup_stm32f10x_md.c',
-    'util/delay/delay.c',
-    'util/value_ops.c',
-    'util/strarg.c',
     'app/main.c',
     'app/isr.c',
 ]
@@ -75,6 +80,11 @@ inc_dirs = [
     'app',
     'util/delay'
 ]
+
+# append utils
+foreach src : util_srcs
+    srcs += 'util' / src
+endforeach
 
 # append stm32 lib src files to all src list
 foreach src : stm32_std_lib_srcs
