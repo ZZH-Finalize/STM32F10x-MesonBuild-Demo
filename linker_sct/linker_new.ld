@@ -9,10 +9,7 @@ MEMORY
 
 PHDRS
 {
-    isr_table PT_LOAD;
-    text PT_LOAD;
     data PT_LOAD;
-    rodata PT_LOAD;
 }
 
 SECTIONS
@@ -22,7 +19,7 @@ SECTIONS
         PROVIDE(__sisr_vector = .);
         KEEP(*(.isr_vector));
         PROVIDE(__eisr_vector = .);
-    } > FLASH :isr_table
+    } > FLASH
 
     .text : {
         . = ALIGN(4);
@@ -40,7 +37,7 @@ SECTIONS
         PROVIDE(__edtor = .);
 
         PROVIDE(__etext = .);
-    } > FLASH :text
+    } > FLASH
 
     .rodata : {
         . = ALIGN(4);
@@ -50,7 +47,7 @@ SECTIONS
         *(.rodata.*)
         *(.rodata*)
         PROVIDE(__erodata = .);
-    } > RAM AT > FLASH :rodata
+    } > FLASH
 
     PROVIDE(__load_addr = LOADADDR(.rodata));
 
@@ -72,7 +69,9 @@ SECTIONS
         *(.bss*)
         *(COMMON)
         PROVIDE(__ebss = .);
-    } > RAM AT > RAM
+    } > RAM
+
+    PROVIDE(end = .);
 
     PROVIDE(__stack = @ram_base@ + @ram_size@);
 }
