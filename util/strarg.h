@@ -1,24 +1,24 @@
-/*
-@file: common.h
-@author: ZZH
-@date: 2022-11-28
-@info: 公共库
-*/
-#pragma once
+#ifndef __STRARG_H__
+#define __STRARG_H__
 
 #include <stdint.h>
 #include <string.h>
 
 #define IsInCloseRange(x, d, u) (x >= d && x <= u)
-#define IsInOpenRange(x, d, u) (x > d && x < u)
+#define IsInOpenRange(x, d, u)  (x > d && x < u)
 
-#define IsLower(x) IsInCloseRange(x, 'a', 'f')
-#define IsUpper(x) IsInCloseRange(x, 'A', 'F')
+#define IsLower(x)              IsInCloseRange(x, 'a', 'f')
+#define IsUpper(x)              IsInCloseRange(x, 'A', 'F')
 // #define IsNum(x) IsInCloseRange(x, '0', '9')
 // #define IsBin(x) IsInCloseRange(x, '0', '1')
 // #define IsHex(x) (IsUpper(x) || IsLower(x) || IsNum(x))
 
-#define swap(a, b) do{typeof(a) c = a; a = b; b = c;}while(0)
+#define swap(a, b)       \
+    do {                 \
+        typeof(a) c = a; \
+        a = b;           \
+        b = c;           \
+    } while (0)
 
 uint8_t __attribute__((hot)) IsNum(char ch);
 
@@ -40,3 +40,5 @@ uint8_t IsVaildNum(const char* str);
 @return 转换结果 0-转换失败 1-转换成功
 */
 uint8_t getNum(const char* str, uint32_t* const pNum);
+
+#endif  // __STRARG_H__

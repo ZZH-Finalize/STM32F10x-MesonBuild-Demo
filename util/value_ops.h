@@ -1,14 +1,11 @@
-#pragma once
+#ifndef __VALUE_OPS_H__
+#define __VALUE_OPS_H__
 
 #include <stdint.h>
 #include <string.h>
 
-#define ARRAY_SIZE(arr) (sizeof(arr)/sizeof(*arr))
-
-#define GNU_HOT        __attribute__((__hot__))
-#define GNU_PURE       __attribute__((__pure__))
-
-#define POW_OF_2(exp)  (1 << (uint32_t)(exp))
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
+#define POW_OF_2(exp)   (1 << (uint32_t)(exp))
 
 /**
  * @brief Generate a number which the lower num bits are all 1
@@ -16,7 +13,7 @@
  * @param num: how many bits need to be set to 1
  * @return generated number
  */
-#define FILL_BITS(num) (0 == (num) ? 0 : (POW_OF_2(num) - 1))
+#define FILL_BITS(num)  (0 == (num) ? 0 : (POW_OF_2(num) - 1))
 
 /**
  * @brief Generate a number which the low_bit to high_bit are all 1
@@ -28,7 +25,7 @@
 #define FILL_RANGE(low_bit, high_bit) \
     (FILL_BITS(((high_bit) + 1) - (low_bit)) << (low_bit))
 
-#define BYTE_AT(num, index) (((num) >> ((index) * 8)) & 0xFF)
+#define BYTE_AT(num, index) (((num) >> ((index)*8)) & 0xFF)
 
 #define BIT_AT(num, index)  (((num) & (1 << (index))) != 0)
 
@@ -75,3 +72,5 @@ GNU_PURE size_t reverseBits(size_t num, uint8_t bitsOfVar);
  * @return uint32_t: value of marked bit range (closed range)
  */
 uint32_t value_at(uint32_t *pnum, uint32_t low_bit, uint32_t high_bit);
+
+#endif  // __VALUE_OPS_H__
