@@ -132,7 +132,7 @@ target_dict = {
             '-g3',
             '-Wa,-g3'
         ],
-        'link_args': ['-Wl,-Map,memory_ram.map'],
+        'link_args': ['-Wl,-Map,memory_ram.map', '--specs=nano.specs'],
         'linker_script': 'linker_ram_new.ld',
         'debug': true,
     },
@@ -218,13 +218,20 @@ run_target('top_all',
 
 # generate vscode workspace file
 cross_file = 'cross_files' / target_mcu + '.ini'
+dfp_file = meson.get_external_property('dfp_file')
+device_name = meson.get_external_property('device_name')
+debugger_file = meson.get_external_property('debugger_file')
 configure_file(
     input: 'proj_files' / 'workspace_demo.json',
     output: proj_name + '.code-workspace',
     configuration: {
         'debug_file': dbg_target.name(),
         'gdb_path': gdb_tool.full_path(),
-        'cross_file': cross_file
+        'cross_file': cross_file,
+        'dfp_file': dfp_file,
+        'device_name': device_name,
+        'debugger_file': debugger_file,
+        'debugger_file_ini': debugger_file.split('.')[0] + '.ini'
     },
 )
 
@@ -241,7 +248,6 @@ configure_file(
 dl_cmd = 'flash write_image erase '
 dl_cmd += dl_target.full_path() + ' '
 dl_cmd += mem_cfg['flash_base'] + ' '
-
 
 supported_tools = {
     'stlink': 'stlink.cfg',

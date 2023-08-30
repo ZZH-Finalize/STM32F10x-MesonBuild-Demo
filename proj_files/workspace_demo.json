@@ -16,6 +16,8 @@
             "--cross-file",
             "cross_files/stm32f10x.ini",
             "--cross-file",
+            "cross_files/debugger/@debugger_file_ini@",
+            "--cross-file",
             "@cross_file@"
         ]
     },
@@ -60,36 +62,12 @@
                 }
             },
             {
-                "label": "launch openocd - stlink",
+                "label": "launch openocd",
                 "type": "shell",
                 "command": "openocd",
                 "args": [
                     "-f",
-                    "openocd_cfg/stlink.cfg",
-                    "-f",
-                    "openocd_cfg/stm32f1x.cfg"
-                ],
-                "isBackground": true,
-                "runOptions": {
-                    "instanceLimit": 1
-                },
-                "presentation": {
-                    "echo": false,
-                    "reveal": "silent",
-                    "focus": false,
-                    "panel": "dedicated",
-                    "revealProblems": "onProblem",
-                    "close": true
-                },
-                "problemMatcher": []
-            },
-            {
-                "label": "launch openocd - dap",
-                "type": "shell",
-                "command": "openocd",
-                "args": [
-                    "-f",
-                    "openocd_cfg/cmsis-dap.cfg",
+                    "openocd_cfg/@debugger_file@",
                     "-f",
                     "openocd_cfg/stm32f1x.cfg"
                 ],
@@ -113,72 +91,7 @@
         "version": "0.2.0",
         "configurations": [
             {
-                "name": "debug - ram - dap",
-                "type": "cppdbg",
-                "request": "launch",
-                "program": "${workspaceFolder}/builddir/@debug_file@",
-                "cwd": "${workspaceFolder}/builddir",
-                "environment": [],
-                "externalConsole": false,
-                "MIMode": "gdb",
-                "miDebuggerPath": "@gdb_path@",
-                "miDebuggerServerAddress": "127.0.0.1:3333",
-                "hardwareBreakpoints": {
-                    "limit": 6,
-                    "require": false
-                },
-                "stopAtEntry": false,
-                "targetArchitecture": "arm",
-                "launchCompleteCommand": "exec-continue",
-                "unknownBreakpointHandling": "stop",
-                "useExtendedRemote": true,
-                "preLaunchTask": "launch openocd - dap",
-                "setupCommands": [
-                    {
-                        "description": "为 gdb 启用整齐打印",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    },
-                    {
-                        "text": "set output-radix 16",
-                        "description": "设置默认十六进制显示所有的数据"
-                    }
-                ],
-                "postRemoteConnectCommands": [
-                    {
-                        "text": "monitor adapter speed 40000",
-                        "description": "提高JTAG速度",
-                        "ignoreFailures": true
-                    },
-                    {
-                        "text": "load",
-                        "description": "加载到目标芯片"
-                    },
-                    {
-                        "text": "monitor reset",
-                        "description": "复位芯片"
-                    },
-                    {
-                        "text": "monitor halt",
-                        "description": "暂停CPU"
-                    },
-                    {
-                        "text": "monitor init",
-                        "description": "初始化"
-                    },
-                    {
-                        "text": "tb main",
-                        "description": "在main处停止",
-                        "ignoreFailures": true
-                    },
-                    {
-                        "text": "b HardFault_Handler",
-                        "description": "进入内核异常时停止"
-                    }
-                ]
-            },
-            {
-                "name": "debug - ram - stlink",
+                "name": "openocd - ram",
                 "type": "cppdbg",
                 "request": "launch",
                 "program": "${workspaceFolder}/builddir/@debug_file@",
@@ -196,7 +109,7 @@
                 "launchCompleteCommand": "exec-continue",
                 "unknownBreakpointHandling": "stop",
                 "useExtendedRemote": true,
-                "preLaunchTask": "launch openocd - stlink",
+                "preLaunchTask": "launch openocd",
                 "setupCommands": [
                     {
                         "description": "为 gdb 启用整齐打印",
@@ -250,7 +163,7 @@
                 ]
             },
             {
-                "name": "debug - flash - stlink",
+                "name": "openocd - flash",
                 "type": "cppdbg",
                 "request": "launch",
                 "program": "${workspaceFolder}/builddir/@debug_file@",
@@ -268,7 +181,7 @@
                 "launchCompleteCommand": "exec-continue",
                 "unknownBreakpointHandling": "stop",
                 "useExtendedRemote": true,
-                "preLaunchTask": "launch openocd - stlink",
+                "preLaunchTask": "launch openocd",
                 "setupCommands": [
                     {
                         "description": "为 gdb 启用整齐打印",
@@ -313,6 +226,14 @@
                     //     "description": "开始执行"
                     // }
                 ]
+            },
+            {
+                "name": "arm - debugger",
+                "type": "embedded-debug",
+                "request": "launch",
+                "program": "${workspaceFolder}/builddir/@debug_file@",
+                "cmsisPack": "@dfp_file@",
+                "deviceName": "@device_name@"
             }
         ],
         "compounds": []
