@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "util/linker_tools.h"
 #include "util/gnu_attributes.h"
-#include "util/value_ops.h"
+#include "util/iterators.h"
 
 #include "system_stm32f10x.h"
 #include "stm32f10x.h"
@@ -55,14 +55,13 @@ GNU_WEAK void init_stack(void)
     asm volatile("str r2, [r0, r3]");
     asm volatile("sub r3, #4");  // r3 -= 4;
 
-    // if (r3 == 0) jump __set_stack_loop
+    // if (r3 != 0) jump __set_stack_loop
     asm volatile("cmp r3, #0");
     asm volatile("bne __set_stack_loop");
 
-    // set cpu sp
+    // set cpu sp and return
     asm volatile("mov sp, r1");
-
-    // compiler will generate "bx lr" automatically
+    asm volatile("bx lr");
 }
 
 __attribute__((__weak__, __noreturn__)) void Reset_Handler(void)
@@ -102,7 +101,7 @@ __attribute__((__weak__, __noreturn__)) void Reset_Handler(void)
 #endif
 
     main();
-    asm volatile("bkpt");
+    while(1) asm volatile("bkpt");
 }
 
 NULL_HANDLER(NMI_Handler);
