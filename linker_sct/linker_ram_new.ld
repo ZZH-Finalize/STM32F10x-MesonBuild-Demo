@@ -28,6 +28,11 @@ SECTIONS
         . = ALIGN(4);
         PROVIDE(__load_start = .);
         PROVIDE(__stext = .);
+
+        __sinit_func = .;
+        KEEP(*(SORT(.init_func.*)));
+        __einit_func = .;
+
         *(.text)
         *(.text.*)
         *(.text*)

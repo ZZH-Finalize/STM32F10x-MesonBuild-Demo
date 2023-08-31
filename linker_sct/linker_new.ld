@@ -20,6 +20,11 @@ SECTIONS
     .text : {
         . = ALIGN(4);
         PROVIDE(__stext = .);
+
+        __sinit_func = .;
+        KEEP(*(SORT(.init_func.*)));
+        __einit_func = .;
+
         *(.text)
         *(.text.*)
         *(.text*)
