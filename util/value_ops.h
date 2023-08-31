@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include "gnu_attributes.h"
 
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
 #define POW_OF_2(exp)   (1 << (uint32_t)(exp))

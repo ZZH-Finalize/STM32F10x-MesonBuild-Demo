@@ -6,22 +6,23 @@ MEMORY
     RAM (wx) : ORIGIN = @ram_base@, LENGTH = @ram_size@
 }
 
-PHDRS
-{
-    isr_table PT_LOAD;
-    text PT_LOAD;
-    data PT_LOAD;
-    rodata PT_LOAD;
-}
-
 SECTIONS
 {
+    .stack (NOLOAD) : {
+        PROVIDE(__estack = .);
+        /* stack size 0x400 */
+        . += @stack_size@;
+        . = ALIGN(0x4);
+        PROVIDE(__stack = .);
+    } > RAM
+
     .boot : {
-        . = ALIGN(4);
+        . = ALIGN(0x200);
         PROVIDE(__sisr_vector = .);
+        PROVIDE(__isr_vector_offset = __sisr_vector - @ram_base@);
         KEEP(*(.isr_vector));
         PROVIDE(__eisr_vector = .);
-    } > RAM :isr_table
+    } > RAM
 
     .text : {
         . = ALIGN(4);
@@ -40,7 +41,7 @@ SECTIONS
         PROVIDE(__edtor = .);
 
         PROVIDE(__etext = .);
-    } > RAM :text
+    } > RAM
 
     PROVIDE(__load_addr = LOADADDR(.text));
 
@@ -51,7 +52,7 @@ SECTIONS
         *(.rodata.*)
         *(.rodata*)
         PROVIDE(__erodata = .);
-    } > RAM :rodata
+    } > RAM
 
     .data : {
         . = ALIGN(4);
@@ -61,7 +62,7 @@ SECTIONS
         *(.data*)
         PROVIDE(__edata = .);
         PROVIDE(__load_end = .);
-    } > RAM :data
+    } > RAM
 
     .bss (NOLOAD) : {
         . = ALIGN(4);
@@ -136,6 +137,4 @@ SECTIONS
         *(.debug_str)
 
     } > RAM */
-
-    PROVIDE(__stack = @ram_base@ + @ram_size@);
 }

@@ -132,6 +132,7 @@ mem_cfg = {
     'flash_size': meson.get_external_property('flash_size'),
     'ram_base': meson.get_external_property('ram_base'),
     'ram_size': meson.get_external_property('ram_size'),
+    'stack_size': meson.get_external_property('stack_size', 0x400),
 }
 
 # all target description
@@ -164,20 +165,21 @@ dl_target = ''
 foreach target_name, options : target_dict
     target_srcs = srcs + options.get('srcs', [])
     exe_name = proj_name + '_@0@.@1@'.format(target_name, exe_sufix)
-    lds = target_name + '_' + options['linker_script']
+    lds_name = target_name + '_' + options['linker_script']
 
-    configure_file(
+    lds = configure_file(
         input: 'linker_sct' / options['linker_script'],
-        output: lds,
+        output: lds_name,
         configuration: mem_cfg
     )
 
-    lds = '-T' + (build_dir / lds)
+    lds_arg = '-T' + (build_dir / lds_name)
 
     exe = executable(exe_name, target_srcs,
         include_directories: inc_dirs,
+        link_depends: lds,
         c_args: c_args + options.get('c_args', []),
-        link_args: link_args + lds + options.get('link_args', [])
+        link_args: link_args + lds_arg + options.get('link_args', [])
     )
 
     dis = custom_target(target_name + '_dis',
@@ -242,7 +244,8 @@ configure_file(
         'cross_file': cross_file,
         'dfp_file': dfp_file,
         'device_name': device_name,
-        'debugger_file': debugger_file
+        'debugger_file': debugger_file,
+        'debugger_file_ini': debugger_file.split('.')[0] + '.ini'
     },
 )
 

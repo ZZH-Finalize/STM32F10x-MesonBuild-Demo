@@ -7,15 +7,11 @@ MEMORY
     RAM (wx) : ORIGIN = @ram_base@, LENGTH = @ram_size@
 }
 
-PHDRS
-{
-    data PT_LOAD;
-}
-
 SECTIONS
 {
     .boot : {
-        . = ALIGN(4);
+        . = ALIGN(0x200);
+        PROVIDE(__isr_vector_offset = 0);
         PROVIDE(__sisr_vector = .);
         KEEP(*(.isr_vector));
         PROVIDE(__eisr_vector = .);
@@ -41,7 +37,6 @@ SECTIONS
 
     .rodata : {
         . = ALIGN(4);
-        PROVIDE(__load_start = .);
         PROVIDE(__srodata = .);
         *(.rodata)
         *(.rodata.*)
@@ -49,17 +44,26 @@ SECTIONS
         PROVIDE(__erodata = .);
     } > FLASH
 
-    PROVIDE(__load_addr = LOADADDR(.rodata));
+    .stack (NOLOAD): {
+        PROVIDE(__estack = .);
+        /* stack size 0x400 */
+        . += @stack_size@;
+        . = ALIGN(0x4);
+        PROVIDE(__stack = .);
+    } > RAM
 
     .data : {
         . = ALIGN(4);
+        PROVIDE(__load_start = .);
         PROVIDE(__sdata = .);
         *(.data)
         *(.data.*)
         *(.data*)
         PROVIDE(__edata = .);
         PROVIDE(__load_end = .);
-    } > RAM AT > FLASH :data
+    } > RAM AT > FLASH
+
+    PROVIDE(__load_addr = LOADADDR(.data));
 
     .bss (NOLOAD) : {
         . = ALIGN(4);
@@ -72,6 +76,4 @@ SECTIONS
     } > RAM
 
     PROVIDE(end = .);
-
-    PROVIDE(__stack = @ram_base@ + @ram_size@);
 }
