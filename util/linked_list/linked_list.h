@@ -9,9 +9,9 @@ typedef struct __list_node_t
 } list_node_t;
 
 // return any negative value will stop foreach
-typedef int (*foreach_cb)(list_node_t *);
+typedef int (*list_foreach_cb)(list_node_t *);
 
-static inline int list_foreach(list_node_t *head, foreach_cb callback)
+static inline int list_foreach(list_node_t *head, list_foreach_cb callback)
 {
     CHECK_PTR(head, -EPERM);
 
@@ -49,7 +49,7 @@ static inline list_node_t *list_index(list_node_t *head, uint32_t index)
 
     list_node_t *node = head;
 
-    while (index-- && NULL != node)
+    while (0 != index-- && NULL != node)
         node = node->next;
 
     return node;

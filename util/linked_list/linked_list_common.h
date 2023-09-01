@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include "util/container_of.h"
 #include "util/arg_checkers.h"
 #include "list_iterators.h"
 
