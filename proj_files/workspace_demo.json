@@ -107,9 +107,10 @@
                     "require": false
                 },
                 "targetArchitecture": "arm",
-                "launchCompleteCommand": "exec-continue",
+                "launchCompleteCommand": "None",
                 "unknownBreakpointHandling": "stop",
                 "useExtendedRemote": true,
+                "stopAtEntry": false,
                 "preLaunchTask": "launch openocd",
                 "setupCommands": [
                     {
@@ -123,14 +124,18 @@
                     }
                 ],
                 "postRemoteConnectCommands": [
+                    // {
+                    //     "text": "monitor adapter srst pulse_width 20",
+                    //     "description": "复位芯片(硬复位)"
+                    // },
                     {
-                        "text": "monitor adapter srst pulse_width 20",
-                        "description": "复位芯片(硬复位)"
+                        "text": "monitor init",
+                        "description": "初始化"
                     },
-                    {
-                        "text": "monitor reset",
-                        "description": "复位芯片"
-                    },
+                    // {
+                    //     "text": "monitor reset",
+                    //     "description": "复位芯片"
+                    // },
                     {
                         "text": "monitor mww 0xE000ED0C 0x5FA0004",
                         "description": "软复位"
@@ -143,11 +148,11 @@
                         "text": "monitor init",
                         "description": "初始化"
                     },
-                    {
-                        "text": "monitor adapter speed 40000",
-                        "description": "提高JTAG速度",
-                        "ignoreFailures": true
-                    },
+                    // {
+                    //     "text": "monitor adapter speed 40000",
+                    //     "description": "提高JTAG速度",
+                    //     "ignoreFailures": true
+                    // },
                     {
                         "text": "load",
                         "description": "加载到目标芯片"
@@ -160,7 +165,13 @@
                     {
                         "text": "b HardFault_Handler",
                         "description": "进入内核异常时停止"
-                    }
+                    },
+                    // {
+                    //     "text": "set $sp = __stack",
+                    // },
+                    // {
+                    //     "text": "set $pc = Reset_Handler",
+                    // },
                 ]
             },
             {
