@@ -7,7 +7,7 @@
 
 #include "util/mem_mana/mem_mana.h"
 
-void clockInit(void)
+void clock_init(void)
 {
     RCC_DeInit();
 
@@ -17,7 +17,7 @@ void clockInit(void)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 }
 
-void gpioInit(void)
+void gpio_init(void)
 {
     GPIO_InitTypeDef init_param = {.GPIO_Speed = GPIO_Speed_50MHz};
 
@@ -47,7 +47,7 @@ void gpioInit(void)
     GPIO_Init(GPIOA, &init_param);
 }
 
-void usartInit(void)
+void usart_init(void)
 {
     USART_InitTypeDef init_param = {
         .USART_BaudRate = 115200,
@@ -61,7 +61,7 @@ void usartInit(void)
     USART_Cmd(USART1, ENABLE);
 }
 
-void nvicInit()
+void nvic_init()
 {
     NVIC_SetPriorityGrouping(NVIC_PriorityGroup_4);
 
@@ -79,20 +79,10 @@ int main()
 {
     const char msg[] = {"Hello World!\r\n"};
 
-    clockInit();
-    gpioInit();
-    usartInit();
-    nvicInit();
-
-    void *pmem[5];
-    pmem[0] = memAlloc(5, 0);
-    pmem[1] = memAlloc(9, 0);
-    pmem[2] = memAlloc(7, 0);
-    pmem[3] = memAlloc(120, 0);
-    memFree(pmem[2]);
-    memFree(pmem[0]);
-    memFree(pmem[3]);
-    memFree(pmem[1]);
+    clock_init();
+    gpio_init();
+    usart_init();
+    nvic_init();
 
     while (1) {
         for (uint32_t i = 0; i < sizeof(msg) - 1; i++) {
