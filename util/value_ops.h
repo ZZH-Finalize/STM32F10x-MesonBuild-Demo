@@ -5,7 +5,7 @@
 #include <string.h>
 #include "gnu_attributes.h"
 
-#define POW_OF_2(exp)   (1 << (uint32_t)(exp))
+#define POW_OF_2(exp)  (1 << (uint32_t)(exp))
 
 /**
  * @brief Generate a number which the lower num bits are all 1
@@ -13,7 +13,7 @@
  * @param num: how many bits need to be set to 1
  * @return generated number
  */
-#define FILL_BITS(num)  (0 == (num) ? 0 : (POW_OF_2(num) - 1))
+#define FILL_BITS(num) (0 == (num) ? 0 : (POW_OF_2(num) - 1))
 
 /**
  * @brief Generate a number which the low_bit to high_bit are all 1

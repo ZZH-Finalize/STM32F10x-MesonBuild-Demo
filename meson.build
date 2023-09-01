@@ -63,6 +63,7 @@ endforeach
 # utils
 util_srcs = [
     'mem_mana/mem_mana.c',
+    'bitmap/bitmap.c',
     'delay/delay.c',
     'value_ops.c',
     'strarg.c',
