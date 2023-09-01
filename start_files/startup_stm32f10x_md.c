@@ -5,6 +5,9 @@
 
 #include "system_stm32f10x.h"
 #include "stm32f10x.h"
+
+#include "init_calls.h"
+
 extern int main(void);
 
 #define ISR_VEC             GNU_SECTION(.isr_vector)
@@ -100,8 +103,11 @@ __attribute__((__weak__, __noreturn__)) void Reset_Handler(void)
     SCB->VTOR = FLASH_BASE;
 #endif
 
+    do_init_calls();
+
     main();
-    while(1) asm volatile("bkpt");
+    while (1)
+        asm volatile("bkpt");
 }
 
 NULL_HANDLER(NMI_Handler);

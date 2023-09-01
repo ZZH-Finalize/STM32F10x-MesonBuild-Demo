@@ -8,14 +8,6 @@ MEMORY
 
 SECTIONS
 {
-    .stack (NOLOAD) : {
-        PROVIDE(__estack = .);
-        /* stack size 0x400 */
-        . += @stack_size@;
-        . = ALIGN(0x4);
-        PROVIDE(__stack = .);
-    } > RAM
-
     .boot : {
         . = ALIGN(0x200);
         PROVIDE(__sisr_vector = .);
@@ -24,14 +16,17 @@ SECTIONS
         PROVIDE(__eisr_vector = .);
     } > RAM
 
+    .stack (NOLOAD) : {
+        PROVIDE(__estack = .);
+        . += @stack_size@;
+        . = ALIGN(0x4);
+        PROVIDE(__stack = .);
+    } > RAM
+
     .text : {
         . = ALIGN(4);
         PROVIDE(__load_start = .);
         PROVIDE(__stext = .);
-
-        __sinit_func = .;
-        KEEP(*(SORT(.init_func.*)));
-        __einit_func = .;
 
         *(.text)
         *(.text.*)
@@ -56,6 +51,11 @@ SECTIONS
         *(.rodata)
         *(.rodata.*)
         *(.rodata*)
+
+        __sinit_func = .;
+        KEEP(*(SORT(.init_func.*)));
+        __einit_func = .;
+
         PROVIDE(__erodata = .);
     } > RAM
 

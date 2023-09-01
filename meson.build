@@ -71,6 +71,7 @@ util_srcs = [
 # applicaton src files
 app_srcs = [
     'start_files/startup_stm32f10x_md.c',
+    'start_files/init_calls.c',
     'app/main.c',
     'app/isr.c',
 ]

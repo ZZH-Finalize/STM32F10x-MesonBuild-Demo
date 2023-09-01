@@ -14,7 +14,8 @@
 #define MK_MEM_POOL_BY_ARRAY(arr) MK_MEM_POOL(arr, sizeof(arr))
 
 #define PREV_BLOCK(blk)           (blk->prev)
-#define NEXT_BLOCK(blk)           (typeof(blk))((uint32_t)blk + blk->size)
+#define NEXT_BLOCK(blk) \
+    (typeof(blk))((uint32_t)blk + blk->size + sizeof(memblock_header_t))
 
 uint32_t default_pool[DEFAULT_POOL_SIZE * 1024 / 4];
 
@@ -22,7 +23,7 @@ static const mempool_t mem_pools[] = {
     MK_MEM_POOL_BY_ARRAY(default_pool),
 };
 
-INIT_FUNC(9) void mem_init(void)
+void mem_init(void)
 {
     ITER_ARRAY(ppool, mem_pools)
     {
@@ -33,6 +34,7 @@ INIT_FUNC(9) void mem_init(void)
         pheader->prev = NULL;
     }
 }
+EXPORT_INIT_FUNC(mem_init, 9);
 
 void *mem_alloc(uint32_t size, uint32_t pool_idx)
 {
@@ -55,7 +57,8 @@ void *mem_alloc(uint32_t size, uint32_t pool_idx)
         // can be allocated
         if (1 == pheader->flags.bits.free && size <= pheader->size) {
             // alloc a new block
-            memblock_header_t *pnext = NEXT_BLOCK(pheader);
+            memblock_header_t *pnext = (memblock_header_t *)((uint32_t)pheader +
+                                       size + sizeof(*pheader));
             pnext->size = pheader->size - size - sizeof(*pnext);
             pnext->flags.bits.free = 1;
             pnext->prev = pheader;
