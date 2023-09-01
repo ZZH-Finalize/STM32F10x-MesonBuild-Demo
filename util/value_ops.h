@@ -71,6 +71,6 @@ GNU_PURE size_t reverseBits(size_t num, uint8_t bitsOfVar);
  * @param high_bit: high bit index (start from 0)
  * @return uint32_t: value of marked bit range (closed range)
  */
-uint32_t value_at(uint32_t *pnum, uint32_t low_bit, uint32_t high_bit);
+uint32_t valueAt(uint32_t *pnum, uint32_t low_bit, uint32_t high_bit);
 
 #endif  // __VALUE_OPS_H__

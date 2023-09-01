@@ -1,7 +1,8 @@
 #ifndef __CONTAINER_OF_H__
 #define __CONTAINER_OF_H__
 
-#define offsetof(type, member) (&((type *)0)->member)
+#include <stddef.h>
+
 #define container_of(ptr, type, member) \
     (type *)((uint32_t)ptr - offsetof(type, member))
 

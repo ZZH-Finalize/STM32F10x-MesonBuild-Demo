@@ -45,7 +45,7 @@ GNU_PURE size_t reverseBits(size_t num, uint8_t bitsOfVar)
     return num;
 }
 
-uint32_t value_at(uint32_t *pnum, uint32_t low_bit, uint32_t high_bit)
+uint32_t valueAt(uint32_t *pnum, uint32_t low_bit, uint32_t high_bit)
 {
     if ((high_bit - low_bit > 32) || (NULL == pnum))
         return 0;
