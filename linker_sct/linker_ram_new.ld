@@ -52,6 +52,7 @@ SECTIONS
         *(.rodata.*)
         *(.rodata*)
 
+        . = ALIGN(4);
         __sinit_func = .;
         KEEP(*(SORT(.init_func.*)));
         __einit_func = .;

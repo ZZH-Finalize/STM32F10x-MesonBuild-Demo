@@ -6,9 +6,8 @@
 #include "system_stm32f10x.h"
 #include "stm32f10x.h"
 
-#include "init_calls.h"
-
 extern int main(void);
+extern void do_init_calls(void);
 
 #define ISR_VEC             GNU_SECTION(.isr_vector)
 #define HANDLER_ALIAS(name) __attribute__((__alias__(#name), __weak__))
@@ -40,7 +39,7 @@ GNU_WEAK void Null_Handler(void)
 GNU_WEAK void init_stack(void)
 {
     asm volatile("ldr r0, =__estack");
-    asm volatile("ldr r1, =__stack");
+    asm volatile("ldr r1, =__stack - 4");
     asm volatile("ldr r2, =0xAAAAAAAA");
 
     // stack size in r3
@@ -69,12 +68,6 @@ GNU_WEAK void init_stack(void)
 
 __attribute__((__weak__, __noreturn__)) void Reset_Handler(void)
 {
-    // init_stack();
-    asm volatile("bl init_stack");
-
-    // compile fence
-    asm volatile("nop");
-
     volatile uint32_t* load_to = __load_start;
     volatile uint32_t* load_from = __load_addr;
     uint32_t load_size = ((uint32_t)__load_end - (uint32_t)__load_start) / 4;
@@ -103,6 +96,7 @@ __attribute__((__weak__, __noreturn__)) void Reset_Handler(void)
     SCB->VTOR = FLASH_BASE;
 #endif
 
+    init_stack();
     do_init_calls();
 
     main();

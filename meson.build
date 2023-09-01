@@ -62,7 +62,7 @@ endforeach
 
 # utils
 util_srcs = [
-    'mem_mana/mem_alloc.c',
+    'mem_mana/mem_mana.c',
     'delay/delay.c',
     'value_ops.c',
     'strarg.c',
@@ -71,7 +71,7 @@ util_srcs = [
 # applicaton src files
 app_srcs = [
     'start_files/startup_stm32f10x_md.c',
-    'start_files/init_calls.c',
+    'start_files/init_calls.s',
     'app/main.c',
     'app/isr.c',
 ]
