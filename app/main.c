@@ -5,14 +5,7 @@
 
 #include "delay.h"
 
-#include "util/mem_mana/mem_mana.h"
-#include "util/linked_list/linked_list.h"
-
-typedef struct
-{
-    list_node_t node;
-    char value;
-} test_list_t;
+#include "util/bitmap/bitmap.h"
 
 void clock_init(void)
 {
@@ -82,16 +75,6 @@ void nvic_init()
     USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 }
 
-int print_cb(list_node_t* node)
-{
-    test_list_t* list_node = container_of(node, test_list_t, node);
-    USART_SendData(USART1, list_node->value);
-    while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TC))
-        ;
-    USART_ClearFlag(USART1, USART_FLAG_TC);
-    return 0;
-}
-
 int main()
 {
     const char msg[] = {"Hello World!\r\n"};
@@ -101,28 +84,21 @@ int main()
     usart_init();
     nvic_init();
 
-    test_list_t* list = memAlloc(sizeof(test_list_t), 0);
-    list->value = 'A';
+    bitmap_t *map = bitmap_create(64);
 
-    for (uint32_t i = 0; i < 5; i++) {
-        test_list_t* node = memAlloc(sizeof(test_list_t), 0);
-        node->value = i + 'B';
-        list_append(&list->node, &node->node);
-    }
+    bitmap_save(map, 20);
+    bitmap_save(map, 90);
 
-    uint32_t before_insert = list_length(&list->node);
+    int res = bitmap_check(map, 30);
 
-    test_list_t* node = memAlloc(sizeof(test_list_t), 0);
-    node->value = '-';
-    list_insert(list_index(&list->node, 3), node);
+    res = bitmap_check(map, 20);
 
-    uint32_t after_insert = list_length(&list->node);
+    bitmap_drop(map, 30);
+    bitmap_drop(map, 20);
 
-    list_remove(&list->node, list_index(&list->node, 3));
+    res = bitmap_check(map, 20);
 
-    uint32_t after_remove = list_length(&list->node);
-
-    list_foreach(&list->node, print_cb);
+    bitmap_delete(map);
 
     while (1) {
         for (uint32_t i = 0; i < sizeof(msg) - 1; i++) {

@@ -20,6 +20,8 @@ static inline int list_foreach(list_node_t *head, list_foreach_cb callback)
         int cb_retv = callback(node);
         RETURN_IF(cb_retv < 0, cb_retv);
     }
+
+    return 0;
 }
 
 static inline uint32_t list_length(list_node_t *head)

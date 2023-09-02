@@ -7,12 +7,13 @@ bitmap_t* bitmap_init(bitmap_t* map, uint32_t max_num)
 
     // up align to 32
     max_num = (max_num + 31) & ~31;
+    uint32_t unit_num = max_num / (sizeof(*map->buf) * 8);
 
-    map->buf = (uint32_t*)memAlloc(max_num / sizeof(*map->buf), 0);
+    map->buf = (uint32_t*)memAlloc(unit_num, 0);
 
     CHECK_PTR(map->buf, NULL);
-
-    map->len = max_num / sizeof(*map->buf);
+    map->len = unit_num;
+    bitmap_clear(map);
 
     return map;
 }

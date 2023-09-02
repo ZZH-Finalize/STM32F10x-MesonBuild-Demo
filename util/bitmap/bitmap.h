@@ -25,7 +25,7 @@ static inline void bitmap_init_static(bitmap_t* map, uint32_t* val_buf,
     CHECK_PTR(map, );
 
     map->buf = val_buf;
-    map->len = buf_size / sizeof(*map->buf);
+    map->len = buf_size / (sizeof(*map->buf) * 8);
 }
 
 bitmap_t* bitmap_create(uint32_t max_num);
@@ -62,7 +62,7 @@ static inline void bitmap_clear(bitmap_t* map)
     memset(map->buf, 0, map->len * sizeof(*map->buf));
 }
 
-void bitmap_save(bitmap_t* map, uint32_t value)
+static inline void bitmap_save(bitmap_t* map, uint32_t value)
 {
     BITMAP_CHECK_MAP(map, );
 
@@ -73,7 +73,7 @@ void bitmap_save(bitmap_t* map, uint32_t value)
         map->buf[unit_index] |= 1 << bit_index;
 }
 
-void bitmap_drop(bitmap_t* map, uint32_t value)
+static inline void bitmap_drop(bitmap_t* map, uint32_t value)
 {
     BITMAP_CHECK_MAP(map, );
 
@@ -84,7 +84,7 @@ void bitmap_drop(bitmap_t* map, uint32_t value)
         map->buf[unit_index] &= ~(1 << bit_index);
 }
 
-uint8_t bitmap_check(bitmap_t* map, uint32_t value)
+static inline uint8_t bitmap_check(bitmap_t* map, uint32_t value)
 {
     BITMAP_CHECK_MAP(map, 0);
 
