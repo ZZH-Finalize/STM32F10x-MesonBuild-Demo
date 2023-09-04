@@ -15,6 +15,8 @@ static inline void print_char(USART_TypeDef* usartx, char ch)
 void print_str(USART_TypeDef* usartx, const char* str);
 void print_hex(USART_TypeDef* usartx, uint32_t num);
 void print_dec(USART_TypeDef* usartx, uint32_t num);
-int usart_printf(USART_TypeDef* usartx, const char* fmt, ...);
+void print_double(USART_TypeDef* usartx, double num);
+int usart_printf(USART_TypeDef* usartx, const char* fmt, ...)
+    __attribute__((__format__(__printf__, 2, 3)));
 
 #endif  // __PRINTS_H__

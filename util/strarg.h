@@ -41,4 +41,19 @@ uint8_t IsVaildNum(const char* str);
 */
 uint8_t getNum(const char* str, uint32_t* const pNum);
 
-#endif  // __STRARG_H__
+/*
+@brief 寻找数字里第一个为1的二进制位
+@param num 需要处理的数字
+@return 找到的下标 -1代表没找到
+*/
+__attribute__((pure)) uint8_t ff1(size_t num);
+
+/*
+@brief 得到位倒序后的输入值
+@param num 需要倒序的值
+@param bitsOfVar 需要倒序的二进制长度
+@return 倒序后的值
+*/
+__attribute__((pure)) size_t reverseBits(size_t num, uint8_t bitsOfVar);
+
+#endif

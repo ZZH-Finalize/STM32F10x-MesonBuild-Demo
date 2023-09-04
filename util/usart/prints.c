@@ -2,17 +2,15 @@
 #include <stdio.h>
 #include "prints.h"
 
-
 void print_str(USART_TypeDef* usartx, const char* str)
 {
-    while('\0'!= *str)
+    while ('\0' != *str)
         print_char(usartx, *str++);
 }
 
 void print_hex(USART_TypeDef* usartx, uint32_t num)
 {
-    for (int i = 0;i < 8;i++)
-    {
+    for (int i = 0; i < 8 && num != 0; i++) {
         uint8_t val = (num & 0xF0000000) >> 28;
 
         if (val > 9)
@@ -26,10 +24,32 @@ void print_hex(USART_TypeDef* usartx, uint32_t num)
 
 void print_dec(USART_TypeDef* usartx, uint32_t num)
 {
+    for (int i = 0; i < 10 && num != 0; i++) {
+        uint8_t val = num / 1000000000;
 
+        if (val != 0)
+            print_char(usartx, val + '0');
+
+        num *= 10;
+    }
+}
+
+void print_double(USART_TypeDef* usartx, double num)
+{
+    
 }
 
 int usart_printf(USART_TypeDef* usartx, const char* fmt, ...)
 {
+    va_list vargs;
+    char printf_buf[128];
+    va_start(vargs, fmt);
 
+    int len = vsnprintf(printf_buf, sizeof(printf_buf), fmt, vargs);
+
+    for (int i = 0; i < len; i++)
+        print_char(usartx, printf_buf[i]);
+
+    va_end(vargs);
+    return len;
 }
