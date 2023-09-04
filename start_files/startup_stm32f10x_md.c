@@ -2,9 +2,14 @@
 #include "util/linker_tools.h"
 #include "util/gnu_attributes.h"
 #include "util/iterators.h"
+#include "util/asm_bridge.h"
+#include "stack_trace/stack_trace.h"
+#include "util/usart/prints.h"
 
 #include "system_stm32f10x.h"
 #include "stm32f10x.h"
+
+#define DUMP_INFO_USART_SEL USART1
 
 extern int main(void);
 extern void do_init_calls(void);
@@ -25,6 +30,49 @@ LINKER_SYMBOL32(__isr_vector_offset);
 
 GNU_WEAK void Default_Handler(void)
 {
+    volatile uint32_t r[4];
+    volatile uint32_t lr_val = 0, xpsr = 0;
+
+    ASM_READ_REG("r0", r[0]);
+    ASM_READ_REG("r1", r[1]);
+    ASM_READ_REG("r2", r[2]);
+    ASM_READ_REG("r3", r[3]);
+
+    ASM_READ_REG("lr", lr_val);
+    ASM_READ_XREG("xpsr", xpsr);
+
+    uint32_t* stack_pointer = 0;
+
+    if (lr_val == 0xFFFFFFF9) {
+        stack_pointer = (uint32_t*)__get_MSP();
+    } else if (lr_val == 0xFFFFFFFD) {
+        stack_pointer = (uint32_t*)__get_PSP();
+    }
+
+    print_str(DUMP_INFO_USART_SEL, __func__);
+
+    for (int i = 0; i < 4; i++) {
+        print_str(DUMP_INFO_USART_SEL, "\nr");
+        print_char(USART1, i + '0');
+        print_str(DUMP_INFO_USART_SEL, ": 0x");
+        print_hex(DUMP_INFO_USART_SEL, r[i]);
+    }
+
+    print_str(DUMP_INFO_USART_SEL, "\nlr: 0x");
+    print_hex(DUMP_INFO_USART_SEL, lr_val);
+    print_str(DUMP_INFO_USART_SEL, "\nxpsr: 0x");
+    print_hex(DUMP_INFO_USART_SEL, xpsr);
+    print_str(DUMP_INFO_USART_SEL, "\nmsp: 0x");
+    print_hex(DUMP_INFO_USART_SEL, __get_MSP());
+    print_str(DUMP_INFO_USART_SEL, "\npsp: 0x");
+    print_hex(DUMP_INFO_USART_SEL, __get_PSP());
+
+    print_str(DUMP_INFO_USART_SEL, "\nstack_dump at (0x");
+    print_hex(DUMP_INFO_USART_SEL, (uint32_t)stack_pointer);
+    print_str(DUMP_INFO_USART_SEL, "):\n");
+
+    print_stack_trace(DUMP_INFO_USART_SEL, stack_pointer);
+
     while (1) {
         // *(uint32_t*)0xE000ED0C = 0x5FA0005;
         asm volatile("bkpt");

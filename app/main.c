@@ -2,6 +2,7 @@
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_usart.h"
+#include "string.h"
 
 #include "delay.h"
 
@@ -83,6 +84,8 @@ int main()
     gpio_init();
     usart_init();
     nvic_init();
+
+    memset(0x1234, 9, 10000);
 
     print_dec(USART1, 3000);
     print_dec(USART1, 5000);

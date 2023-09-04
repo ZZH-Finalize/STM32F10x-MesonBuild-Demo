@@ -10,7 +10,7 @@ void print_str(USART_TypeDef* usartx, const char* str)
 
 void print_hex(USART_TypeDef* usartx, uint32_t num)
 {
-    for (int i = 0; i < 8 && num != 0; i++) {
+    for (int i = 0; i < 8; i++) {
         uint8_t val = (num & 0xF0000000) >> 28;
 
         if (val > 9)
