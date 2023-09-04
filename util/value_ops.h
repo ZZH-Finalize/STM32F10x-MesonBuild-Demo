@@ -5,6 +5,9 @@
 #include <string.h>
 #include "gnu_attributes.h"
 
+#define MAX(a, b)      ((a) > (b) ? (a) : (b))
+#define MIN(a, b)      ((a) < (b) ? (a) : (b))
+
 #define POW_OF_2(exp)  (1 << (uint32_t)(exp))
 
 /**

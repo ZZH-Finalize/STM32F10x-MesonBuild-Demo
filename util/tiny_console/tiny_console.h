@@ -22,6 +22,18 @@ typedef struct __console_t
 
 } console_t;
 
+typedef enum
+{
+    black = '0',
+    red,
+    green,
+    yellow,
+    blue,
+    purple,
+    dark_green,
+    white,
+} console_color_t;
+
 static inline void console_char_input(console_t* this, char ch)
 {
     CHECK_PTR(this, );

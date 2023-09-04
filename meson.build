@@ -64,16 +64,23 @@ endforeach
 util_srcs = [
     'mem_mana/mem_mana.c',
     'bitmap/bitmap.c',
+    'usart/prints.c',
+    'ringbuf/ringbuf.c',
     'tiny_console/tiny_console.c',
     'delay/delay.c',
     'value_ops.c',
     'strarg.c',
 ]
 
+# start files
+start_file_fmt = 'startup_stm32f10x_@0@.c'
+start_file_srcs = [
+    'stack_trace/stack_trace.c',
+    'init_calls.s',
+]
+
 # applicaton src files
 app_srcs = [
-    'start_files/startup_stm32f10x_md.c',
-    'start_files/init_calls.s',
     'app/main.c',
     'app/isr.c',
 ]
@@ -83,6 +90,12 @@ inc_dirs = [
     'app',
     'util/delay'
 ]
+
+# append start files
+srcs += 'start_files' / start_file_fmt.format(capacity.to_lower())
+foreach src : start_file_srcs
+    srcs += 'start_files' / src
+endforeach
 
 # append utils
 foreach src : util_srcs
