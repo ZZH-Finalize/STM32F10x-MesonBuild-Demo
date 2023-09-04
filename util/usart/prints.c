@@ -24,20 +24,25 @@ void print_hex(USART_TypeDef* usartx, uint32_t num)
 
 void print_dec(USART_TypeDef* usartx, uint32_t num)
 {
-    for (int i = 0; i < 10 && num != 0; i++) {
-        uint8_t val = num / 1000000000;
+    uint32_t power = 1000000000;
+    uint8_t num_flag = 0;
 
-        if (val != 0)
+    for (int i = 0; i < 10; i++) {
+        uint8_t val = (num / power) % 10;
+
+        if (0 != val)
+            num_flag = 1;
+
+        if (0 != num_flag)
             print_char(usartx, val + '0');
 
-        num *= 10;
+        power /= 10;
     }
 }
 
-void print_double(USART_TypeDef* usartx, double num)
-{
-    
-}
+// void print_double(USART_TypeDef* usartx, double num)
+// {
+// }
 
 int usart_printf(USART_TypeDef* usartx, const char* fmt, ...)
 {

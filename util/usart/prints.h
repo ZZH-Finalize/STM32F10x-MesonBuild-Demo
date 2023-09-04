@@ -6,7 +6,7 @@
 static inline void print_char(USART_TypeDef* usartx, char ch)
 {
     // wait for last transmisson
-    while (USART_SR_TC == (usartx->SR & USART_SR_TC))
+    while (USART_SR_TC != (usartx->SR & USART_SR_TC))
         asm volatile("nop");
 
     usartx->DR = ch;
@@ -15,7 +15,7 @@ static inline void print_char(USART_TypeDef* usartx, char ch)
 void print_str(USART_TypeDef* usartx, const char* str);
 void print_hex(USART_TypeDef* usartx, uint32_t num);
 void print_dec(USART_TypeDef* usartx, uint32_t num);
-void print_double(USART_TypeDef* usartx, double num);
+// void print_double(USART_TypeDef* usartx, double num);
 int usart_printf(USART_TypeDef* usartx, const char* fmt, ...)
     __attribute__((__format__(__printf__, 2, 3)));
 

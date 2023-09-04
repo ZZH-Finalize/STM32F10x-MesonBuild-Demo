@@ -5,7 +5,7 @@
 
 #include "delay.h"
 
-#include "util/bitmap/bitmap.h"
+#include "util/usart/prints.h"
 
 void clock_init(void)
 {
@@ -84,21 +84,10 @@ int main()
     usart_init();
     nvic_init();
 
-    bitmap_t *map = bitmap_create(64);
-
-    bitmap_save(map, 20);
-    bitmap_save(map, 90);
-
-    int res = bitmap_check(map, 30);
-
-    res = bitmap_check(map, 20);
-
-    bitmap_drop(map, 30);
-    bitmap_drop(map, 20);
-
-    res = bitmap_check(map, 20);
-
-    bitmap_delete(map);
+    print_dec(USART1, 3000);
+    print_dec(USART1, 5000);
+    print_dec(USART1, 5160);
+    print_dec(USART1, UINT32_MAX);
 
     while (1) {
         for (uint32_t i = 0; i < sizeof(msg) - 1; i++) {

@@ -56,4 +56,4 @@ __attribute__((pure)) uint8_t ff1(size_t num);
 */
 __attribute__((pure)) size_t reverseBits(size_t num, uint8_t bitsOfVar);
 
-#endif
+#endif  // __STRARG_H__
