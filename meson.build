@@ -64,6 +64,7 @@ endforeach
 util_srcs = [
     'mem_mana/mem_mana.c',
     'bitmap/bitmap.c',
+    'tiny_console/tiny_console.c',
     'delay/delay.c',
     'value_ops.c',
     'strarg.c',
