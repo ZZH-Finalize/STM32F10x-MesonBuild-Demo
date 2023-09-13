@@ -25,6 +25,8 @@ if false == allowed_capacity_list.contains(capacity)
             'supported capacities are: ', allowed_capacity_list)
 endif
 
+fs = import('fs')
+
 # stm32 lib path
 dir_prefix = 'STM32_StdLib/'
 
@@ -206,7 +208,7 @@ foreach target_name, options : target_dict
             '-SD',
             build_dir / exe.name()
         ],
-        output: [exe.name().split('.')[0] + '.s']
+        output: fs.replace_suffix(exe.name(), '.s')
     )
 
     size = run_target(target_name + '_size',
@@ -227,7 +229,7 @@ foreach target_name, options : target_dict
             build_dir / exe.name(),
             build_dir / '@OUTPUT@'
         ],
-        output: [exe.name().split('.')[0] + '.bin']
+        output: fs.replace_suffix(exe.name(), '.bin')
     )
 
     if options.get('debug', false)
