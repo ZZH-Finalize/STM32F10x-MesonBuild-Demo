@@ -13,46 +13,15 @@
 
 typedef struct
 {
-    uint32_t* buf;
     uint32_t len;
+    uint32_t buf[];
 } bitmap_t;
-
-bitmap_t* bitmap_init(bitmap_t* map, uint32_t max_num);
-
-static inline void bitmap_init_static(bitmap_t* map, uint32_t* val_buf,
-                                      uint32_t buf_size)
-{
-    CHECK_PTR(map, );
-
-    map->buf = val_buf;
-    map->len = buf_size / (sizeof(*map->buf) * 8);
-}
 
 bitmap_t* bitmap_create(uint32_t max_num);
 
-static inline void bitmap_deinit(bitmap_t* map)
-{
-    CHECK_PTR(map, );
-
-    memFree(map->buf);
-    map->buf = NULL;
-    map->len = 0;
-}
-
 static inline void bitmap_delete(bitmap_t* map)
 {
-    CHECK_PTR(map, );
-
-    bitmap_deinit(map);
     memFree(map);
-}
-
-static inline uint32_t bitmap_resize(bitmap_t* map, uint32_t new_size)
-{
-    CHECK_PTR(map, 0);
-
-    bitmap_deinit(map);
-    bitmap_init(map, new_size);
 }
 
 static inline void bitmap_clear(bitmap_t* map)

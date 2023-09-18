@@ -1,34 +1,18 @@
 #include "bitmap.h"
 #include "util/value_ops.h"
 
-bitmap_t* bitmap_init(bitmap_t* map, uint32_t max_num)
-{
-    CHECK_PTR(map, NULL);
-
-    // up align to 32
-    max_num = (max_num + 31) & ~31;
-    uint32_t unit_num = max_num / (sizeof(*map->buf) * 8);
-
-    map->buf = (uint32_t*)memAlloc(unit_num, 0);
-
-    CHECK_PTR(map->buf, NULL);
-    map->len = unit_num;
-    bitmap_clear(map);
-
-    return map;
-}
-
 bitmap_t* bitmap_create(uint32_t max_num)
 {
     RETURN_IF_ZERO(max_num, NULL);
-    bitmap_t* map = (bitmap_t*)memAlloc(sizeof(bitmap_t), 0);
+
+    uint32_t max_num_aligned = (max_num + 31) & ~31;
+    bitmap_t* map =
+        (bitmap_t*)memAlloc(sizeof(bitmap_t) + max_num_aligned / 8, 0);
+    uint32_t unit_num = max_num / (sizeof(*map->buf) * 8);
 
     CHECK_PTR(map, NULL);
 
-    if (NULL == bitmap_init(map, max_num)) {
-        memFree(map);
-        return NULL;
-    }
+    map->len = unit_num;
 
     return map;
 }
