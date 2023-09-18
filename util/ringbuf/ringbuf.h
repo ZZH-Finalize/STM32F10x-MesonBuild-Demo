@@ -3,44 +3,48 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include "util/arg_checkers.h"
+#include "util/mem_mana/mem_mana.h"
 
-#define RB_CHECK(cond, retv) \
-    if (cond)                \
-    return retv
-#define RB_CHECK_POINTER(ptr, retv) RB_CHECK(NULL == ptr, retv)
+#define RB_CHECK(cond, retv)          RETURN_IF(cond, retv)
+#define RB_CHECK_POINTER(ptr, retv)   RB_CHECK(NULL == ptr, retv)
+#define RB_RETURN_IF_ZERO(cond, retv) RETURN_IF_ZERO(cond, retv)
+
+#define RB_MEMPOOL                    0
 
 typedef struct
 {
     uint32_t wpos;
     uint32_t rpos;
     uint32_t size;
-    uint8_t* buf;
-} ringbuf_t, *pringbuf_t;
+    uint8_t buf[];
+} ringbuf_t;
 
 typedef struct
 {
     ringbuf_t* prb;
     uint8_t lock;
-} ringbuf_locked_t, *pringbuf_locked_t;
+} ringbuf_locked_t;
 
 /**
  *@brief create a ringbuf on a buffer
  *
- * @param this - ringbuf struct pointer
  * @param buffer - buffer address
  * @param size - buffer size
  */
-static inline void ringbuf_create(ringbuf_t* this, void* buffer, uint32_t size)
+static inline ringbuf_t* ringbuf_create(uint32_t buffer_size)
 {
-    RB_CHECK_POINTER(this, );
+    RB_RETURN_IF_ZERO(buffer_size, NULL);
 
-    this->buf = buffer;
-    this->size = size;
+    ringbuf_t* this =
+        (ringbuf_t*)memAlloc(sizeof(ringbuf_t) + buffer_size, RB_MEMPOOL);
+
+    RB_CHECK_POINTER(this, NULL);
+
+    this->size = buffer_size;
     this->rpos = 0;
     this->wpos = 0;
 }
-#define ringbuf_create_by_array(this, arr) \
-    ringbuf_create(this, arr, sizeof(arr))
 
 /**
  * @brief clear a ring buf
