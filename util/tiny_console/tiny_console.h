@@ -5,6 +5,7 @@
 #include <errno.h>
 #include "tiny_console_conf.h"
 #include "util/arg_checkers.h"
+#include "util/mem_mana/mem_mana.h"
 
 struct __console_t;
 
@@ -13,12 +14,12 @@ typedef int (*console_char_out_t)(struct __console_t*, char);
 typedef struct __console_t
 {
     const char* prefix;
-    char* buf;
     uint32_t buffer_size;
     uint32_t cursor_pos;
 
     console_char_out_t write_char;
 
+    char buf[];
 } console_t;
 
 typedef enum
@@ -45,14 +46,12 @@ static inline void console_char_input(console_t* this, char ch)
 int console_init(console_t* this, uint32_t buffer_size,
                  console_char_out_t output_fn, const char* prefix);
 
-int console_init_static(console_t* this, void* buffer, uint32_t buffer_size,
-                        console_char_out_t output_fn, const char* prefix);
-
 console_t* console_create(uint32_t buffer_size, console_char_out_t output_fn,
                           const char* prefix);
 
-void console_deinit(console_t* this);
-
-void console_delete(console_t* this);
+static inline void console_delete(console_t* this)
+{
+    memFree(this);
+}
 
 #endif  // __TINY_CONSOLE_H__
