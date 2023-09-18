@@ -43,9 +43,6 @@ static inline void console_char_input(console_t* this, char ch)
         this->buf[this->cursor_pos++] = ch;
 }
 
-int console_init(console_t* this, uint32_t buffer_size,
-                 console_char_out_t output_fn, const char* prefix);
-
 console_t* console_create(uint32_t buffer_size, console_char_out_t output_fn,
                           const char* prefix);
 
