@@ -13,12 +13,12 @@ typedef int (*list_foreach_cb)(list_node_t *);
 
 static inline int list_foreach(list_node_t *head, list_foreach_cb callback)
 {
-    CHECK_PTR(head, -EPERM);
+    CHECK_PTR(head, -EINVAL);
 
     ITER_LIST(node, head)
     {
         int cb_retv = callback(node);
-        RETURN_IF(cb_retv < 0, cb_retv);
+        RETURN_IF(cb_retv != 0, cb_retv);
     }
 
     return 0;
