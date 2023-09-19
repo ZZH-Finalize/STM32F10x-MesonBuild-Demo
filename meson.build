@@ -137,9 +137,7 @@ if fs.exists('.config')
         if line.contains('=')
             line = line.strip()
             # message('config line: ', line)
-            config = line.split('=')
-            # message('config: ', config)
-            configs += '-DCONFIG_' + config[0] + '=' + config[1]
+            configs += '-DCONFIG_' + line
         endif
     endforeach
 endif
