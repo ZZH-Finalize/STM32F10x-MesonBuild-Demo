@@ -70,6 +70,7 @@ util_srcs = [
     'ringbuf/ringbuf.c',
     'tiny_console/tiny_console.c',
     'delay/delay.c',
+    'hash/str_hash.c',
     'value_ops.c',
     'strarg.c',
 ]
