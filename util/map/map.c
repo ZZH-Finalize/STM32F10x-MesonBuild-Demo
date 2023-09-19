@@ -12,10 +12,30 @@ static map_key_t key_dup(map_key_t key)
     for (map_key_t pk = key; *pk != '\0'; pk++)
         key_len++;
 
-    map_key_t new_key = memAlloc(key_len + 1, MAP_MEMPOOL);
+    char* new_key = (char*)memAlloc(key_len + 1, MAP_MEMPOOL);
     CHECK_PTR(new_key, NULL);
     strcpy(new_key, key);
     return new_key;
+}
+
+static map_item_t* search_node(map_item_list_t* item_list, map_key_t key)
+{
+    CHECK_PTR(item_list, NULL);
+    CHECK_PTR(key, NULL);
+
+    // if there is no any node, then it can't be found
+    // if have some nodes, then check every one
+    if (0 != item_list->length) {
+        ITER_LIST(iter, &item_list->item.node)
+        {
+            map_item_t* item = container_of(iter, map_item_t, node);
+            if (0 == strcmp(item->key, key)) {
+                return item;
+            }
+        }
+    }
+
+    return NULL;
 }
 
 map_t* map_create(uint32_t mod_value, str_hash_t hash_cb)
@@ -48,18 +68,24 @@ int map_insert(map_t* this, map_key_t key, map_value_t value)
     uint32_t hash_val = this->hash(new_key) % this->mod_value;
     map_item_list_t* item_list = &this->items[hash_val];
 
-    if (0 == item_list->length) {  // first node of this list
-        item_list->item.key = new_key;
-        item_list->item.value = value;
-    } else {  // from second node start, we need to alloc new node
-        map_item_t* new_item = memAlloc(sizeof(map_item_t), MAP_MEMPOOL);
-        CHECK_PTR(new_item, -ENOMEM);
-        new_item->key = new_key;
-        new_item->value = value;
-        list_append(&item_list->item.node, &new_item->node);
-    }
+    map_item_t* item = search_node(item_list, key);
 
-    item_list->length++;
+    if (NULL == item) {                // not a duplicate key
+        if (0 == item_list->length) {  // first node of this list
+            item_list->item.key = new_key;
+            item_list->item.value = value;
+        } else {  // from second node start, we need to alloc new node
+            map_item_t* new_item = memAlloc(sizeof(map_item_t), MAP_MEMPOOL);
+            CHECK_PTR(new_item, -ENOMEM);
+            new_item->key = new_key;
+            new_item->value = value;
+            list_append(&item_list->item.node, &new_item->node);
+        }
+
+        item_list->length++;
+    } else {  // for duplicate key, just modify the value
+        item->value = value;
+    }
 
     return 0;
 }
@@ -72,18 +98,11 @@ int map_search(map_t* this, map_key_t key, map_value_t* res)
     uint32_t hash_val = this->hash(key) % this->mod_value;
     map_item_list_t* item_list = &this->items[hash_val];
 
-    // if there is no any node, then it can't be found
-    // if have some nodes, then check every one
-    if (0 != item_list->length) {
-        ITER_LIST(iter, &item_list->item.node)
-        {
-            map_item_t* item = container_of(iter, map_item_t, node);
-            if (0 == strcmp(item->key, key)) {
-                *res = item->value;
-                return 0;
-            }
-        }
-    }
+    map_item_t* item = search_node(item_list, key);
 
-    return -EEXIST;
+    CHECK_PTR(item, -EEXIST);
+
+    *res = item->value;
+
+    return 0;
 }
