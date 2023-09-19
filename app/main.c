@@ -5,6 +5,8 @@
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_usart.h"
 
+#include "test_frame.h"
+
 #include "util/delay/delay.h"
 #include "util/usart/prints.h"
 #include "util/hash/str_hash.h"
@@ -90,7 +92,8 @@ int main()
     usart_init();
     nvic_init();
 
-    usart_printf(USART1, "for str: %s", msg);
+    run_all_demo();
+    run_all_testcases(NULL);
 
     while (1) {
         for (uint32_t i = 0; i < sizeof(msg) - 1; i++) {

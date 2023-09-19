@@ -77,7 +77,8 @@ util_srcs = [
 
 # test cases
 test_cases_srcs = [
-    'hash/demo.c'
+    'test_frame.c',
+    'hash/demo.c',
 ]
 
 # start files
