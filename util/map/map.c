@@ -4,7 +4,7 @@
 #include "util/container_of.h"
 #include "util/linked_list/list_iterators.h"
 
-static map_key_t key_dup(map_key_t key)
+static map_key_t dup_key(map_key_t key)
 {
     CHECK_PTR(key, NULL);
 
@@ -62,7 +62,7 @@ int map_insert(map_t* this, map_key_t key, map_value_t value)
 {
     CHECK_PTR(this, -EINVAL);
 
-    map_key_t new_key = key_dup(key);
+    map_key_t new_key = dup_key(key);
     CHECK_PTR(new_key, -ENOMEM);
 
     uint32_t hash_val = this->hash(new_key) % this->mod_value;

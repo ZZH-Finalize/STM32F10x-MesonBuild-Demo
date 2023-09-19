@@ -6,9 +6,15 @@
 typedef int (*__test_case_fn_t)(void *arg);
 typedef void (*__demo_fn_t)(void);
 
+typedef struct
+{
+    const char *name;
+    __test_case_fn_t fn;
+} __test_case_info_t;
+
 #if CONFIG_ENABLE_TEST_CASES == 1
 #define EXPORT_TEST_CASE_LEVEL(fn, level) \
-    EXPORT_FUNC_WITH_LEVEL(fn, __test_case_fn_t, test_cases, level)
+    EXPORT_FUNC_WITH_NAME_LEVEL(fn, __test_case_fn_t, test_cases, level)
 #else
 #define EXPORT_TEST_CASE_LEVEL(fn, level)
 #endif

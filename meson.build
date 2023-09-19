@@ -80,6 +80,7 @@ util_srcs = [
 test_cases_srcs = [
     'test_frame.c',
     'hash/demo.c',
+    'map/map_basic_test.c'
 ]
 
 # start files

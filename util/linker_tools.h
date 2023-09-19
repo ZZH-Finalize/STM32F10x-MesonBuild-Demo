@@ -13,6 +13,14 @@
     GNU_ARRT(__section__("." #section "." #level))       \
     const type __##section##_ptr_to_##fn = fn
 
+#define EXPORT_FUNC_WITH_NAME_LEVEL(fn, type, section, level) \
+    GNU_ARRT(__section__("." #section "." #level))            \
+    const struct                                              \
+    {                                                         \
+        const char* name;                                     \
+        type func;                                            \
+    } __##section##_info_of_##fn = {.name = #fn, .func = fn}
+
 #define EXPORT_ANY_FUNC_WITH_LEVEL(fn, section, level) \
     EXPORT_FUNC_WITH_LEVEL(fn, typeof(fn), section, level)
 
