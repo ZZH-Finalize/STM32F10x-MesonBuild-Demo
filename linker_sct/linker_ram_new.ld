@@ -57,6 +57,16 @@ SECTIONS
         KEEP(*(SORT(.init_func.*)));
         __einit_func = .;
 
+        . = ALIGN(4);
+        __stest_cases = .;
+        KEEP(*(SORT(.test_cases.*)));
+        __etest_cases = .;
+
+        . = ALIGN(4);
+        __sdemo = .;
+        KEEP(*(SORT(.demo.*)));
+        __edemo = .;
+
         PROVIDE(__erodata = .);
     } > RAM
 
@@ -79,6 +89,8 @@ SECTIONS
         *(COMMON)
         PROVIDE(__ebss = .);
     } > RAM
+
+    PROVIDE(end = .);
 
     /* Stabs debugging sections.  */
     .stab          0 : { *(.stab) }

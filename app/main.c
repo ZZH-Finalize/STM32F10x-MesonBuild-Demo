@@ -1,12 +1,14 @@
+#include <string.h>
+
 #include "stm32f10x.h"
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_usart.h"
-#include "string.h"
 
-#include "delay.h"
-
+#include "util/delay/delay.h"
 #include "util/usart/prints.h"
+#include "util/hash/str_hash.h"
+#include "util/iterators.h"
 
 void clock_init(void)
 {
@@ -56,7 +58,8 @@ void usart_init(void)
         .USART_Mode = USART_Mode_Tx | USART_Mode_Rx,
         .USART_Parity = USART_Parity_No,
         .USART_StopBits = USART_StopBits_1,
-        .USART_WordLength = USART_WordLength_8b};
+        .USART_WordLength = USART_WordLength_8b,
+    };
 
     USART_Init(USART1, &init_param);
     USART_Cmd(USART1, ENABLE);
@@ -66,10 +69,12 @@ void nvic_init()
 {
     NVIC_SetPriorityGrouping(NVIC_PriorityGroup_4);
 
-    NVIC_InitTypeDef init_param = {.NVIC_IRQChannel = USART1_IRQn,
-                                   .NVIC_IRQChannelCmd = ENABLE,
-                                   .NVIC_IRQChannelPreemptionPriority = 12,
-                                   .NVIC_IRQChannelSubPriority = 14};
+    NVIC_InitTypeDef init_param = {
+        .NVIC_IRQChannel = USART1_IRQn,
+        .NVIC_IRQChannelCmd = ENABLE,
+        .NVIC_IRQChannelPreemptionPriority = 12,
+        .NVIC_IRQChannelSubPriority = 14,
+    };
 
     NVIC_Init(&init_param);
     // USART_ITConfig(USART1, USART_IT_TC, ENABLE);
@@ -85,12 +90,7 @@ int main()
     usart_init();
     nvic_init();
 
-    memset(0x1234, 9, 10000);
-
-    print_dec(USART1, 3000);
-    print_dec(USART1, 5000);
-    print_dec(USART1, 5160);
-    print_dec(USART1, UINT32_MAX);
+    usart_printf(USART1, "for str: %s", msg);
 
     while (1) {
         for (uint32_t i = 0; i < sizeof(msg) - 1; i++) {

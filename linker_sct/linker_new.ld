@@ -21,10 +21,6 @@ SECTIONS
         . = ALIGN(4);
         PROVIDE(__stext = .);
 
-        __sinit_func = .;
-        KEEP(*(SORT(.init_func.*)));
-        __einit_func = .;
-
         *(.text)
         *(.text.*)
         *(.text*)
@@ -46,6 +42,22 @@ SECTIONS
         *(.rodata)
         *(.rodata.*)
         *(.rodata*)
+
+        . = ALIGN(4);
+        __sinit_func = .;
+        KEEP(*(SORT(.init_func.*)));
+        __einit_func = .;
+
+        . = ALIGN(4);
+        __stest_cases = .;
+        KEEP(*(SORT(.test_cases.*)));
+        __etest_cases = .;
+
+        . = ALIGN(4);
+        __sdemo = .;
+        KEEP(*(SORT(.demo.*)));
+        __edemo = .;
+
         PROVIDE(__erodata = .);
     } > FLASH
 

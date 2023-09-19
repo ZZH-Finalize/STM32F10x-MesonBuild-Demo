@@ -75,6 +75,11 @@ util_srcs = [
     'strarg.c',
 ]
 
+# test cases
+test_cases_srcs = [
+    'hash/demo.c'
+]
+
 # start files
 start_file_fmt = 'startup_stm32f10x_@0@.c'
 start_file_srcs = [
@@ -91,7 +96,7 @@ app_srcs = [
 srcs = app_srcs
 inc_dirs = [
     'app',
-    'util/delay'
+    'test_cases'
 ]
 
 # append start files
@@ -103,6 +108,11 @@ endforeach
 # append utils
 foreach src : util_srcs
     srcs += 'util' / src
+endforeach
+
+# append test cases
+foreach src : test_cases_srcs
+    srcs += 'test_cases' / src
 endforeach
 
 # append stm32 lib src files to all src list
@@ -117,6 +127,24 @@ endforeach
 
 # message('srcs:', srcs)
 # message('inc_dirs:', inc_dirs)
+
+# read .config and generate marcos
+configs = []
+if fs.exists('.config')
+    config_lines = fs.read('.config')
+    # message('configs:', configs)
+    foreach line: config_lines.split('\n')
+        if line.contains('=')
+            line = line.strip()
+            # message('config line: ', line)
+            config = line.split('=')
+            # message('config: ', config)
+            configs += '-DCONFIG_' + config[0] + '=' + config[1]
+        endif
+    endforeach
+endif
+
+# message('using configs: ', configs)
 
 # get cross tools from cross file
 objcopy_tool = find_program('objcopy')
@@ -139,6 +167,7 @@ c_args = [
     '-fdata-sections',
     '-ffunction-sections',
 ]
+c_args += configs
 
 # link args apply to the project
 link_args = [
