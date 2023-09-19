@@ -71,6 +71,7 @@ util_srcs = [
     'tiny_console/tiny_console.c',
     'delay/delay.c',
     'hash/str_hash.c',
+    'map/map.c',
     'value_ops.c',
     'strarg.c',
 ]
