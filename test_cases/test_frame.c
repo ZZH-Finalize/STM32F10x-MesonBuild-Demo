@@ -2,6 +2,7 @@
 #include "stm32f10x.h"
 #include "test_frame.h"
 #include "util/iterators.h"
+#include "util/mem_mana/mem_mana.h"
 #include "util/usart/prints.h"
 
 LINKER_SYMBOL_TYPE(__stest_cases, __test_case_info_t);
@@ -23,6 +24,17 @@ int run_all_testcases(void* arg)
         usart_printf(USART1, "Running test case: %s\r\n", test_case_info->name);
         int retv = test_case_info->fn(arg);
         usart_printf(USART1, "Return value: %d\r\n", retv);
+#if CONFIG_CHECK_TESTCASE_MEMPOOL == 1
+        extern MemPool_t __MemPools__[];
+
+        MemPool_t* pool = &__MemPools__[CONFIG_TEST_CASE_MEMPOOLS];
+        uint32_t freeSize = (uint32_t)pool->memEnd - (uint32_t)pool->memStart;
+        uint8_t isClean = pool->availableSize == freeSize;
+
+        const char* fmt = isClean ? "Memory pool clean!" : "Memory pool dirty!";
+        usart_printf(USART1, "%s\r\n", fmt);
+#endif
+        usart_printf(USART1, "\r\n");
         succ_count += retv == 0;
     }
 

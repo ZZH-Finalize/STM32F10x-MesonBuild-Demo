@@ -2,8 +2,8 @@
 
 test_data_t *generate_test_data(uint32_t size)
 {
-    test_data_t *test_data =
-        (test_data_t *)memAlloc(sizeof(test_data_t) * size, 0);
+    test_data_t *test_data = (test_data_t *)memAlloc(sizeof(test_data_t) * size,
+                                                     CONFIG_TEST_CASE_MEMPOOLS);
 
     CHECK_PTR(test_data, NULL);
 

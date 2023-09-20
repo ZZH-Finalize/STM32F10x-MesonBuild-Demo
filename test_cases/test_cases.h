@@ -6,6 +6,9 @@
 
 #include "hash/hash_all_test.h"
 
+#ifndef CONFIG_TEST_CASE_MEMPOOLS
+#define CONFIG_TEST_CASE_MEMPOOLS 0
+#endif  // CONFIG_TEST_CASE_MEMPOOLS
 
 
 #endif  // __TEST_CASES_H__
