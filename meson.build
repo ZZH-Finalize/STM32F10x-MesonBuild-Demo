@@ -188,7 +188,7 @@ mem_cfg = {
 target_dict = {
     'dbg': {
         'c_args': [
-            '-O0',
+            '-Og',
             '-D__DEBUG',
             '-DVECT_TAB_SRAM',
             '-g3',

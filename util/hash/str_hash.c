@@ -1,6 +1,6 @@
 #include "str_hash.h"
 
-// BKDR Hash Function
+// BKDR Hash Function (recommended for string)
 uint32_t bkdr_hash(const char *str)
 {
     uint32_t seed = 131; // 31 131 1313 13131 131313 etc..
