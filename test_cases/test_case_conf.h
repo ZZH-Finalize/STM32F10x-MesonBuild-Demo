@@ -16,14 +16,16 @@ typedef struct
 #define EXPORT_TEST_CASE_LEVEL(fn, level) \
     EXPORT_FUNC_WITH_NAME_LEVEL(fn, __test_case_fn_t, test_cases, level)
 #else
-#define EXPORT_TEST_CASE_LEVEL(fn, level)
+#define EXPORT_TEST_CASE_LEVEL(fn, level) \
+    GNU_UNUSED __test_case_fn_t __ptr_to_##fn##_##level = fn
 #endif
 
 #if CONFIG_ENABLE_DEMO == 1
 #define EXPORT_DEMO_LEVEL(fn, level) \
     EXPORT_FUNC_WITH_LEVEL(fn, __demo_fn_t, demo, level)
 #else
-#define EXPORT_DEMO_LEVEL(fn, level)
+#define EXPORT_DEMO_LEVEL(fn, level) \
+    GNU_UNUSED __demo_fn_t __ptr_to_##fn##_##level = fn
 #endif
 
 #define EXPORT_TEST_CASE(fn) EXPORT_TEST_CASE_LEVEL(fn, 9)

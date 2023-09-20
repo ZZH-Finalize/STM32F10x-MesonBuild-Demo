@@ -44,7 +44,7 @@ static map_item_t* search_node(map_item_list_t* item_list, map_key_t key)
 map_t* map_create(uint32_t mod_value, str_hash_t hash_cb)
 {
     RETURN_IF(mod_value < 2, NULL);
-    CHECK_PTR(hash_cb, -EINVAL);
+    CHECK_PTR(hash_cb, NULL);
 
     map_t* tmp = memAlloc(sizeof(map_t) + sizeof(map_item_list_t) * mod_value,
                           MAP_MEMPOOL);

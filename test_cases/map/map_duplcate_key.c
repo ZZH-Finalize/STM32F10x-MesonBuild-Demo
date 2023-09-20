@@ -11,7 +11,7 @@ static int map_duplcate_key_test(void* arg)
     retv = map_insert(map, test_key, 141516);
     RETURN_IF_NZERO(retv, retv);
 
-    uint32_t res_value = 0;
+    map_value_t res_value = 0;
 
     retv = map_search(map, test_key, &res_value);
     RETURN_IF_NZERO(retv, retv);
