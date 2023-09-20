@@ -40,13 +40,15 @@ typedef struct
 */
 map_t* map_create(uint32_t mod_value, str_hash_t hash_cb);
 
-static inline void map_free(map_t* this)
-{
-    memFree(this);
-}
-
 int map_insert(map_t* this, map_key_t key, map_value_t value);
 int map_search(map_t* this, map_key_t key, map_value_t* res);
+int map_remove(map_t* this, map_key_t key);
 void map_clear(map_t* this);
+
+static inline void map_delete(map_t* this)
+{
+    map_clear(this);
+    memFree(this);
+}
 
 #endif  // __MAP_H__

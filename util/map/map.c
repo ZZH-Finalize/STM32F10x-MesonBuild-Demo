@@ -3,8 +3,9 @@
 #include "util/iterators.h"
 #include "util/container_of.h"
 #include "util/linked_list/list_iterators.h"
+#include "util/gnu_attributes.h"
 
-static map_key_t dup_key(map_key_t key)
+GNU_UNUSED static map_key_t dup_key(map_key_t key)
 {
     CHECK_PTR(key, NULL);
 
@@ -29,8 +30,10 @@ static map_item_t* search_node(map_item_list_t* item_list, map_key_t key)
         ITER_LIST(iter, &item_list->item.node)
         {
             map_item_t* item = container_of(iter, map_item_t, node);
-            if (0 == strcmp(item->key, key)) {
-                return item;
+            if (NULL != item->key) {
+                if (0 == strcmp(item->key, key)) {
+                    return item;
+                }
             }
         }
     }
@@ -61,9 +64,9 @@ map_t* map_create(uint32_t mod_value, str_hash_t hash_cb)
 int map_insert(map_t* this, map_key_t key, map_value_t value)
 {
     CHECK_PTR(this, -EINVAL);
+    CHECK_PTR(key, -EINVAL);
 
-    map_key_t new_key = dup_key(key);
-    CHECK_PTR(new_key, -ENOMEM);
+    map_key_t new_key = key;
 
     uint32_t hash_val = this->hash(new_key) % this->mod_value;
     map_item_list_t* item_list = &this->items[hash_val];
@@ -105,4 +108,48 @@ int map_search(map_t* this, map_key_t key, map_value_t* res)
     *res = item->value;
 
     return 0;
+}
+
+int map_remove(map_t* this, map_key_t key)
+{
+    CHECK_PTR(this, -EINVAL);
+    uint32_t hash_val = this->hash(key) % this->mod_value;
+    map_item_list_t* item_list = &this->items[hash_val];
+
+    map_item_t* item = search_node(item_list, key);
+
+    CHECK_PTR(item, -ENODATA);
+
+    // the item to be deleted is the head, which is not a allocted node
+    if (item == &item_list->item) {
+        item->key = NULL;
+    } else {  // item is a allocated node, then just delete it
+        list_remove(&item_list->item.node, &item->node);
+        memFree(item);
+    }
+
+    item_list->length--;
+
+    return 0;
+}
+
+void map_clear(map_t* this)
+{
+    CHECK_PTR(this, );
+
+    FOR_I(this->mod_value)
+    {
+        map_item_list_t* item_list = &this->items[i];
+        if (item_list->length > 1) {
+            list_node_t* node = LL_NEXT_NODE(&item_list->item.node);
+
+            while (NULL != node) {
+                list_node_t* next = node->next;
+                memFree(container_of(node, map_item_t, node));
+                node = next;
+            }
+        }
+
+        item_list->item.key = NULL;
+    }
 }

@@ -26,7 +26,7 @@ typedef struct
 #define EXPORT_DEMO_LEVEL(fn, level)
 #endif
 
-#define EXPORT_TEST_CASE(fn) EXPORT_TEST_CASE_LEVEL(fn, 0)
-#define EXPORT_DEMO(fn)      EXPORT_DEMO_LEVEL(fn, 0)
+#define EXPORT_TEST_CASE(fn) EXPORT_TEST_CASE_LEVEL(fn, 9)
+#define EXPORT_DEMO(fn)      EXPORT_DEMO_LEVEL(fn, 9)
 
 #endif  // __TEST_CASE_CONF_H__
