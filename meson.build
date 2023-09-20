@@ -83,6 +83,7 @@ test_cases_srcs = [
     'map/map_test_data.c',
     'map/map_basic_test.c',
     'map/map_detete_clear_test.c',
+    'map/map_duplcate_key.c',
 ]
 
 # start files
