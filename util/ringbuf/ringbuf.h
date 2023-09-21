@@ -44,6 +44,13 @@ static inline ringbuf_t* ringbuf_create(uint32_t buffer_size)
     this->size = buffer_size;
     this->rpos = 0;
     this->wpos = 0;
+
+    return this;
+}
+
+static inline void ringbuf_delete(ringbuf_t* this)
+{
+    memFree(this);
 }
 
 /**
@@ -55,7 +62,7 @@ static inline void ringbuf_clear(ringbuf_t* this)
 {
     RB_CHECK_POINTER(this, );
 
-    this->rpos = this->wpos;
+    this->rpos = this->wpos = 0;
 }
 
 /**

@@ -3,16 +3,18 @@
 
 #include <stdint.h>
 #include <errno.h>
+#include <string.h>
 #include "tiny_console_conf.h"
 #include "util/arg_checkers.h"
 #include "util/gnu_attributes.h"
 #include "util/mem_mana/mem_mana.h"
+#include "util/map/map.h"
 
 struct __console_t;
 
-// return 1 value when succ
+// return positive value when succ
 // return negative value when fail
-typedef int (*console_char_out_t)(struct __console_t*, char);
+typedef int (*console_out_t)(struct __console_t*, const char*, uint32_t);
 
 typedef enum
 {
@@ -28,38 +30,45 @@ typedef enum
 
 typedef struct __console_t
 {
-    void* user_data;
     const char *prefix, *cwd;
     uint32_t buffer_size;
-    uint32_t cursor_pos;
     int last_ret_v;
 
-    console_char_out_t write_char;
-
-    char buf[];
+    console_out_t write;
+    map_t* command_table;
+    char *rxbuf, *txbuf;
+    uint32_t rx_idx, tx_idx;
+    uint32_t last_rx_idx;
 } console_t;
 
-console_t* console_create(uint32_t buffer_size, console_char_out_t output_fn,
-                          const char* prefix, void* user_data);
+int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
+                 const char* prefix);
+
+console_t* console_create(uint32_t buffer_size, console_out_t output_fn,
+                          const char* prefix);
 
 static inline void console_delete(console_t* this)
 {
+    map_delete(this->command_table);
+    memFree(this->txbuf);
+    memFree(this->rxbuf);
     memFree(this);
 }
 
-static inline void console_char_input(console_t* this, char ch)
+static inline int console_flush(console_t* this)
 {
-    CHECK_PTR(this, );
+    CHECK_PTR(this, -EINVAL);
 
-    if (this->cursor_pos < this->buffer_size)
-        this->buf[this->cursor_pos++] = ch;
+    uint32_t tx_idx = this->tx_idx;
+    this->tx_idx = 0;
+    return this->write(this, this->txbuf, tx_idx);
 }
 
 int console_send_str(console_t* this, const char* str);
-int console_printf(console_t* this, const char* fmt, ...) GNU_PRINTF(2, 3);
+int console_send_char(console_t* this, const char ch);
 
 static inline int console_set_color(console_t* this, console_color_t font_color,
-                             console_color_t back_color)
+                                    console_color_t back_color)
 {
     char buf[] = {"\033[4\0;3\0m"};
     buf[6] = font_color;
@@ -78,14 +87,66 @@ static inline void console_display_prefix(console_t* this)
     console_send_str(this, this->prefix);
     console_cancel_color(this);
 
-    this->write_char(this, ':');
+    console_send_char(this, ':');
 
     console_set_color(this, concole_color_blue, concole_color_black);
     console_send_str(this, this->cwd);
     console_cancel_color(this);
 
-    this->write_char(this, '$');
-    this->write_char(this, ' ');
+    console_send_char(this, '$');
+    console_send_char(this, ' ');
+}
+
+// return 0 when succ
+// return negative value when fail
+typedef int (*console_cmdfn_t)(console_t* this, const int argc,
+                               const char** argv);
+
+static inline int console_register_command(console_t* this, const char* cmd,
+                                           console_cmdfn_t cmd_cb)
+{
+    CHECK_PTR(this, -EINVAL);
+    CHECK_PTR(cmd, -EINVAL);
+    CHECK_PTR(cmd_cb, -EINVAL);
+
+    return map_insert(this->command_table, cmd, (size_t)cmd_cb);
+}
+
+static inline int console_unregister_command(console_t* this, const char* cmd)
+{
+    CHECK_PTR(this, -EINVAL);
+    CHECK_PTR(cmd, -EINVAL);
+
+    return map_remove(this->command_table, cmd);
+}
+
+void console_update(console_t* this);
+
+static inline int console_input(console_t* this, char* data, uint32_t len)
+{
+    CHECK_PTR(this, -EINVAL);
+    CHECK_PTR(this->rxbuf, -EINVAL);
+    RETURN_IF(this->rx_idx >= this->buffer_size, -ENOBUFS);
+
+    for (uint32_t i = 0; i < len; i++) {
+        this->rxbuf[this->rx_idx] = *data;
+        this->rx_idx++;
+        data++;
+    }
+
+    return 0;
+}
+
+static inline int console_input_char(console_t* this, char data)
+{
+    CHECK_PTR(this, -EINVAL);
+    CHECK_PTR(this->rxbuf, -EINVAL);
+    RETURN_IF(this->rx_idx >= this->buffer_size, -ENOBUFS);
+
+    this->rxbuf[this->rx_idx] = data;
+    this->rx_idx++;
+
+    return 0;
 }
 
 #endif  // __TINY_CONSOLE_H__

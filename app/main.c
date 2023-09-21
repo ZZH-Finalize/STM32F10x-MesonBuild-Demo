@@ -11,6 +11,9 @@
 #include "util/usart/prints.h"
 #include "util/hash/str_hash.h"
 #include "util/iterators.h"
+#include "util/tiny_console/tiny_console.h"
+
+console_t* console = NULL;
 
 void clock_init(void)
 {
@@ -83,28 +86,63 @@ void nvic_init()
     USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 }
 
+int console_output(console_t* this, const char* str, uint32_t len)
+{
+    (void)this;
+
+    for (uint32_t i = 0; i < len; i++) {
+        while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TC))
+            ;
+        USART_ClearFlag(USART1, USART_FLAG_TC);
+        USART_SendData(USART1, str[i]);
+    }
+    return 0;
+}
+
+int run_all_testcased_warp(console_t* this, const int argc, const char** argv)
+{
+    (void)this;
+    (void)argc;
+    (void)argv;
+
+    return run_all_testcases(NULL);
+}
+
 int main()
 {
-    const char msg[] = {"Hello World!\r\n"};
+    // const char msg[] = {"Hello World!\r\n"};
 
     clock_init();
     gpio_init();
     usart_init();
     nvic_init();
 
-    run_all_demo();
-    run_all_testcases(NULL);
+    // run_all_demo();
+    // run_all_testcases(NULL);
+
+    console = console_create(64, console_output, "root@stm32");
+    console_register_command(console, "run_all_test_case",
+                             run_all_testcased_warp);
+    console_display_prefix(console);
+    console_flush(console);
 
     while (1) {
-        for (uint32_t i = 0; i < sizeof(msg) - 1; i++) {
-            USART_SendData(USART1, msg[i]);
-            while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TC))
-                ;
-            USART_ClearFlag(USART1, USART_FLAG_TC);
+        extern uint8_t rcv_flag;
+
+        if (1 == rcv_flag) {
+            rcv_flag = 0;
+            console_update(console);
         }
 
-        // for delay
-        delay_ms_sw(100);
+        // for (uint32_t i = 0; i < sizeof(msg) - 1; i++) {
+        //     USART_SendData(USART1, msg[i]);
+        //     while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TC))
+        //         ;
+        //     USART_ClearFlag(USART1, USART_FLAG_TC);
+        // }
+
+        // // for delay
+        // delay_ms_sw(100);
     }
 
     return 0;

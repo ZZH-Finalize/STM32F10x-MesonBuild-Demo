@@ -297,7 +297,7 @@ configure_file(
         'dfp_file': dfp_file,
         'device_name': device_name,
         'debugger_file': debugger_file,
-        'debugger_file_ini': debugger_file.split('.')[0] + '.ini'
+        'debugger_file_ini': fs.replace_suffix(debugger_file, '.ini')
     },
 )
 

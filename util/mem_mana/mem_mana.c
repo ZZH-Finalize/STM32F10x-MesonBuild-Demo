@@ -64,6 +64,9 @@ void* memAlloc(size_t size, const uint32_t pool)
 
 void memFree(void* pMem)
 {
+    if (NULL == pMem)
+        return;
+
     pMemBlock_t block = container_of(pMem, MemBlock_t, mem);
 
     if (block == NULL || block->isFree)
