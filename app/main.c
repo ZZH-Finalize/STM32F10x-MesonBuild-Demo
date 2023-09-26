@@ -108,6 +108,17 @@ int run_all_testcased_warp(console_t* this, const int argc, const char** argv)
     return run_all_testcases(NULL);
 }
 
+int run_all_demo_warp(console_t* this, const int argc, const char** argv)
+{
+    (void)this;
+    (void)argc;
+    (void)argv;
+
+    run_all_demo();
+
+    return 0;
+}
+
 int main()
 {
     // const char msg[] = {"Hello World!\r\n"};
@@ -121,8 +132,8 @@ int main()
     // run_all_testcases(NULL);
 
     console = console_create(64, console_output, "root@stm32");
-    console_register_command(console, "run_all_test_case",
-                             run_all_testcased_warp);
+    console_register_command(console, "run_tc", run_all_testcased_warp);
+    console_register_command(console, "run_demo", run_all_demo_warp);
     console_display_prefix(console);
     console_flush(console);
 
