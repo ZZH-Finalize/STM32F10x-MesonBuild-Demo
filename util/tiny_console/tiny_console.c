@@ -17,10 +17,10 @@ int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
     CHECK_PTR(this->command_table, -ENOMEM);
 
     this->rxbuf = memAlloc(buffer_size, CONSOLE_MEM_POOL);
-    CHECK_PTR(this->rxbuf, -ENOMEM);
+    CHECK_PTR_GOTO(this->rxbuf, rxbuf_err);
 
     this->txbuf = memAlloc(buffer_size, CONSOLE_MEM_POOL);
-    CHECK_PTR(this->txbuf, -ENOMEM);
+    CHECK_PTR_GOTO(this->txbuf, txbuf_err);
 
     this->buffer_size = buffer_size;
     this->prefix = prefix;
@@ -31,6 +31,12 @@ int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
     this->last_rx_idx = 0;
 
     return 0;
+
+rxbuf_err:
+    map_delete(this->command_table);
+txbuf_err:
+    memFree(this->rxbuf);
+    return -ENOMEM;
 }
 
 console_t* console_create(uint32_t buffer_size, console_out_t output_fn,
