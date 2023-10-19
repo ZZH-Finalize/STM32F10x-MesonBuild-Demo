@@ -239,7 +239,7 @@ foreach target_name, options : target_dict
         capture: true,
         command: [
             objdump_tool.full_path(),
-            '-SD',
+            '-Sd',
             build_dir / exe.name()
         ],
         output: fs.replace_suffix(exe.name(), '.s')
