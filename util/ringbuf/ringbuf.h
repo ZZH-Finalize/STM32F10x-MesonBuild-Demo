@@ -48,6 +48,11 @@ static inline ringbuf_t* ringbuf_create(uint32_t buffer_size)
     return this;
 }
 
+/**
+ * @brief delete a ringbuf
+ * 
+ * @param this - ringbuf_t struct
+ */
 static inline void ringbuf_delete(ringbuf_t* this)
 {
     memFree(this);
@@ -66,10 +71,10 @@ static inline void ringbuf_clear(ringbuf_t* this)
 }
 
 /**
- *@brief check a ringbuf is empty
+ *@brief check the given ringbuf is empty or not
  *
  * @param this - ringbuf struct pointer
- * @return uint8_t 0 - not empty 1 - empty
+ * @return uint8_t 0: not empty, 1: empty
  */
 static inline uint8_t ringbuf_empty(ringbuf_t* this)
 {
@@ -78,6 +83,12 @@ static inline uint8_t ringbuf_empty(ringbuf_t* this)
     return this->wpos == this->rpos;
 }
 
+/**
+ * @brief check the given rinbuf is full or not
+ * 
+ * @param this - ringbuf_t struct
+ * @return uint8_t 0: not full, 1: full
+ */
 static inline uint8_t ringbuf_full(ringbuf_t* this)
 {
     if (0 == this->rpos)
@@ -99,24 +110,48 @@ static inline uint32_t ringbuf_size(ringbuf_t* this)
     return this->size;
 }
 
+/**
+ * @brief get writeable address
+ * 
+ * @param this - ringbuf_t struct
+ * @return void* writeable pointer
+ */
 static inline void* ringbuf_wpos(ringbuf_t* this)
 {
     RB_CHECK_POINTER(this, NULL);
     return &this->buf[this->wpos];
 }
 
+/**
+ * @brief get readable address
+ * 
+ * @param this - ringbuf_t struct
+ * @return void* readable pointer
+ */
 static inline void* ringbuf_rpos(ringbuf_t* this)
 {
     RB_CHECK_POINTER(this, NULL);
     return &this->buf[this->rpos];
 }
 
+/**
+ * @brief get the length of continuous memory that could be read
+ * 
+ * @param this - ringbuf_t struct
+ * @return uint32_t length of the continuous memory
+ */
 static inline uint32_t ringbuf_get_seq_read_len(ringbuf_t* this)
 {
     RB_CHECK_POINTER(this, 0);
     return this->size - this->rpos;
 }
 
+/**
+ * @brief get the length of continuous memory that could be write
+ * 
+ * @param this - ringbuf_t struct
+ * @return uint32_t length of the continuous memory
+ */
 static inline uint32_t ringbuf_get_seq_write_len(ringbuf_t* this)
 {
     RB_CHECK_POINTER(this, 0);

@@ -58,6 +58,7 @@ static inline void console_delete(console_t* this)
 static inline int console_flush(console_t* this)
 {
     CHECK_PTR(this, -EINVAL);
+    RETURN_IF_ZERO(this->tx_idx, 0);
 
     uint32_t tx_idx = this->tx_idx;
     this->tx_idx = 0;
