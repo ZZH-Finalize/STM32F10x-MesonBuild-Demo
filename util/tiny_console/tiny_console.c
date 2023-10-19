@@ -32,10 +32,10 @@ int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
 
     return 0;
 
-rxbuf_err:
-    map_delete(this->command_table);
 txbuf_err:
     memFree(this->rxbuf);
+rxbuf_err:
+    map_delete(this->command_table);
     return -ENOMEM;
 }
 
