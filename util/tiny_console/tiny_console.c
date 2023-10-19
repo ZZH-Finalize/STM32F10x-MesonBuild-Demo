@@ -103,8 +103,8 @@ static uint32_t parse_arg_num(const char* str)
 
     uint32_t arg_num = 0;
 
-    while (*str++) {
-        if (' ' == *str)
+    while (*str) {
+        if (' ' == *str++)
             arg_num++;
     }
 
@@ -129,7 +129,7 @@ static int console_execute(console_t* this)
         while ('\0' != *cur_arg) {
             if (' ' == *cur_arg) {
                 *cur_arg = '\0';
-                arg_arr[arg_idx] = cur_arg;
+                arg_arr[arg_idx] = cur_arg + 1;
                 arg_idx++;
 
                 if (arg_idx == arg_num)
