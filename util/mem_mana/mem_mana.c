@@ -10,6 +10,8 @@ MemPool_t __MemPools__[] = {
     ArrayMem(__mem0__),
 };
 
+static uint32_t allMemPoolSize = 0;
+
 void memInit(void)
 {
     ITER_ARRAY(pMember, __MemPools__)  // initial all mem pool
@@ -21,6 +23,7 @@ void memInit(void)
         pMemHeader->prev = nullptr;
         pMemHeader->next = nullptr;
         pMemHeader->size = pMember->availableSize;
+        allMemPoolSize += pMember->availableSize;
     }
 }
 EXPORT_INIT_FUNC(memInit, 9);
@@ -104,4 +107,15 @@ void memFree(void* pMem)
         if (block->next)
             block->next->prev = prev;
     }
+}
+
+bool memIsClean(void)
+{
+    uint32_t currentAvailableSize = 0;
+    ITER_ARRAY(pMember, __MemPools__)
+    {
+        currentAvailableSize += pMember->availableSize;
+    }
+
+    return currentAvailableSize == allMemPoolSize;
 }

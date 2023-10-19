@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,6 +36,7 @@ typedef struct
 
 void* memAlloc(size_t size, const uint32_t pool);
 void memFree(void* pMem);
+bool memIsClean(void);
 
 #ifdef __cplusplus
 }
