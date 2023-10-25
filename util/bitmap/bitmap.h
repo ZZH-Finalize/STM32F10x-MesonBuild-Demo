@@ -18,7 +18,7 @@ typedef struct
 } bitmap_t;
 
 /**
- * @brief create a bit map
+ * @brief create a bit map in the specific memory pool
  * 
  * @param max_num - maximun value
  * @param pool - memory pool id

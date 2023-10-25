@@ -13,7 +13,7 @@ int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
     RETURN_IF_NZERO(this->txbuf, -EBUSY);
     RETURN_IF_NZERO(this->command_table, -EBUSY);
 
-    this->command_table = map_create(31, bkdr_hash);
+    this->command_table = map_create_in_pool(31, bkdr_hash, this->mem_pool);
     CHECK_PTR(this->command_table, -ENOMEM);
 
     this->rxbuf = memAlloc(buffer_size, this->mem_pool);

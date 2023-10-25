@@ -6,7 +6,7 @@ static int map_duplcate_key_test(void* arg)
     const char* test_key = "test_key";
 
     int retv = 0;
-    map_t* map = map_create(31, bkdr_hash);
+    map_t* map = map_create_in_pool(31, bkdr_hash, CONFIG_CHECK_TESTCASE_MEMPOOL);
 
     retv = map_insert(map, test_key, 141516);
     RETURN_IF_NZERO(retv, retv);
