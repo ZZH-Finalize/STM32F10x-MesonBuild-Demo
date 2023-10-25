@@ -162,10 +162,10 @@
                         "description": "在main处停止",
                         "ignoreFailures": true
                     },
-                    {
-                        "text": "b HardFault_Handler",
-                        "description": "进入内核异常时停止"
-                    },
+                    // {
+                    //     "text": "b HardFault_Handler",
+                    //     "description": "进入内核异常时停止"
+                    // },
                     // {
                     //     "text": "set $sp = __stack",
                     // },

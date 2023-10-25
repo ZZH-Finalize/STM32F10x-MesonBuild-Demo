@@ -5,10 +5,10 @@
 #include "util/container_of.h"
 #include "util/linker_tools.h"
 
-static uint32_t __mem0__[DEFAULT_POOL_SIZE * 1024 / 4];
+static uint32_t __mem0__[CONFIG_DEFAULT_POOL_SIZE * 1024 / 4];
 
 #if CONFIG_ENABLE_TEST_CASES == 1
-static uint32_t __mem_test_case__[TESTCASE_POOL_SIZE * 1024 / 4];
+static uint32_t __mem_test_case__[CONFIG_TESTCASE_POOL_SIZE * 1024 / 4];
 #endif
 
 MemPool_t __MemPools__[] = {
