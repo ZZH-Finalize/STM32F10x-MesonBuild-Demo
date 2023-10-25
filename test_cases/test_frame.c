@@ -25,7 +25,7 @@ int run_all_testcases(void* arg)
         int retv = test_case_info->fn(arg);
         usart_printf(USART1, "Return value: %d\r\n", retv);
 #if CONFIG_CHECK_TESTCASE_MEMPOOL == 1
-        uint8_t isClean = memIsClean();
+        uint8_t isClean = memIsClean(CONFIG_TEST_CASE_MEMPOOLS);
         const char* fmt = isClean ? "Memory pool clean!" : "Memory pool dirty!";
 
         usart_printf(USART1, "%s\r\n", fmt);

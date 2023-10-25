@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "mem_pools.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,9 +35,12 @@ typedef struct
         (pMemBlock_t) arr, MemEnd(arr), 0 \
     }
 
+#define PoolByArray(pool, arr) [pool] = ArrayMem(arr)
+
 void* memAlloc(size_t size, const uint32_t pool);
 void memFree(void* pMem);
-bool memIsClean(void);
+bool memIsClean(const uint32_t pool);
+bool memIsCleanAll(void);
 
 #ifdef __cplusplus
 }

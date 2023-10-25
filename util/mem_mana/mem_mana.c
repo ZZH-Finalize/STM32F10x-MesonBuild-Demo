@@ -1,5 +1,6 @@
 #include "mem_mana.h"
 #include "mem_conf.h"
+#include "mem_pools.h"
 #include "util/iterators.h"
 #include "util/container_of.h"
 #include "util/linker_tools.h"
@@ -7,7 +8,7 @@
 static uint32_t __mem0__[DEFAULT_POOL_SIZE * 1024 / 4];
 
 MemPool_t __MemPools__[] = {
-    ArrayMem(__mem0__),
+    PoolByArray(MEMPOOL_DEFAULT, __mem0__),
 };
 
 static uint32_t allMemPoolSize = 0;
@@ -109,13 +110,23 @@ void memFree(void* pMem)
     }
 }
 
-bool memIsClean(void)
+bool memIsClean(const uint32_t pool)
 {
+    MemPool_t* pMember = &__MemPools__[pool];
     uint32_t currentAvailableSize = 0;
-    ITER_ARRAY(pMember, __MemPools__)
+
+    currentAvailableSize = (size_t)pMember->memEnd - (size_t)pMember->memStart;
+
+    return currentAvailableSize == pMember->availableSize;
+}
+
+bool memIsCleanAll(void)
+{
+    FOR_ARRAY_I(__MemPools__)
     {
-        currentAvailableSize += pMember->availableSize;
+        if (false == memIsClean(i))
+            return false;
     }
 
-    return currentAvailableSize == allMemPoolSize;
+    return true;
 }
