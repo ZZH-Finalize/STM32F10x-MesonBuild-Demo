@@ -5,7 +5,7 @@ static int map_delete_test(void *arg)
     (void)arg;
 
     test_data_t *test_data = generate_test_data(TEST_DATA_SIZE);
-    map_t *map = map_create_in_pool(31, bkdr_hash, CONFIG_CHECK_TESTCASE_MEMPOOL);
+    map_t *map = map_create_in_pool(31, bkdr_hash, CONFIG_TEST_CASE_MEMPOOLS);
 
     FOR_I(TEST_DATA_SIZE)
     {

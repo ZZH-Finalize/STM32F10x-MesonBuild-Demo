@@ -3,7 +3,7 @@
 static int map_basic_test(void *arg)
 {
     (void)arg;
-    map_t *map = map_create_in_pool(31, bkdr_hash, CONFIG_CHECK_TESTCASE_MEMPOOL);
+    map_t *map = map_create_in_pool(31, bkdr_hash, CONFIG_TEST_CASE_MEMPOOLS);
     CHECK_PTR(map, -ENOMEM);
 
     srand(rand());
