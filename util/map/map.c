@@ -5,20 +5,6 @@
 #include "util/linked_list/list_iterators.h"
 #include "util/gnu_attributes.h"
 
-GNU_UNUSED static map_key_t dup_key(map_key_t key)
-{
-    CHECK_PTR(key, NULL);
-
-    uint32_t key_len = 0;
-    for (map_key_t pk = key; *pk != '\0'; pk++)
-        key_len++;
-
-    char* new_key = (char*)memAlloc(key_len + 1, MAP_MEMPOOL);
-    CHECK_PTR(new_key, NULL);
-    strcpy(new_key, key);
-    return new_key;
-}
-
 static map_item_t* search_node(map_item_list_t* item_list, map_key_t key)
 {
     CHECK_PTR(item_list, NULL);
@@ -41,17 +27,18 @@ static map_item_t* search_node(map_item_list_t* item_list, map_key_t key)
     return NULL;
 }
 
-map_t* map_create(uint32_t mod_value, str_hash_t hash_cb)
+map_t* map_create_in_pool(uint32_t mod_value, str_hash_t hash_cb, uint32_t pool)
 {
     RETURN_IF(mod_value < 2, NULL);
     CHECK_PTR(hash_cb, NULL);
 
-    map_t* tmp = memAlloc(sizeof(map_t) + sizeof(map_item_list_t) * mod_value,
-                          MAP_MEMPOOL);
+    map_t* tmp =
+        memAlloc(sizeof(map_t) + sizeof(map_item_list_t) * mod_value, pool);
     CHECK_PTR(tmp, NULL);
 
     tmp->mod_value = mod_value;
     tmp->hash = hash_cb;
+    tmp->mem_pool = pool;
 
     FOR_I(mod_value)
     {
@@ -66,6 +53,7 @@ int map_insert(map_t* this, map_key_t key, map_value_t value)
 {
     CHECK_PTR(this, -EINVAL);
     CHECK_PTR(key, -EINVAL);
+    RETURN_IF(this->mem_pool == UINT32_MAX, -ENOBUFS);
 
     map_key_t new_key = key;
 
@@ -79,7 +67,7 @@ int map_insert(map_t* this, map_key_t key, map_value_t value)
             item_list->item.key = new_key;
             item_list->item.value = value;
         } else {  // from second node start, we need to alloc new node
-            map_item_t* new_item = memAlloc(sizeof(map_item_t), MAP_MEMPOOL);
+            map_item_t* new_item = memAlloc(sizeof(map_item_t), this->mem_pool);
             CHECK_PTR(new_item, -ENOMEM);
             new_item->key = new_key;
             new_item->value = value;

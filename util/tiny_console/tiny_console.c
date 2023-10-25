@@ -16,10 +16,10 @@ int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
     this->command_table = map_create(31, bkdr_hash);
     CHECK_PTR(this->command_table, -ENOMEM);
 
-    this->rxbuf = memAlloc(buffer_size, CONSOLE_MEM_POOL);
+    this->rxbuf = memAlloc(buffer_size, this->mem_pool);
     CHECK_PTR_GOTO(this->rxbuf, rxbuf_err);
 
-    this->txbuf = memAlloc(buffer_size, CONSOLE_MEM_POOL);
+    this->txbuf = memAlloc(buffer_size, this->mem_pool);
     CHECK_PTR_GOTO(this->txbuf, txbuf_err);
 
     this->buffer_size = buffer_size;
@@ -39,12 +39,16 @@ rxbuf_err:
     return -ENOMEM;
 }
 
-console_t* console_create(uint32_t buffer_size, console_out_t output_fn,
-                          const char* prefix)
+console_t* console_create_in_pool(uint32_t buffer_size, console_out_t output_fn,
+                                  const char* prefix, uint32_t pool)
 {
-    console_t* this = memAlloc(sizeof(console_t), CONSOLE_MEM_POOL);
+    RETURN_IF(pool == UINT32_MAX, NULL);
+
+    console_t* this = memAlloc(sizeof(console_t), pool);
 
     CHECK_PTR(this, NULL);
+
+    this->mem_pool = pool;
 
     int retv = console_init(this, buffer_size, output_fn, prefix);
 
@@ -120,7 +124,7 @@ static int console_execute(console_t* this)
 
     if (NULL != first_arg) {
         arg_num = parse_arg_num(first_arg);
-        arg_arr = memAlloc(sizeof(char*) * arg_num, CONSOLE_MEM_POOL);
+        arg_arr = memAlloc(sizeof(char*) * arg_num, this->mem_pool);
         CHECK_PTR(arg_arr, -ENOMEM);
 
         char* cur_arg = first_arg;
@@ -163,7 +167,7 @@ void console_update(console_t* this)
 
     // should be the recived len
     uint32_t recived_len = this->rx_idx - this->last_rx_idx;
-    RETURN_IF_ZERO(recived_len,);
+    RETURN_IF_ZERO(recived_len, );
 
     FOR_I(recived_len)
     {

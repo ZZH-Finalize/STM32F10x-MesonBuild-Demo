@@ -6,8 +6,6 @@
 #include "util/mem_mana/mem_mana.h"
 #include "util/hash/str_hash.h"
 
-#define MAP_MEMPOOL 0
-
 typedef const char* map_key_t;
 typedef size_t map_value_t;
 
@@ -28,9 +26,19 @@ typedef struct
 typedef struct
 {
     uint32_t mod_value;
+    uint32_t mem_pool;
     str_hash_t hash;
     map_item_list_t items[];
 } map_t;
+
+/*
+@brief create a map in the specific memory pool
+@param mod_value - should be a prime number to reduce hash conflict
+@param hash_cb - hash method
+@param pool - the memory pool id
+@return map_t
+*/
+map_t* map_create_in_pool(uint32_t mod_value, str_hash_t hash_cb, uint32_t pool);
 
 /*
 @brief create a map
@@ -38,7 +46,10 @@ typedef struct
 @param hash_cb - hash method
 @return map_t
 */
-map_t* map_create(uint32_t mod_value, str_hash_t hash_cb);
+static inline map_t* map_create(uint32_t mod_value, str_hash_t hash_cb)
+{
+    return map_create_in_pool(mod_value, hash_cb, MEMPOOL_DEFAULT);
+}
 
 /**
  * @brief insert a key-value pair into a map

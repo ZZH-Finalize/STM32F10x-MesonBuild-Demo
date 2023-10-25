@@ -32,6 +32,7 @@ typedef struct __console_t
 {
     const char *prefix, *cwd;
     uint32_t buffer_size;
+    uint32_t mem_pool;
     int last_ret_v;
 
     console_out_t write;
@@ -44,8 +45,16 @@ typedef struct __console_t
 int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
                  const char* prefix);
 
-console_t* console_create(uint32_t buffer_size, console_out_t output_fn,
-                          const char* prefix);
+console_t* console_create_in_pool(uint32_t buffer_size, console_out_t output_fn,
+                                  const char* prefix, uint32_t pool);
+
+static inline console_t* console_create(uint32_t buffer_size,
+                                        console_out_t output_fn,
+                                        const char* prefix)
+{
+    return console_create_in_pool(buffer_size, output_fn, prefix,
+                                  MEMPOOL_DEFAULT);
+}
 
 static inline void console_delete(console_t* this)
 {

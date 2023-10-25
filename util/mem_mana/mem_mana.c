@@ -80,8 +80,10 @@ void memFree(void* pMem)
 
     ITER_ARRAY(pMember, __MemPools__)
     {
-        if (pMem < (void*)pMember->memEnd && pMem > (void*)pMember->memStart)
+        if (pMem < (void*)pMember->memEnd && pMem > (void*)pMember->memStart) {
             pool = pMember;
+            break;
+        }
     }
 
     if (pool == NULL)

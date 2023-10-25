@@ -21,9 +21,21 @@ typedef struct
  * @brief create a bit map
  * 
  * @param max_num - maximun value
+ * @param pool - memory pool id
  * @return bitmap_t* - created bitmap
  */
-bitmap_t* bitmap_create(uint32_t max_num);
+bitmap_t* bitmap_create_in_pool(uint32_t max_num, uint32_t pool);
+
+/**
+ * @brief create a bit map
+ * 
+ * @param max_num - maximun value
+ * @return bitmap_t* - created bitmap
+ */
+static inline bitmap_t* bitmap_create(uint32_t max_num)
+{
+    return bitmap_create_in_pool(max_num, MEMPOOL_DEFAULT);
+}
 
 /**
  * @brief delete a bitmap

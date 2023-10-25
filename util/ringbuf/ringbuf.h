@@ -10,8 +10,6 @@
 #define RB_CHECK_POINTER(ptr, retv)   RB_CHECK(NULL == ptr, retv)
 #define RB_RETURN_IF_ZERO(cond, retv) RETURN_IF_ZERO(cond, retv)
 
-#define RB_MEMPOOL                    0
-
 typedef struct
 {
     uint32_t wpos;
@@ -27,17 +25,18 @@ typedef struct
 } ringbuf_locked_t;
 
 /**
- *@brief create a ringbuf on a buffer
+ *@brief create a ringbuf on a buffer in the specific memory pool
  *
  * @param buffer - buffer address
+ * @param pool - memory pool id
  * @param size - buffer size
  */
-static inline ringbuf_t* ringbuf_create(uint32_t buffer_size)
+static inline ringbuf_t* ringbuf_create_in_pool(uint32_t buffer_size, uint32_t pool)
 {
     RB_RETURN_IF_ZERO(buffer_size, NULL);
 
     ringbuf_t* this =
-        (ringbuf_t*)memAlloc(sizeof(ringbuf_t) + buffer_size, RB_MEMPOOL);
+        (ringbuf_t*)memAlloc(sizeof(ringbuf_t) + buffer_size, pool);
 
     RB_CHECK_POINTER(this, NULL);
 
@@ -46,6 +45,17 @@ static inline ringbuf_t* ringbuf_create(uint32_t buffer_size)
     this->wpos = 0;
 
     return this;
+}
+
+/**
+ *@brief create a ringbuf on a buffer
+ *
+ * @param buffer - buffer address
+ * @param size - buffer size
+ */
+static inline ringbuf_t* ringbuf_create(uint32_t buffer_size)
+{
+    return ringbuf_create_in_pool(buffer_size, MEMPOOL_DEFAULT);
 }
 
 /**
