@@ -7,25 +7,26 @@ static int map_duplcate_key_test(void* arg)
 
     int retv = 0;
     map_t* map = map_create_in_pool(31, bkdr_hash, CONFIG_TEST_CASE_MEMPOOLS);
+    CHECK_PTR(map, -ENOMEM);
 
     retv = map_insert(map, test_key, 141516);
-    RETURN_IF_NZERO(retv, retv);
+    GOTO_IF_NZERO(retv, clean_exit);
 
     map_value_t res_value = 0;
 
     retv = map_search(map, test_key, &res_value);
-    RETURN_IF_NZERO(retv, retv);
+    GOTO_IF_NZERO(retv, clean_exit);
     RETURN_IF(res_value != 141516, -EINVAL);
 
     retv = map_insert(map, test_key, 141518);
-    RETURN_IF_NZERO(retv, retv);
+    GOTO_IF_NZERO(retv, clean_exit);
 
     retv = map_search(map, test_key, &res_value);
-    RETURN_IF_NZERO(retv, retv);
-    RETURN_IF(res_value != 141518, -EINVAL);
+    GOTO_IF_NZERO(retv, clean_exit);
+    GOTO_IF(res_value != 141518, clean_exit);
 
+clean_exit:
     map_delete(map);
-
-    return 0;
+    return retv;
 }
 EXPORT_TEST_CASE(map_duplcate_key_test);
