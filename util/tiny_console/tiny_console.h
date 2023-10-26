@@ -76,6 +76,7 @@ static inline int console_flush(console_t* this)
 
 int console_send_str(console_t* this, const char* str);
 int console_send_char(console_t* this, const char ch);
+int console_printf(console_t* this, const char* fmt, ...) GNU_PRINTF(2, 3);
 
 static inline int console_set_color(console_t* this, console_color_t font_color,
                                     console_color_t back_color)

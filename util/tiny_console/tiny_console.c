@@ -101,6 +101,29 @@ int console_send_str(console_t* this, const char* str)
     return 0;
 }
 
+int console_printf(console_t* this, const char* fmt, ...)
+{
+    CHECK_PTR(this, -EINVAL);
+    CHECK_PTR(fmt, -EINVAL);
+
+    va_list vargs;
+    va_start(vargs, fmt);
+
+    console_flush(this);
+
+    uint32_t txbuf_free_size = this->buffer_size - this->tx_idx;
+    int len = vsnprintf(this->txbuf, txbuf_free_size, fmt, vargs);
+
+    this->tx_idx += len;
+
+    if (len == (int)txbuf_free_size)
+        console_flush(this);
+
+    va_end(vargs);
+
+    return len;
+}
+
 static uint32_t parse_arg_num(const char* str)
 {
     CHECK_PTR(str, 0);

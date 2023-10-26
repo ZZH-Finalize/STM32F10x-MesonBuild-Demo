@@ -99,13 +99,20 @@ int console_output(console_t* this, const char* str, uint32_t len)
     return 0;
 }
 
-int run_all_testcased_warp(console_t* this, const int argc, const char** argv)
+int run_all_testcases_warp(console_t* this, const int argc, const char** argv)
 {
     (void)this;
     (void)argc;
     (void)argv;
 
-    return run_all_testcases(NULL);
+    uint32_t all_num = get_all_testcases_num();
+    uint32_t succ_num = run_all_testcases(NULL);
+
+    console_send_str(this, "test result: \r\n");
+    console_printf(this, "passed [%ld/%ld]\r\n", succ_num, all_num);
+    console_printf(this, "failed [%ld/%ld]\r\n", all_num - succ_num, all_num);
+
+    return all_num == succ_num ? 0 : -EINVAL;
 }
 
 int run_all_demo_warp(console_t* this, const int argc, const char** argv)
@@ -132,7 +139,7 @@ int main()
     // run_all_testcases(NULL);
 
     console = console_create(64, console_output, "root@stm32");
-    console_register_command(console, "run_tc", run_all_testcased_warp);
+    console_register_command(console, "run_tc", run_all_testcases_warp);
     console_register_command(console, "run_demo", run_all_demo_warp);
     console_display_prefix(console);
     console_flush(console);
