@@ -109,10 +109,8 @@ int console_printf(console_t* this, const char* fmt, ...)
     va_list vargs;
     va_start(vargs, fmt);
 
-    console_flush(this);
-
     uint32_t txbuf_free_size = this->buffer_size - this->tx_idx;
-    int len = vsnprintf(this->txbuf, txbuf_free_size, fmt, vargs);
+    int len = vsnprintf(&this->txbuf[this->tx_idx], txbuf_free_size, fmt, vargs);
 
     this->tx_idx += len;
 
