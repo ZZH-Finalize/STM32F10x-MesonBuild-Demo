@@ -92,21 +92,7 @@ static inline int console_cancel_color(console_t* this)
     return console_send_str(this, "\033[0m");
 }
 
-static inline void console_display_prefix(console_t* this)
-{
-    console_set_color(this, concole_color_green, concole_color_black);
-    console_send_str(this, this->prefix);
-    console_cancel_color(this);
-
-    console_send_char(this, ':');
-
-    console_set_color(this, concole_color_blue, concole_color_black);
-    console_send_str(this, this->cwd);
-    console_cancel_color(this);
-
-    console_send_char(this, '$');
-    console_send_char(this, ' ');
-}
+void console_display_prefix(console_t* this);
 
 // return 0 when succ
 // return negative value when fail

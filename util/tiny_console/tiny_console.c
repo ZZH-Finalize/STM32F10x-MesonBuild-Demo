@@ -101,6 +101,22 @@ int console_send_str(console_t* this, const char* str)
     return 0;
 }
 
+void console_display_prefix(console_t* this)
+{
+    console_set_color(this, concole_color_green, concole_color_black);
+    console_send_str(this, this->prefix);
+    console_cancel_color(this);
+
+    console_send_char(this, ':');
+
+    console_set_color(this, concole_color_blue, concole_color_black);
+    console_send_str(this, this->cwd);
+    console_cancel_color(this);
+
+    console_send_char(this, '$');
+    console_send_char(this, ' ');
+}
+
 int console_printf(console_t* this, const char* fmt, ...)
 {
     CHECK_PTR(this, -EINVAL);
