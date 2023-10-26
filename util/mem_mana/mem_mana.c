@@ -41,6 +41,9 @@ void* memAlloc(size_t size, const uint32_t pool)
     if (size == 0)
         return NULL;
 
+    if (pool >= ARRAY_SIZE(__MemPools__))
+        return NULL;
+
     pMemBlock_t pMemHeader = __MemPools__[pool].memStart;
     // byte align
     size = (size + 0x0000003) & ~0x00000003;

@@ -19,6 +19,7 @@ uint32_t get_all_testcases_num(void)
 
 uint32_t run_all_testcases(void* arg)
 {
+#if CONFIG_ENABLE_TEST_CASES == 1
     uint32_t succ_count = 0;
     uint32_t test_case_num = get_all_testcases_num();
 
@@ -39,6 +40,10 @@ uint32_t run_all_testcases(void* arg)
     }
 
     return succ_count;
+#else
+    (void)arg;
+    return 0;
+#endif
 }
 
 void run_all_demo(void)
