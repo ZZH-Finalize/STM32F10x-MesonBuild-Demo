@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 #include "util/iterators.h"
 #include "util/arg_checkers.h"
 #include "util/mem_mana/mem_mana.h"
@@ -98,9 +99,9 @@ static inline void bitmap_drop(bitmap_t* map, uint32_t value)
  * 
  * @param map - bitmap_t struct
  * @param value - value to be check
- * @return uint8_t true: exist, false: not exsit
+ * @return bool true: exist, false: not exsit
  */
-static inline uint8_t bitmap_check(bitmap_t* map, uint32_t value)
+static inline bool bitmap_check(bitmap_t* map, uint32_t value)
 {
     BITMAP_CHECK_MAP(map, 0);
 
