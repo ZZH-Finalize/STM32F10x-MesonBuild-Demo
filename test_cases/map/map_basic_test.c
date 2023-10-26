@@ -30,7 +30,6 @@ static int map_basic_test(void *arg)
         GOTO_IF_NZERO(retv, clean_exit);
         GOTO_IF(search_res != iter->val, clean_exit);
     }
-    asm volatile("nop");
 
 clean_exit:
     map_delete(map);

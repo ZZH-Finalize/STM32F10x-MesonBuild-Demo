@@ -71,6 +71,7 @@ int map_insert(map_t* this, map_key_t key, map_value_t value)
             CHECK_PTR(new_item, -ENOMEM);
             new_item->key = new_key;
             new_item->value = value;
+            new_item->node.next = NULL;
             list_append(&item_list->item.node, &new_item->node);
         }
 
