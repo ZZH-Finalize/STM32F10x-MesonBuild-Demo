@@ -28,11 +28,18 @@ typedef enum
     concole_color_white,
 } console_color_t;
 
+typedef enum
+{
+    console_state_normal,
+    console_state_033,
+} console_state_t;
+
 typedef struct __console_t
 {
     const char *prefix, *cwd;
     uint32_t buffer_size;
     uint32_t mem_pool;
+    console_state_t current_state;
     int last_ret_v;
 
     console_out_t write;

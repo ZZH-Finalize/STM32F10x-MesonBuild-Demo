@@ -29,6 +29,7 @@ int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
     this->rx_idx = 0;
     this->tx_idx = 0;
     this->last_rx_idx = 0;
+    this->current_state = console_state_normal;
 
     return 0;
 
@@ -199,6 +200,110 @@ static int console_execute(console_t* this)
     return cmd_res;
 }
 
+static inline void console_update_normal(console_t* this, char ch)
+{
+    switch (ch) {
+        case '\b':
+        case '\177':
+            if (this->rx_idx < 2) {
+                this->rx_idx--;
+                break;
+            }
+
+            console_send_char(this, '\b');
+            this->rx_idx -= 2;
+
+            if ('\177' == ch) {
+                console_send_str(this, "\033[J");
+                this->rxbuf[this->rx_idx] = '\0';
+            }
+            break;
+
+        case '\n':
+            this->rxbuf[this->rx_idx - 1] = '\0';
+
+            if (this->rx_idx > 1) {
+                console_send_char(this, '\n');
+                this->last_ret_v = console_execute(this);
+                if (this->last_ret_v == -ENODEV) {
+                    // this->rxbuf[this->rx_idx - 1] = '\0';
+                    console_send_str(this, this->rxbuf);
+                    console_send_str(this, ": no such command");
+                }
+            }
+
+            this->rx_idx = 0;
+            this->rxbuf[0] = '\0';
+            console_send_char(this, '\n');
+            console_display_prefix(this);
+            break;
+
+        /* ignore list */
+        case '\r':
+        case '\t':
+        case '\026':
+            this->rx_idx--;
+            break;
+
+        // up arrow is \033A down \033B right \033C left \033D
+        case '\033':
+            this->rx_idx--;
+            this->current_state = console_state_033;
+            break;
+
+        default:
+            if (this->rx_idx >= this->buffer_size) {
+                console_send_str(this,
+                                 "console buffer full, drop previous data\r\n");
+                this->rx_idx = 0;
+                this->rxbuf[this->rx_idx] = '\0';
+                console_display_prefix(this);
+                console_flush(this);
+                return;
+            } else {
+                console_send_char(this, ch);
+            }
+            break;
+    }
+}
+
+static inline void console_update_033(console_t* this, char ch)
+{
+    bool exit_033 = true;
+
+    switch (ch) {
+        case 'A':  // up arrow
+            // console_send_str(this, "up arrow\r\n");
+            break;
+
+        case 'B':  // down arrow
+            // console_send_str(this, "down arrow\r\n");
+            break;
+
+        case 'C':  // right arrow
+            // console_send_str(this, "right arrow\r\n");
+            break;
+
+        case 'D':  // left arrow
+            // console_send_str(this, "left arrow\r\n");
+            break;
+
+        case '[':
+            exit_033 = false;
+            break;
+
+        default:  // ignore other
+            this->rx_idx--;
+            break;
+    }
+
+    // back to normal state
+    if (true == exit_033)
+        this->current_state = console_state_normal;
+
+    this->rx_idx--;
+}
+
 void console_update(console_t* this)
 {
     CHECK_PTR(this, );
@@ -210,61 +315,17 @@ void console_update(console_t* this)
     FOR_I(recived_len)
     {
         char ch = this->rxbuf[this->rx_idx + i - 1];
-        switch (ch) {
-            case '\b':
-            case '\177':
-                if (this->rx_idx < 2) {
-                    this->rx_idx--;
-                    break;
-                }
 
-                console_send_char(this, '\b');
-                this->rx_idx -= 2;
-
-                if ('\177' == ch) {
-                    console_send_str(this, "\033[J");
-                    this->rxbuf[this->rx_idx] = '\0';
-                }
+        switch (this->current_state) {
+            case console_state_normal:
+                console_update_normal(this, ch);
                 break;
 
-            case '\n':
-                this->rxbuf[this->rx_idx - 1] = '\0';
-
-                if (this->rx_idx > 1) {
-                    console_send_char(this, '\n');
-                    this->last_ret_v = console_execute(this);
-                    if (this->last_ret_v == -ENODEV) {
-                        // this->rxbuf[this->rx_idx - 1] = '\0';
-                        console_send_str(this, this->rxbuf);
-                        console_send_str(this, ": no such command");
-                    }
-                }
-
-                this->rx_idx = 0;
-                this->rxbuf[0] = '\0';
-                console_send_char(this, '\n');
-                console_display_prefix(this);
-                break;
-
-            /* ignore list */
-            case '\r':
-            case '\t':
-            case '\026':
-                this->rx_idx--;
+            case console_state_033:
+                console_update_033(this, ch);
                 break;
 
             default:
-                if (this->rx_idx >= this->buffer_size) {
-                    console_send_str(
-                        this, "console buffer full, drop previous data\r\n");
-                    this->rx_idx = 0;
-                    this->rxbuf[this->rx_idx] = '\0';
-                    console_display_prefix(this);
-                    console_flush(this);
-                    return;
-                } else {
-                    console_send_char(this, ch);
-                }
                 break;
         }
     }
