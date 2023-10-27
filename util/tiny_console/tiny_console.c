@@ -126,7 +126,8 @@ int console_printf(console_t* this, const char* fmt, ...)
     va_start(vargs, fmt);
 
     uint32_t txbuf_free_size = this->buffer_size - this->tx_idx;
-    int len = vsnprintf(&this->txbuf[this->tx_idx], txbuf_free_size, fmt, vargs);
+    int len =
+        vsnprintf(&this->txbuf[this->tx_idx], txbuf_free_size, fmt, vargs);
 
     this->tx_idx += len;
 
@@ -212,8 +213,10 @@ void console_update(console_t* this)
         switch (ch) {
             case '\b':
             case '\177':
-                if (this->rx_idx <= 0)
+                if (this->rx_idx < 2) {
+                    this->rx_idx--;
                     break;
+                }
 
                 console_send_char(this, '\b');
                 this->rx_idx -= 2;
@@ -227,7 +230,7 @@ void console_update(console_t* this)
             case '\n':
                 this->rxbuf[this->rx_idx - 1] = '\0';
 
-                if (this->rx_idx >= 1) {
+                if (this->rx_idx > 1) {
                     console_send_char(this, '\n');
                     this->last_ret_v = console_execute(this);
                     if (this->last_ret_v == -ENODEV) {
