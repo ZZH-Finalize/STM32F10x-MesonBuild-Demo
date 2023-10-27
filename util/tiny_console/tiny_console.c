@@ -293,7 +293,6 @@ static inline void console_update_033(console_t* this, char ch)
             break;
 
         default:  // ignore other
-            this->rx_idx--;
             break;
     }
 
