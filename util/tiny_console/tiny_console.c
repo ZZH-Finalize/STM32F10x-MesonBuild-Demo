@@ -204,7 +204,8 @@ static int console_execute(console_t* this)
         }
     }
 
-    *first_arg = '\0';
+    if (NULL != first_arg)
+        *first_arg = '\0';
 
     console_cmd_desc_t* cmd_desc = NULL;
     int cmd_res = 0;
