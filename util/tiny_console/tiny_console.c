@@ -113,6 +113,7 @@ int console_send_str(console_t* this, const char* str)
             memcpy(&this->txbuf[this->tx_idx], str, copy_len);
             this->tx_idx += copy_len;
             len -= copy_len;
+            str += copy_len;
         }
     }
 
