@@ -147,8 +147,12 @@ static uint32_t parse_arg_num(const char* str)
     uint32_t arg_num = 0;
 
     while (*str) {
-        if (' ' == *str++)
+        if ('\n' == *(str + 1) || '\0' == *(str + 1))
+            return arg_num;
+        else if (' ' == *str && ' ' != *(str + 1))
             arg_num++;
+
+        str++;
     }
 
     return arg_num;
@@ -160,9 +164,9 @@ static int console_execute(console_t* this)
     uint32_t arg_num = 0;
 
     char* first_arg = strchr(this->rxbuf, ' ');
+    arg_num = parse_arg_num(first_arg);
 
-    if (NULL != first_arg) {
-        arg_num = parse_arg_num(first_arg);
+    if (0 != arg_num) {
         arg_arr = memAlloc(sizeof(char*) * arg_num, this->mem_pool);
         CHECK_PTR(arg_arr, -ENOMEM);
 
@@ -183,14 +187,15 @@ static int console_execute(console_t* this)
         }
     }
 
+    *first_arg = '\0';
+
     console_cmdfn_t cmd_cb = NULL;
     int cmd_res = 0;
     int search_res =
         map_search(this->command_table, this->rxbuf, (map_value_t*)&cmd_cb);
     RETURN_IF(search_res < 0, -ENODEV);
 
-    const char* chars = "\n";
-    this->write(this, chars, 1);
+    console_send_char(this, '\n');
 
     cmd_res = cmd_cb(this, arg_num, (const char**)arg_arr);
 
