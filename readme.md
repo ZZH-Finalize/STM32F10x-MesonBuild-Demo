@@ -16,8 +16,9 @@ To use this demo as your project template, you could follow the following steps:
 3. edit cross_files/toolchain.ini to setting your toolchain path
 4. run command `./configure.sh [project_name] cross_files/[specific_stm32_model.ini] crossfiles/debugger/[debugger_file.ini]`, the contents inside the "[]" are selected by your configuration.
 5. double click [project_name].code-workspace then vscode will open a workspace
-6. run "meson - build" vscode task (hotkey: ctrl+shift+b)
-7. press F5 to launch openocd to debug
+6. modify .config file to configure the project
+7. run "meson - build" vscode task (hotkey: ctrl+shift+b)
+8. press F5 to launch openocd to debug
 
 If you need to download your code to chip flash memory, then:
 
