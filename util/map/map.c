@@ -143,3 +143,20 @@ void map_clear(map_t* this)
         item_list->item.key = NULL;
     }
 }
+
+void map_foreach(map_t* this, map_foreach_cb_t cb)
+{
+    CHECK_PTR(this, );
+
+    FOR_I(this->mod_value)
+    {
+        map_item_list_t* item_list = &this->items[i];
+        if (0 != item_list->length) {
+            ITER_LIST(iter, &item_list->item.node)
+            {
+                map_item_t* item = container_of(iter, map_item_t, node);
+                cb(item->key, item->value);
+            }
+        }
+    }
+}

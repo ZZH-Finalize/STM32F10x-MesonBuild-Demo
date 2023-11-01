@@ -1,9 +1,24 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "tiny_console.h"
+#include "tiny_console_cmd.h"
 #include "util/mem_mana/mem_mana.h"
 #include "util/value_ops.h"
 #include "util/iterators.h"
+#include "util/linker_tools.h"
+
+void console_register_all_cmds(console_t* this)
+{
+    LINKER_SYMBOL_TYPE(__sconsole_cmd, console_cmd_desc_t);
+    LINKER_SYMBOL_TYPE(__econsole_cmd, console_cmd_desc_t);
+
+    console_cmd_desc_t* pcur_desc = __sconsole_cmd;
+
+    while (pcur_desc < __econsole_cmd) {
+        console_register_command(this, pcur_desc);
+        pcur_desc++;
+    }
+}
 
 int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
                  const char* prefix)
@@ -30,6 +45,8 @@ int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
     this->tx_idx = 0;
     this->last_rx_idx = 0;
     this->current_state = console_state_normal;
+
+    console_register_all_cmds(this);
 
     return 0;
 
@@ -189,15 +206,15 @@ static int console_execute(console_t* this)
 
     *first_arg = '\0';
 
-    console_cmdfn_t cmd_cb = NULL;
+    console_cmd_desc_t* cmd_desc = NULL;
     int cmd_res = 0;
     int search_res =
-        map_search(this->command_table, this->rxbuf, (map_value_t*)&cmd_cb);
+        map_search(this->command_table, this->rxbuf, (map_value_t*)&cmd_desc);
     RETURN_IF(search_res < 0, -ENODEV);
 
     console_send_char(this, '\n');
 
-    cmd_res = cmd_cb(this, arg_num, (const char**)arg_arr);
+    cmd_res = cmd_desc->fn(this, arg_num, (const char**)arg_arr);
 
     if (NULL != arg_arr)
         memFree(arg_arr);

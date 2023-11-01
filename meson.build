@@ -69,6 +69,7 @@ util_srcs = [
     'usart/prints.c',
     'ringbuf/ringbuf.c',
     'tiny_console/tiny_console.c',
+    'tiny_console/builtin_cmds/help.c',
     'delay/delay.c',
     'hash/str_hash.c',
     'map/map.c',
@@ -98,6 +99,7 @@ start_file_srcs = [
 # applicaton src files
 app_srcs = [
     'app/main.c',
+    'app/console_commands.c',
     'app/isr.c',
 ]
 

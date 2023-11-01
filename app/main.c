@@ -8,8 +8,6 @@
 #include "test_frame.h"
 
 #include "util/delay/delay.h"
-#include "util/usart/prints.h"
-#include "util/hash/str_hash.h"
 #include "util/iterators.h"
 #include "util/tiny_console/tiny_console.h"
 
@@ -100,37 +98,8 @@ int console_output(console_t* this, const char* str, uint32_t len)
     return 0;
 }
 
-int run_all_testcases_warp(console_t* this, const int argc, const char** argv)
-{
-    (void)this;
-    (void)argc;
-    (void)argv;
-
-    uint32_t all_num = get_all_testcases_num();
-    uint32_t succ_num = run_all_testcases(NULL);
-
-    console_send_str(this, "test result: \r\n");
-    console_printf(this, "passed [%ld/%ld]\r\n", succ_num, all_num);
-    console_printf(this, "failed [%ld/%ld]\r\n", all_num - succ_num, all_num);
-
-    return all_num == succ_num ? 0 : -EINVAL;
-}
-
-int run_all_demo_warp(console_t* this, const int argc, const char** argv)
-{
-    (void)this;
-    (void)argc;
-    (void)argv;
-
-    run_all_demo();
-
-    return 0;
-}
-
 int main()
 {
-    // const char msg[] = {"Hello World!\r\n"};
-
     clock_init();
     gpio_init();
     usart_init();
@@ -140,8 +109,6 @@ int main()
     // run_all_testcases(NULL);
 
     console = console_create(64, console_output, "root@stm32");
-    console_register_command(console, "run_tc", run_all_testcases_warp);
-    console_register_command(console, "run_demo", run_all_demo_warp);
     console_display_prefix(console);
     console_flush(console);
 
@@ -150,16 +117,6 @@ int main()
             rcv_flag = 0;
             console_update(console);
         }
-
-        // for (uint32_t i = 0; i < sizeof(msg) - 1; i++) {
-        //     USART_SendData(USART1, msg[i]);
-        //     while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TC))
-        //         ;
-        //     USART_ClearFlag(USART1, USART_FLAG_TC);
-        // }
-
-        // // for delay
-        // delay_ms_sw(100);
     }
 
     return 0;

@@ -106,14 +106,19 @@ void console_display_prefix(console_t* this);
 typedef int (*console_cmdfn_t)(console_t* this, const int argc,
                                const char** argv);
 
-static inline int console_register_command(console_t* this, const char* cmd,
-                                           console_cmdfn_t cmd_cb)
+typedef struct
+{
+    const char* cmd;
+    const char* desc;
+    console_cmdfn_t fn;
+} console_cmd_desc_t;
+
+static inline int console_register_command(console_t* this, console_cmd_desc_t* desc)
 {
     CHECK_PTR(this, -EINVAL);
-    CHECK_PTR(cmd, -EINVAL);
-    CHECK_PTR(cmd_cb, -EINVAL);
+    CHECK_PTR(desc, -EINVAL);
 
-    return map_insert(this->command_table, cmd, (size_t)cmd_cb);
+    return map_insert(this->command_table, desc->cmd, (size_t)desc);
 }
 
 static inline int console_unregister_command(console_t* this, const char* cmd)

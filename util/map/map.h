@@ -8,6 +8,7 @@
 
 typedef const char* map_key_t;
 typedef size_t map_value_t;
+typedef void (*map_foreach_cb_t)(map_key_t key, map_value_t value);
 
 typedef struct
 {
@@ -97,5 +98,13 @@ static inline void map_delete(map_t* this)
     map_clear(this);
     memFree(this);
 }
+
+/**
+ * @brief iterate all map with a callback
+ * 
+ * @param this - map_t struct
+ * @param cb - callback function
+ */
+void map_foreach(map_t* this, map_foreach_cb_t cb);
 
 #endif  // __MAP_H__

@@ -58,6 +58,12 @@ SECTIONS
         KEEP(*(SORT(.demo.*)));
         __edemo = .;
 
+        . = ALIGN(4);
+        __sconsole_cmd = .;
+        KEEP(*(.console.cmd));
+        KEEP(*(.console.builtin.cmd));
+        __econsole_cmd = .;
+
         PROVIDE(__erodata = .);
     } > FLASH
 
