@@ -1,0 +1,108 @@
+From 12753bb996501a0779a8038d4a5d4af1a95498ed Mon Sep 17 00:00:00 2001
+From: ZZH <1462207500@qq.com>
+Date: Wed, 1 Nov 2023 03:32:54 +0100
+Subject: [PATCH] redirect to USART2
+
+Signed-off-by: ZZH <1462207500@qq.com>
+---
+ app/isr.c  |  8 ++++----
+ app/main.c | 20 ++++++++++----------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/app/isr.c b/app/isr.c
+index d33c8a6..e7adece 100644
+--- a/app/isr.c
++++ b/app/isr.c
+@@ -4,12 +4,12 @@
+ extern console_t* console;
+ uint8_t rcv_flag = 0;
+ 
+-void USART1_IRQHandler(void)
++void USART2_IRQHandler(void)
+ {
+-    if (USART_GetITStatus(USART1, USART_IT_RXNE))
++    if (USART_GetITStatus(USART2, USART_IT_RXNE))
+     {
+-        USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+-        console_input_char(console, USART_ReceiveData(USART1));
++        USART_ClearITPendingBit(USART2, USART_IT_RXNE);
++        console_input_char(console, USART_ReceiveData(USART2));
+         rcv_flag = 1;
+     }
+ 
+diff --git a/app/main.c b/app/main.c
+index d19caf7..a3b304c 100644
+--- a/app/main.c
++++ b/app/main.c
+@@ -19,7 +19,7 @@ void clock_init(void)
+ {
+     RCC_DeInit();
+ 
+-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
++    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+@@ -44,14 +44,14 @@ void gpio_init(void)
+     init_param.GPIO_Mode = GPIO_Mode_AF_PP;
+ 
+     // USART1 - TXD
+-    init_param.GPIO_Pin = GPIO_Pin_9;
++    init_param.GPIO_Pin = GPIO_Pin_2;
+     GPIO_Init(GPIOA, &init_param);
+ 
+     // 浮空输入
+     init_param.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+ 
+     // USART1 - RXD
+-    init_param.GPIO_Pin = GPIO_Pin_10;
++    init_param.GPIO_Pin = GPIO_Pin_3;
+     GPIO_Init(GPIOA, &init_param);
+ }
+ 
+@@ -66,8 +66,8 @@ void usart_init(void)
+         .USART_WordLength = USART_WordLength_8b,
+     };
+ 
+-    USART_Init(USART1, &init_param);
+-    USART_Cmd(USART1, ENABLE);
++    USART_Init(USART2, &init_param);
++    USART_Cmd(USART2, ENABLE);
+ }
+ 
+ void nvic_init()
+@@ -75,7 +75,7 @@ void nvic_init()
+     NVIC_SetPriorityGrouping(NVIC_PriorityGroup_4);
+ 
+     NVIC_InitTypeDef init_param = {
+-        .NVIC_IRQChannel = USART1_IRQn,
++        .NVIC_IRQChannel = USART2_IRQn,
+         .NVIC_IRQChannelCmd = ENABLE,
+         .NVIC_IRQChannelPreemptionPriority = 12,
+         .NVIC_IRQChannelSubPriority = 14,
+@@ -83,7 +83,7 @@ void nvic_init()
+ 
+     NVIC_Init(&init_param);
+     // USART_ITConfig(USART1, USART_IT_TC, ENABLE);
+-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
++    USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+ }
+ 
+ int console_output(console_t* this, const char* str, uint32_t len)
+@@ -91,10 +91,10 @@ int console_output(console_t* this, const char* str, uint32_t len)
+     (void)this;
+ 
+     for (uint32_t i = 0; i < len; i++) {
+-        while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TC))
++        while (RESET == USART_GetFlagStatus(USART2, USART_FLAG_TC))
+             ;
+-        USART_ClearFlag(USART1, USART_FLAG_TC);
+-        USART_SendData(USART1, str[i]);
++        USART_ClearFlag(USART2, USART_FLAG_TC);
++        USART_SendData(USART2, str[i]);
+     }
+     return 0;
+ }
+-- 
+2.40.0.windows.1
+
