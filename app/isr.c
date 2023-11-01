@@ -2,7 +2,7 @@
 #include "util/tiny_console/tiny_console.h"
 
 extern console_t* console;
-uint8_t rcv_flag = 0;
+extern volatile uint8_t rcv_flag;
 
 void USART1_IRQHandler(void)
 {

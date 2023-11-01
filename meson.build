@@ -205,7 +205,7 @@ target_dict = {
     },
     'rel': {
         'c_args': ['-O2'],
-        'link_args': ['-Wl,-Map,memory.map'],
+        'link_args': ['-Wl,-Map,memory.map', '--specs=nano.specs'],
         'linker_script': 'linker_new.ld',
         'download': true,
     }
@@ -241,7 +241,7 @@ foreach target_name, options : target_dict
         capture: true,
         command: [
             objdump_tool.full_path(),
-            '-Sd',
+            '-SD',
             build_dir / exe.name()
         ],
         output: fs.replace_suffix(exe.name(), '.s')

@@ -14,6 +14,7 @@
 #include "util/tiny_console/tiny_console.h"
 
 console_t* console = NULL;
+volatile uint8_t rcv_flag = 0;
 
 void clock_init(void)
 {
@@ -145,8 +146,6 @@ int main()
     console_flush(console);
 
     while (1) {
-        extern uint8_t rcv_flag;
-
         if (1 == rcv_flag) {
             rcv_flag = 0;
             console_update(console);

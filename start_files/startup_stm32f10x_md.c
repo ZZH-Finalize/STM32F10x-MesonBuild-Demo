@@ -53,7 +53,7 @@ GNU_WEAK void Default_Handler(void)
 
     for (int i = 0; i < 4; i++) {
         print_str(DUMP_INFO_USART_SEL, "\nr");
-        print_char(USART1, i + '0');
+        print_char(DUMP_INFO_USART_SEL, i + '0');
         print_str(DUMP_INFO_USART_SEL, ": 0x");
         print_hex(DUMP_INFO_USART_SEL, r[i]);
     }
@@ -144,7 +144,7 @@ __attribute__((__weak__, __noreturn__)) void Reset_Handler(void)
     SCB->VTOR = FLASH_BASE;
 #endif
 
-    init_stack();
+    // init_stack();
     do_init_calls();
 
     main();
