@@ -144,7 +144,7 @@ __attribute__((__weak__, __noreturn__)) void Reset_Handler(void)
     SCB->VTOR = FLASH_BASE;
 #endif
 
-    // init_stack();
+    init_stack();
     do_init_calls();
 
     main();
