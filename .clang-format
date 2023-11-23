@@ -106,6 +106,16 @@ ForEachMacros:
   - foreach
   - Q_FOREACH
   - BOOST_FOREACH
+  - ITER_ARRAY
+  - ITER_LIST
+  - FOR
+  - FOR_I
+  - FOR_J
+  - FOR_K
+  - FOR_ARRAY
+  - FOR_ARRAY_I
+  - FOR_ARRAY_J
+  - FOR_ARRAY_K
 IfMacros:
   - KJ_IF_MAYBE
 IncludeBlocks:   Regroup

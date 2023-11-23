@@ -335,8 +335,7 @@ void console_update(console_t* this)
     uint32_t recived_len = this->rx_idx - this->last_rx_idx;
     RETURN_IF_ZERO(recived_len, );
 
-    FOR_I(recived_len)
-    {
+    FOR_I (recived_len) {
         char ch = this->rxbuf[this->rx_idx + i - 1];
 
         switch (this->current_state) {

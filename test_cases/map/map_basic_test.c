@@ -15,15 +15,13 @@ static int map_basic_test(void *arg)
     retv = 0;
     srand(rand());
 
-    FOR_I(TEST_DATA_SIZE)
-    {
+    FOR_I (TEST_DATA_SIZE) {
         test_data_t *iter = &test_data[i];
         retv = map_insert(map, iter->key, iter->val);
         GOTO_IF_NZERO(retv, clean_exit);
     }
 
-    FOR_I(TEST_DATA_SIZE)
-    {
+    FOR_I (TEST_DATA_SIZE) {
         test_data_t *iter = &test_data[i];
         map_value_t search_res = 0;
         retv = map_search(map, iter->key, &search_res);

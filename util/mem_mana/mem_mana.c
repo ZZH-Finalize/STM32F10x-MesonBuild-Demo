@@ -22,8 +22,7 @@ static uint32_t allMemPoolSize = 0;
 
 void memInit(void)
 {
-    ITER_ARRAY(pMember, __MemPools__)  // initial all mem pool
-    {
+    ITER_ARRAY (pMember, __MemPools__) {  // initial all mem pool
         pMemBlock_t pMemHeader = pMember->memStart;
         pMember->availableSize =
             (size_t)pMember->memEnd - (size_t)pMember->memStart;
@@ -88,8 +87,7 @@ void memFree(void* pMem)
 
     pMemPool_t pool = NULL;
 
-    ITER_ARRAY(pMember, __MemPools__)
-    {
+    ITER_ARRAY (pMember, __MemPools__) {
         if (pMem < (void*)pMember->memEnd && pMem > (void*)pMember->memStart) {
             pool = pMember;
             break;
@@ -134,8 +132,7 @@ bool memIsClean(const uint32_t pool)
 
 bool memIsCleanAll(void)
 {
-    FOR_ARRAY_I(__MemPools__)
-    {
+    FOR_ARRAY_I (__MemPools__) {
         if (false == memIsClean(i))
             return false;
     }

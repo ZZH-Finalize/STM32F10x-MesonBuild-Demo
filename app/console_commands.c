@@ -23,8 +23,7 @@ CONSOLE_CMD_DEF(run_all_demo_warp)
 
     console_printf(this, "argc: %d\r\n", argc);
 
-    FOR_I((uint32_t)argc)
-    {
+    FOR_I ((uint32_t)argc) {
         console_printf(this, "arg[%ld]: %s\n", i, argv[i]);
     }
 

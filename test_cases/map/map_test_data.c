@@ -7,11 +7,9 @@ test_data_t *generate_test_data(uint32_t size)
 
     CHECK_PTR(test_data, NULL);
 
-    FOR_I(size)
-    {
+    FOR_I (size) {
         test_data_t *iter = &test_data[i];
-        ITER_ARRAY(key_iter, iter->key)
-        {
+        ITER_ARRAY (key_iter, iter->key) {
             *key_iter = rand() % 95 + 32;
         }
         iter->key[sizeof(iter->key) - 1] = '\0';

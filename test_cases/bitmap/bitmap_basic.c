@@ -12,8 +12,7 @@ static int bitmap_basic_test(void *arg)
 
     srand(rand());
 
-    FOR_ARRAY_I(test_data)
-    {
+    FOR_ARRAY_I (test_data) {
         test_data[i] = rand() % 128;
     }
 
@@ -23,23 +22,19 @@ static int bitmap_basic_test(void *arg)
     // testcase starts here
     retv = 0;
 
-    FOR_ARRAY_I(test_data)
-    {
+    FOR_ARRAY_I (test_data) {
         bitmap_save(bitmap, test_data[i]);
     }
 
-    FOR_ARRAY_I(test_data)
-    {
+    FOR_ARRAY_I (test_data) {
         GOTO_IF_ZERO(bitmap_check(bitmap, test_data[i]), error_exit);
     }
 
-    FOR_ARRAY_I(test_data)
-    {
+    FOR_ARRAY_I (test_data) {
         bitmap_drop(bitmap, test_data[i]);
     }
 
-    FOR_ARRAY_I(test_data)
-    {
+    FOR_ARRAY_I (test_data) {
         GOTO_IF_NZERO(bitmap_check(bitmap, test_data[i]), error_exit);
     }
 

@@ -14,15 +14,13 @@ static int map_delete_test(void *arg)
 
     retv = 0;
 
-    FOR_I(TEST_DATA_SIZE)
-    {
+    FOR_I (TEST_DATA_SIZE) {
         test_data_t *iter = &test_data[i];
         retv = map_insert(map, iter->key, iter->val);
         GOTO_IF_NZERO(retv, clean_exit);
     }
 
-    FOR_I(TEST_DATA_SIZE)
-    {
+    FOR_I (TEST_DATA_SIZE) {
         test_data_t *iter = &test_data[i];
         retv = map_remove(map, iter->key);
         GOTO_IF_NZERO(retv, clean_exit);

@@ -23,8 +23,7 @@ uint32_t run_all_testcases(void* arg)
     uint32_t succ_count = 0;
     uint32_t test_case_num = get_all_testcases_num();
 
-    FOR_I(test_case_num)
-    {
+    FOR_I (test_case_num) {
         __test_case_info_t* test_case_info = &__stest_cases[i];
         usart_printf(USART1, "Running test case: %s\r\n", test_case_info->name);
         int retv = test_case_info->fn(arg);
@@ -50,8 +49,7 @@ void run_all_demo(void)
 {
     uint32_t demo_num = ((uint32_t)__edemo - (uint32_t)__sdemo) / 4;
 
-    FOR_I(demo_num)
-    {
+    FOR_I (demo_num) {
         __sdemo[i]();
     }
 }
