@@ -22,10 +22,10 @@ static uint32_t allMemPoolSize = 0;
 
 void memInit(void)
 {
-    ITER_ARRAY (pMember, __MemPools__) {  // initial all mem pool
+    ITER_ARRAY (pMember, __MemPools__) { // initial all mem pool
         pMemBlock_t pMemHeader = pMember->memStart;
         pMember->availableSize =
-            (size_t)pMember->memEnd - (size_t)pMember->memStart;
+            (size_t) pMember->memEnd - (size_t) pMember->memStart;
         pMemHeader->isFree = true;
         pMemHeader->prev = nullptr;
         pMemHeader->next = nullptr;
@@ -33,6 +33,7 @@ void memInit(void)
         allMemPoolSize += pMember->availableSize;
     }
 }
+
 EXPORT_INIT_FUNC(memInit, 9);
 
 void* memAlloc(size_t size, const uint32_t pool)
@@ -55,7 +56,7 @@ void* memAlloc(size_t size, const uint32_t pool)
         // must greater than, otherwise the next block dosen't have memory
         if (pMemHeader->isFree && pMemHeader->size > sizeReq) {
             // setup a new block after the allocated block
-            pMemBlock_t newHeader = (pMemBlock_t)((char*)pMemHeader + size);
+            pMemBlock_t newHeader = (pMemBlock_t) ((char*) pMemHeader + size);
             newHeader->isFree = true;
             newHeader->size = pMemHeader->size - sizeReq;
             newHeader->prev = pMemHeader;
@@ -67,7 +68,7 @@ void* memAlloc(size_t size, const uint32_t pool)
 
             __MemPools__[pool].availableSize -= sizeReq;
 
-            return (char*)pMemHeader->mem;
+            return (char*) pMemHeader->mem;
         } else {
             pMemHeader = pMemHeader->next;
         }
@@ -88,7 +89,8 @@ void memFree(void* pMem)
     pMemPool_t pool = NULL;
 
     ITER_ARRAY (pMember, __MemPools__) {
-        if (pMem < (void*)pMember->memEnd && pMem > (void*)pMember->memStart) {
+        if (pMem < (void*) pMember->memEnd
+            && pMem > (void*) pMember->memStart) {
             pool = pMember;
             break;
         }
@@ -125,7 +127,8 @@ bool memIsClean(const uint32_t pool)
     MemPool_t* pMember = &__MemPools__[pool];
     uint32_t currentAvailableSize = 0;
 
-    currentAvailableSize = (size_t)pMember->memEnd - (size_t)pMember->memStart;
+    currentAvailableSize =
+        (size_t) pMember->memEnd - (size_t) pMember->memStart;
 
     return currentAvailableSize == pMember->availableSize;
 }

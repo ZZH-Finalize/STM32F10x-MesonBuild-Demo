@@ -15,4 +15,4 @@
     for (typeof(*arr) *iter_name = &arr[0]; iter_name < &arr[ARRAY_SIZE(arr)]; \
          iter_name++)
 
-#endif  // __ITERATORS_H__
+#endif // __ITERATORS_H__

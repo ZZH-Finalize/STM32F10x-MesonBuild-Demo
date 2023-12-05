@@ -8,9 +8,9 @@
     int name(console_t* this, const int argc, const char** argv)
 
 #define CONSOLE_CMD_UNUSE_ARGS \
-    (void)this;                \
-    (void)argc;                \
-    (void)argv
+    (void) this;               \
+    (void) argc;               \
+    (void) argv
 
 #define CONSOLE_CMD_SECTION         .console.cmd
 #define CONSOLE_BUILTIN_CMD_SECTION .console.builtin.cmd
@@ -34,4 +34,4 @@
     GNU_UNUSED console_cmd_desc_t* __ptr_to_##fn = NULL
 #endif
 
-#endif  // __TINY_CONSOLE_CMD_H__
+#endif // __TINY_CONSOLE_CMD_H__

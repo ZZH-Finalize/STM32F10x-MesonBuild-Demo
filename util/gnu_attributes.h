@@ -11,4 +11,4 @@
 #define GNU_PRINTF(fa, va)      GNU_FORMAT(__printf__, fa, va)
 #define GNU_SCANF(fa, va)       GNU_FORMAT(__scanf__, fa, va)
 
-#endif  // __GNU_ATTRIBUTES_H__
+#endif // __GNU_ATTRIBUTES_H__

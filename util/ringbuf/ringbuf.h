@@ -31,12 +31,13 @@ typedef struct
  * @param pool - memory pool id
  * @param size - buffer size
  */
-static inline ringbuf_t* ringbuf_create_in_pool(uint32_t buffer_size, uint32_t pool)
+static inline ringbuf_t* ringbuf_create_in_pool(uint32_t buffer_size,
+                                                uint32_t pool)
 {
     RB_RETURN_IF_ZERO(buffer_size, NULL);
 
     ringbuf_t* this =
-        (ringbuf_t*)memAlloc(sizeof(ringbuf_t) + buffer_size, pool);
+        (ringbuf_t*) memAlloc(sizeof(ringbuf_t) + buffer_size, pool);
 
     RB_CHECK_POINTER(this, NULL);
 
@@ -60,7 +61,7 @@ static inline ringbuf_t* ringbuf_create(uint32_t buffer_size)
 
 /**
  * @brief delete a ringbuf
- * 
+ *
  * @param this - ringbuf_t struct
  */
 static inline void ringbuf_delete(ringbuf_t* this)
@@ -95,7 +96,7 @@ static inline uint8_t ringbuf_empty(ringbuf_t* this)
 
 /**
  * @brief check the given rinbuf is full or not
- * 
+ *
  * @param this - ringbuf_t struct
  * @return uint8_t 0: not full, 1: full
  */
@@ -122,7 +123,7 @@ static inline uint32_t ringbuf_size(ringbuf_t* this)
 
 /**
  * @brief get writeable address
- * 
+ *
  * @param this - ringbuf_t struct
  * @return void* writeable pointer
  */
@@ -134,7 +135,7 @@ static inline void* ringbuf_wpos(ringbuf_t* this)
 
 /**
  * @brief get readable address
- * 
+ *
  * @param this - ringbuf_t struct
  * @return void* readable pointer
  */
@@ -146,7 +147,7 @@ static inline void* ringbuf_rpos(ringbuf_t* this)
 
 /**
  * @brief get the length of continuous memory that could be read
- * 
+ *
  * @param this - ringbuf_t struct
  * @return uint32_t length of the continuous memory
  */
@@ -158,7 +159,7 @@ static inline uint32_t ringbuf_get_seq_read_len(ringbuf_t* this)
 
 /**
  * @brief get the length of continuous memory that could be write
- * 
+ *
  * @param this - ringbuf_t struct
  * @return uint32_t length of the continuous memory
  */
@@ -311,4 +312,4 @@ uint8_t ringbuf_read_byte(ringbuf_t* this);
  */
 void* ringbuf_chb(ringbuf_t* this, uint8_t byte);
 
-#endif  // __RINGBUF_H__
+#endif // __RINGBUF_H__

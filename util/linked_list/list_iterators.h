@@ -7,4 +7,4 @@
     for (typeof(head) iter_name = head; NULL != iter_name; \
          iter_name = iter_name->next)
 
-#endif  // __LIST_ITERATORS_H__
+#endif // __LIST_ITERATORS_H__

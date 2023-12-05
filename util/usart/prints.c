@@ -4,8 +4,7 @@
 
 void print_str(USART_TypeDef* usartx, const char* str)
 {
-    while ('\0' != *str)
-        print_char(usartx, *str++);
+    while ('\0' != *str) print_char(usartx, *str++);
 }
 
 void print_hex(USART_TypeDef* usartx, uint32_t num)
@@ -52,8 +51,7 @@ int usart_printf(USART_TypeDef* usartx, const char* fmt, ...)
 
     int len = vsnprintf(printf_buf, sizeof(printf_buf), fmt, vargs);
 
-    for (int i = 0; i < len; i++)
-        print_char(usartx, printf_buf[i]);
+    for (int i = 0; i < len; i++) print_char(usartx, printf_buf[i]);
 
     va_end(vargs);
     return len;

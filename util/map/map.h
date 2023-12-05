@@ -39,7 +39,8 @@ typedef struct
 @param pool - the memory pool id
 @return map_t
 */
-map_t* map_create_in_pool(uint32_t mod_value, str_hash_t hash_cb, uint32_t pool);
+map_t* map_create_in_pool(uint32_t mod_value, str_hash_t hash_cb,
+                          uint32_t pool);
 
 /*
 @brief create a map
@@ -54,7 +55,7 @@ static inline map_t* map_create(uint32_t mod_value, str_hash_t hash_cb)
 
 /**
  * @brief insert a key-value pair into a map
- * 
+ *
  * @param this - map_t struct
  * @param key - a string
  * @param value - size_t value or a pointer
@@ -64,7 +65,7 @@ int map_insert(map_t* this, map_key_t key, map_value_t value);
 
 /**
  * @brief search the node which match with the given key
- * 
+ *
  * @param this - map_t struct
  * @param key - a string
  * @param res - searched node
@@ -74,7 +75,7 @@ int map_search(map_t* this, map_key_t key, map_value_t* res);
 
 /**
  * @brief remove the node which has the given key
- * 
+ *
  * @param this - map_t struct
  * @param key - a string
  * @return int == 0: succ, < 0: fail
@@ -83,14 +84,14 @@ int map_remove(map_t* this, map_key_t key);
 
 /**
  * @brief clear the map, which will delete all nodes
- * 
+ *
  * @param this - map_t struct
  */
 void map_clear(map_t* this);
 
 /**
  * @brief delete a map
- * 
+ *
  * @param this - map_t struct
  */
 static inline void map_delete(map_t* this)
@@ -101,10 +102,10 @@ static inline void map_delete(map_t* this)
 
 /**
  * @brief iterate all map with a callback
- * 
+ *
  * @param this - map_t struct
  * @param cb - callback function
  */
 void map_foreach(map_t* this, map_foreach_cb_t cb);
 
-#endif  // __MAP_H__
+#endif // __MAP_H__

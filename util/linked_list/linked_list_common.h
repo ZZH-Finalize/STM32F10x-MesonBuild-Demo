@@ -10,4 +10,4 @@
 #define LL_NEXT_NODE(node) (node)->next
 #define LL_PREV_NODE(node) (node)->prev
 
-#endif  // __LINKED_LIST_COMMON_H__
+#endif // __LINKED_LIST_COMMON_H__

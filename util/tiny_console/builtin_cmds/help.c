@@ -5,9 +5,9 @@ console_t* cur_con = NULL;
 static void iter_cb(map_key_t key, map_value_t value)
 {
     CHECK_PTR(cur_con, );
-    (void)key;
+    (void) key;
 
-    console_cmd_desc_t* desc = (console_cmd_desc_t*)value;
+    console_cmd_desc_t* desc = (console_cmd_desc_t*) value;
 
     console_send_str(cur_con, desc->cmd);
     console_send_str(cur_con, " - ");
@@ -25,4 +25,5 @@ CONSOLE_CMD_DEF(help)
 
     return 0;
 }
+
 EXPORT_CONSOLE_BUILTIN_CMD("help", help, "Get all command usages");

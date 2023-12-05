@@ -87,7 +87,7 @@ void nvic_init()
 
 int console_output(console_t* this, const char* str, uint32_t len)
 {
-    (void)this;
+    (void) this;
 
     for (uint32_t i = 0; i < len; i++) {
         while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TC))

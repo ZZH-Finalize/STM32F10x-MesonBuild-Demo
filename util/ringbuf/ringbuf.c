@@ -9,8 +9,7 @@ uint32_t ringbuf_write(ringbuf_t* this, void* data, uint32_t size)
     uint32_t actual_size = MIN(size, free_size);
     uint8_t* pdata = data;
 
-    for (uint32_t i = 0;i < actual_size;i++)
-    {
+    for (uint32_t i = 0; i < actual_size; i++) {
         this->buf[this->wpos] = *pdata;
         pdata++;
         ringbuf_increase_bytes(this, 1);
@@ -27,8 +26,7 @@ uint32_t ringbuf_read(ringbuf_t* this, void* data, uint32_t size)
     uint32_t actual_size = MIN(size, available_bytes);
     uint8_t* pdata = data;
 
-    for (uint32_t i = 0;i < actual_size;i++)
-    {
+    for (uint32_t i = 0; i < actual_size; i++) {
         *pdata = this->buf[this->rpos];
         pdata++;
         ringbuf_drop_bytes(this, 1);
@@ -71,8 +69,7 @@ void* ringbuf_chb(ringbuf_t* this, uint8_t byte)
     uint32_t rpos = this->rpos;
     uint32_t available_bytes = ringbuf_get_available_bytes(this);
 
-    for (uint32_t i = 0; i < available_bytes;i++)
-    {
+    for (uint32_t i = 0; i < available_bytes; i++) {
         if (byte == this->buf[rpos])
             return &this->buf[rpos];
         rpos++;

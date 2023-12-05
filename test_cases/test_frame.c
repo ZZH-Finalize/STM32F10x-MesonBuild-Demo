@@ -13,8 +13,8 @@ LINKER_SYMBOL_TYPE(__edemo, __demo_fn_t);
 
 uint32_t get_all_testcases_num(void)
 {
-    return ((uint32_t)__etest_cases - (uint32_t)__stest_cases) /
-           sizeof(*__stest_cases);
+    return ((uint32_t) __etest_cases - (uint32_t) __stest_cases)
+           / sizeof(*__stest_cases);
 }
 
 uint32_t run_all_testcases(void* arg)
@@ -40,14 +40,14 @@ uint32_t run_all_testcases(void* arg)
 
     return succ_count;
 #else
-    (void)arg;
+    (void) arg;
     return 0;
 #endif
 }
 
 void run_all_demo(void)
 {
-    uint32_t demo_num = ((uint32_t)__edemo - (uint32_t)__sdemo) / 4;
+    uint32_t demo_num = ((uint32_t) __edemo - (uint32_t) __sdemo) / 4;
 
     FOR_I (demo_num) {
         __sdemo[i]();

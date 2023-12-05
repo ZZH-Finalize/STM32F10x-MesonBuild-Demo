@@ -5,7 +5,7 @@
 
 static int bitmap_clear_test(void *arg)
 {
-    (void)arg;
+    (void) arg;
     int retv = -ENOMEM;
 
     uint8_t test_data[BITMAP_TEST_DATA_SIZE];
@@ -45,4 +45,5 @@ error_exit:
     retv = -EINVAL;
     goto clean_exit;
 }
+
 EXPORT_TEST_CASE(bitmap_clear_test);

@@ -113,12 +113,13 @@ typedef struct
     console_cmdfn_t fn;
 } console_cmd_desc_t;
 
-static inline int console_register_command(console_t* this, console_cmd_desc_t* desc)
+static inline int console_register_command(console_t* this,
+                                           console_cmd_desc_t* desc)
 {
     CHECK_PTR(this, -EINVAL);
     CHECK_PTR(desc, -EINVAL);
 
-    return map_insert(this->command_table, desc->cmd, (size_t)desc);
+    return map_insert(this->command_table, desc->cmd, (size_t) desc);
 }
 
 static inline int console_unregister_command(console_t* this, const char* cmd)
@@ -158,4 +159,4 @@ static inline int console_input_char(console_t* this, char data)
     return 0;
 }
 
-#endif  // __TINY_CONSOLE_H__
+#endif // __TINY_CONSOLE_H__

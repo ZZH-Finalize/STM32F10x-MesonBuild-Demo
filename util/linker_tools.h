@@ -13,12 +13,11 @@
     GNU_ARRT(__section__("." #section "." #level))       \
     const type __##section##_ptr_to_##fn = fn
 
-#define EXPORT_FUNC_WITH_NAME_LEVEL(fn, type, section, level) \
-    GNU_ARRT(__section__("." #section "." #level))            \
-    const struct                                              \
-    {                                                         \
-        const char* name;                                     \
-        type func;                                            \
+#define EXPORT_FUNC_WITH_NAME_LEVEL(fn, type, section, level)   \
+    GNU_ARRT(__section__("." #section "." #level)) const struct \
+    {                                                           \
+        const char* name;                                       \
+        type func;                                              \
     } __##section##_info_of_##fn = {.name = #fn, .func = fn}
 
 #define EXPORT_ANY_FUNC_WITH_LEVEL(fn, section, level) \
@@ -29,4 +28,4 @@ typedef void (*__init_call_fn_t)(void);
 #define EXPORT_INIT_FUNC(fn, level) \
     EXPORT_FUNC_WITH_LEVEL(fn, __init_call_fn_t, init_func, level)
 
-#endif  // __LINKER_TOOLS_H__
+#endif // __LINKER_TOOLS_H__

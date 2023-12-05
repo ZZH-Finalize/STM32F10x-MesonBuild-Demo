@@ -15,6 +15,7 @@ CONSOLE_CMD_DEF(run_all_testcases_warp)
 
     return all_num == succ_num ? 0 : -EINVAL;
 }
+
 EXPORT_CONSOLE_CMD("run_tc", run_all_testcases_warp, "Run all testcases");
 
 CONSOLE_CMD_DEF(run_all_demo_warp)
@@ -23,7 +24,7 @@ CONSOLE_CMD_DEF(run_all_demo_warp)
 
     console_printf(this, "argc: %d\r\n", argc);
 
-    FOR_I ((uint32_t)argc) {
+    FOR_I ((uint32_t) argc) {
         console_printf(this, "arg[%ld]: %s\n", i, argv[i]);
     }
 
@@ -31,4 +32,5 @@ CONSOLE_CMD_DEF(run_all_demo_warp)
 
     return 0;
 }
+
 EXPORT_CONSOLE_CMD("run_demo", run_all_demo_warp, "Run all demo");

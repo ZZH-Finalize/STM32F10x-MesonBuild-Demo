@@ -2,7 +2,7 @@
 
 static int map_duplcate_key_test(void* arg)
 {
-    (void)arg;
+    (void) arg;
     const char* test_key = "test_key";
 
     int retv = 0;
@@ -29,4 +29,5 @@ clean_exit:
     map_delete(map);
     return retv;
 }
+
 EXPORT_TEST_CASE(map_duplcate_key_test);

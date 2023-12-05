@@ -26,24 +26,20 @@ uint8_t IsVaildNum(const char* str)
 
     uint8_t (*funs[])(char) = {IsBin, IsNum, IsHex};
 
-    while (*str == '0')  // 跳过开头所有的0
+    while (*str == '0') // 跳过开头所有的0
         str++;
 
-    if (*str == '\0')  // 只有0的情况下
-        return 2;      // 算十进制0
+    if (*str == '\0') // 只有0的情况下
+        return 2;     // 算十进制0
 
     // 根据开头定性格式
-    if (*str == 'x' || *str == 'X')  // 十六进制
-    {
+    if (*str == 'x' || *str == 'X') { // 十六进制
         type = 2;
-    } else if (*str == 'b' || *str == 'B')  // 二进制
-    {
+    } else if (*str == 'b' || *str == 'B') { // 二进制
         type = 0;
-    } else if (IsNum(*str))  // 十进制
-    {
+    } else if (IsNum(*str)) { // 十进制
         type = 1;
-    } else  // 非法字母
-    {
+    } else { // 非法字母
         return 0;
     }
 
@@ -73,27 +69,23 @@ uint8_t getNum(const char* str, uint32_t* const pNum)
     uint8_t type = IsVaildNum(str);
     *pNum = 0;
 
-    if (type == 0)  // 非法字符,转换失败
-    {
+    if (type == 0) { // 非法字符,转换失败
         return 0;
-    } else if (type == 1)  // 二进制,需手动转换
-    {
-        str += 2;  // 跳过0b前缀
+    } else if (type == 1) { // 二进制,需手动转换
+        str += 2;           // 跳过0b前缀
         while (*str != '\0') {
             *pNum <<= 1;
             *pNum |= *str - '0';
             str++;
         }
-    } else if (type == 2)  // 十进制
-    {
+    } else if (type == 2) { // 十进制
         while (*str != '\0') {
             *pNum *= 10;
             *pNum += *str - '0';
             str++;
         }
-    } else if (type == 3)  // 十六进制
-    {
-        str += 2;  // 跳过0x前缀
+    } else if (type == 3) { // 十六进制
+        str += 2;           // 跳过0x前缀
         while (*str != '\0') {
             *pNum <<= 4;
 

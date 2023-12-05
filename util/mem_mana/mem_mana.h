@@ -46,4 +46,4 @@ bool memIsCleanAll(void);
 }
 #endif
 
-#endif  // __MEM_MANA_H__
+#endif // __MEM_MANA_H__

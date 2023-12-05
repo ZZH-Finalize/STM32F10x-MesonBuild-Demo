@@ -4,6 +4,6 @@
 #include <stddef.h>
 
 #define container_of(ptr, type, member) \
-    (type *)((size_t)ptr - offsetof(type, member))
+    (type *) ((size_t) ptr - offsetof(type, member))
 
-#endif  // __CONTAINER_OF_H__
+#endif // __CONTAINER_OF_H__

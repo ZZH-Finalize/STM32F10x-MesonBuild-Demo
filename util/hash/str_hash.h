@@ -14,4 +14,4 @@ uint32_t elf_hash(const char *str);
 uint32_t djb_hash(const char *str);
 uint32_t ap_hash(const char *str);
 
-#endif // __STR_HASH_H__  
+#endif // __STR_HASH_H__

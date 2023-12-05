@@ -2,8 +2,8 @@
 
 test_data_t *generate_test_data(uint32_t size)
 {
-    test_data_t *test_data = (test_data_t *)memAlloc(sizeof(test_data_t) * size,
-                                                     CONFIG_TEST_CASE_MEMPOOLS);
+    test_data_t *test_data = (test_data_t *) memAlloc(
+        sizeof(test_data_t) * size, CONFIG_TEST_CASE_MEMPOOLS);
 
     CHECK_PTR(test_data, NULL);
 
@@ -14,7 +14,7 @@ test_data_t *generate_test_data(uint32_t size)
         }
         iter->key[sizeof(iter->key) - 1] = '\0';
 
-        iter->val = (map_value_t)rand();
+        iter->val = (map_value_t) rand();
     }
 
     return test_data;

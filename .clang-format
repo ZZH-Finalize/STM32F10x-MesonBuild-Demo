@@ -90,7 +90,7 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: true
 BinPackParameters: true
-BreakBeforeBinaryOperators: All
+BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeConceptDeclarations: true
 BreakBeforeInheritanceComma: false # no doc
 BreakInheritanceList: BeforeColon
@@ -132,20 +132,6 @@ ForEachMacros:
   - FOR_ARRAY_K
 IfMacros:
   - KJ_IF_MAYBE
-  - RETURN_IF
-  - GOTO_IF
-  - RETURN_IF_VALUE
-  - RETURN_IF_NVALUE
-  - RETURN_IF_ZERO
-  - RETURN_IF_NZERO
-  - GOTO_IF_VALUE
-  - GOTO_IF_NVALUE
-  - GOTO_IF_ZERO
-  - GOTO_IF_NZERO
-  - CHECK_PTR
-  - CHECK_PTR_GOTO
-  - CHECK_IN_OPEN_RANGE
-  - CHECK_IN_CLOSED_RANGE
 IncludeBlocks:   Regroup
 IncludeCategories:
   - Regex:           '^<ext/.*\.h>'
@@ -170,8 +156,8 @@ IndentAccessModifiers: false
 IndentCaseLabels: true
 IndentCaseBlocks: false
 IndentGotoLabels: false
-IndentPPDirectives: BeforeHash
-IndentExternBlock: Indent
+IndentPPDirectives: None
+IndentExternBlock: AfterExternBlock
 IndentRequires:  false
 IndentWrappedFunctionNames: false
 InsertTrailingCommas: None
@@ -278,6 +264,20 @@ StatementMacros:
   - QT_REQUIRE_VERSION
   - ASM_READ_REG
   - ASM_READ_XREG
+  - RETURN_IF
+  - GOTO_IF
+  - RETURN_IF_VALUE
+  - RETURN_IF_NVALUE
+  - RETURN_IF_ZERO
+  - RETURN_IF_NZERO
+  - GOTO_IF_VALUE
+  - GOTO_IF_NVALUE
+  - GOTO_IF_ZERO
+  - GOTO_IF_NZERO
+  - CHECK_PTR
+  - CHECK_PTR_GOTO
+  - CHECK_IN_OPEN_RANGE
+  - CHECK_IN_CLOSED_RANGE
 TabWidth:        4
 UseCRLF:         false
 UseTab:          Never

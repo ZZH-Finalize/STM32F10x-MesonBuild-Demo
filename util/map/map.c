@@ -60,11 +60,11 @@ int map_insert(map_t* this, map_key_t key, map_value_t value)
 
     map_item_t* item = search_node(item_list, key);
 
-    if (NULL == item) {                // not a duplicate key
-        if (0 == item_list->length) {  // first node of this list
+    if (NULL == item) {               // not a duplicate key
+        if (0 == item_list->length) { // first node of this list
             item_list->item.key = new_key;
             item_list->item.value = value;
-        } else {  // from second node start, we need to alloc new node
+        } else { // from second node start, we need to alloc new node
             map_item_t* new_item = memAlloc(sizeof(map_item_t), this->mem_pool);
             CHECK_PTR(new_item, -ENOMEM);
             new_item->key = new_key;
@@ -74,7 +74,7 @@ int map_insert(map_t* this, map_key_t key, map_value_t value)
         }
 
         item_list->length++;
-    } else {  // for duplicate key, just modify the value
+    } else { // for duplicate key, just modify the value
         item->value = value;
     }
 
@@ -111,7 +111,7 @@ int map_remove(map_t* this, map_key_t key)
     // the item to be deleted is the head, which is not a allocted node
     if (item == &item_list->item) {
         item->key = NULL;
-    } else {  // item is a allocated node, then just delete it
+    } else { // item is a allocated node, then just delete it
         list_remove(&item_list->item.node, &item->node);
         memFree(item);
     }

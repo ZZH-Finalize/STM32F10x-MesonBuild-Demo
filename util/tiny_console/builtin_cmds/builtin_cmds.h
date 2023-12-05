@@ -8,4 +8,4 @@
 #include "util/linked_list/linked_list.h"
 #include "util/strarg.h"
 
-#endif  // __BUILTIN_CMDS_H__
+#endif // __BUILTIN_CMDS_H__

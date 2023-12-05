@@ -3,4 +3,4 @@
 
 #include "linked_list_common.h"
 
-#endif  // __DOUBLE_LINKED_LIST_H
+#endif // __DOUBLE_LINKED_LIST_H

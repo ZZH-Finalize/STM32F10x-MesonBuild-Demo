@@ -3,4 +3,4 @@
 
 #define BITMAP_TEST_DATA_SIZE 32
 
-#endif  // __BITMAP_TEST_CONF_H__
+#endif // __BITMAP_TEST_CONF_H__

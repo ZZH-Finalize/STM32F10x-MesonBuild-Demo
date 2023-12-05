@@ -39,7 +39,7 @@ int console_init(console_t* this, uint32_t buffer_size, console_out_t output_fn,
 
     this->buffer_size = buffer_size;
     this->prefix = prefix;
-    this->cwd = "~";  // for now, we don't support filesystem
+    this->cwd = "~"; // for now, we don't support filesystem
     this->write = output_fn;
     this->rx_idx = 0;
     this->tx_idx = 0;
@@ -106,7 +106,7 @@ int console_send_str(console_t* this, const char* str)
             // flush buffer && send all the data inside of it
             int retv = console_flush(this);
             RETURN_IF(retv < 0, retv);
-        } else {  // buffer is not full, then copy the data into buffer
+        } else { // buffer is not full, then copy the data into buffer
             uint32_t buffer_free_space = this->buffer_size - this->tx_idx;
             uint32_t copy_len = MIN(buffer_free_space, len);
 
@@ -150,7 +150,7 @@ int console_printf(console_t* this, const char* fmt, ...)
 
     this->tx_idx += len;
 
-    if (len == (int)txbuf_free_size)
+    if (len == (int) txbuf_free_size)
         console_flush(this);
 
     va_end(vargs);
@@ -211,12 +211,12 @@ static int console_execute(console_t* this)
     console_cmd_desc_t* cmd_desc = NULL;
     int cmd_res = 0;
     int search_res =
-        map_search(this->command_table, this->rxbuf, (map_value_t*)&cmd_desc);
+        map_search(this->command_table, this->rxbuf, (map_value_t*) &cmd_desc);
     RETURN_IF(search_res < 0, -ENODEV);
 
     console_send_char(this, '\n');
 
-    cmd_res = cmd_desc->fn(this, arg_num, (const char**)arg_arr);
+    cmd_res = cmd_desc->fn(this, arg_num, (const char**) arg_arr);
 
     if (NULL != arg_arr)
         memFree(arg_arr);
@@ -265,9 +265,7 @@ static inline void console_update_normal(console_t* this, char ch)
         /* ignore list */
         case '\r':
         case '\t':
-        case '\026':
-            this->rx_idx--;
-            break;
+        case '\026': this->rx_idx--; break;
 
         // up arrow is \033A down \033B right \033C left \033D
         case '\033':
@@ -296,27 +294,25 @@ static inline void console_update_033(console_t* this, char ch)
     bool exit_033 = true;
 
     switch (ch) {
-        case 'A':  // up arrow
+        case 'A': // up arrow
             // console_send_str(this, "up arrow\r\n");
             break;
 
-        case 'B':  // down arrow
+        case 'B': // down arrow
             // console_send_str(this, "down arrow\r\n");
             break;
 
-        case 'C':  // right arrow
+        case 'C': // right arrow
             // console_send_str(this, "right arrow\r\n");
             break;
 
-        case 'D':  // left arrow
+        case 'D': // left arrow
             // console_send_str(this, "left arrow\r\n");
             break;
 
-        case '[':
-            exit_033 = false;
-            break;
+        case '[': exit_033 = false; break;
 
-        default:  // ignore other
+        default: // ignore other
             break;
     }
 
@@ -339,16 +335,11 @@ void console_update(console_t* this)
         char ch = this->rxbuf[this->rx_idx + i - 1];
 
         switch (this->current_state) {
-            case console_state_normal:
-                console_update_normal(this, ch);
-                break;
+            case console_state_normal: console_update_normal(this, ch); break;
 
-            case console_state_033:
-                console_update_033(this, ch);
-                break;
+            case console_state_033: console_update_033(this, ch); break;
 
-            default:
-                break;
+            default: break;
         }
     }
 

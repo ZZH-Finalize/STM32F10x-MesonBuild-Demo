@@ -13,7 +13,8 @@ typedef struct
 } test_data_t;
 
 test_data_t *generate_test_data(uint32_t size);
-static inline void release_test_data(void* data)
+
+static inline void release_test_data(void *data)
 {
     memFree(data);
 }

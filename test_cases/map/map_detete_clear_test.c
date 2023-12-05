@@ -2,7 +2,7 @@
 
 static int map_delete_test(void *arg)
 {
-    (void)arg;
+    (void) arg;
 
     int retv = -ENOMEM;
 
@@ -34,4 +34,5 @@ data_err:
 
     return retv;
 }
+
 EXPORT_TEST_CASE(map_delete_test);

@@ -5,16 +5,15 @@ GNU_PURE uint8_t ff1(size_t num)
     if (0 == num)
         return 0;
 
-    uint8_t bitsOfVar = sizeof(num) * 8;//通过sizeof实现自适应
+    uint8_t bitsOfVar = sizeof(num) * 8; // 通过sizeof实现自适应
     uint8_t index = 1;
 
-    //这里执行的时候变量的位数已经固定了, 所以实际上是O(1), 32位固定循环5次, 64位固定循环6次
-    while (bitsOfVar)
-    {
+    // 这里执行的时候变量的位数已经固定了, 所以实际上是O(1), 32位固定循环5次,
+    // 64位固定循环6次
+    while (bitsOfVar) {
         bitsOfVar /= 2;
         size_t tmp = num >> bitsOfVar;
-        if (tmp)
-        {
+        if (tmp) {
             index += bitsOfVar;
             num = tmp;
         }
@@ -31,8 +30,7 @@ GNU_PURE size_t reverseBits(size_t num, uint8_t bitsOfVar)
     const size_t topBit = 1 << (bitsOfVar - 1);
     bitsOfVar >>= 1;
 
-    for (uint8_t i = 0;i < bitsOfVar;i++)
-    {
+    for (uint8_t i = 0; i < bitsOfVar; i++) {
         size_t lowMask = 1 << i;
         size_t highMask = topBit >> i;
         uint8_t lowBit = (num & lowMask) > 0;
@@ -59,10 +57,10 @@ uint32_t valueAt(uint32_t *pnum, uint32_t low_bit, uint32_t high_bit)
     low_bit %= 32;
     high_bit %= 32;
 
-    if (over_word_boundry) {  // separate in two words
+    if (over_word_boundry) { // separate in two words
         value = BITS_AT(pnum[word_index + 1], 0, high_bit) << (32 - low_bit);
         value |= BITS_AT(pnum[word_index], low_bit, 32);
-    } else {  // in a same word
+    } else { // in a same word
         value = BITS_AT(pnum[word_index], low_bit, high_bit);
     }
 

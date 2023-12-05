@@ -8,4 +8,4 @@
 
 void print_stack_trace(USART_TypeDef *usartx, uint32_t *stack);
 
-#endif  // __STACK_TRACE_H__
+#endif // __STACK_TRACE_H__

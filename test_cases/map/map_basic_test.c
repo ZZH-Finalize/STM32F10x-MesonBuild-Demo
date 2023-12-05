@@ -2,7 +2,7 @@
 
 static int map_basic_test(void *arg)
 {
-    (void)arg;
+    (void) arg;
 
     int retv = -ENOMEM;
 
@@ -36,4 +36,5 @@ map_err:
 data_err:
     return retv;
 }
+
 EXPORT_TEST_CASE(map_basic_test);
