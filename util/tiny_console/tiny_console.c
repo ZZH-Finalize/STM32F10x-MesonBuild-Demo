@@ -214,7 +214,7 @@ static int console_execute(console_t* this)
         map_search(this->command_table, this->rxbuf, (map_value_t*) &cmd_desc);
     RETURN_IF(search_res < 0, -ENODEV);
 
-    console_send_str(this, "\r\n");
+    console_send_strln(this, "");
 
     cmd_res = cmd_desc->fn(this, arg_num, (const char**) arg_arr);
 
@@ -247,7 +247,7 @@ static inline void console_update_normal(console_t* this, char ch)
             this->rxbuf[this->rx_idx - 1] = '\0';
 
             if (this->rx_idx > 1) {
-                console_send_str(this, "\r\n");
+                console_send_strln(this, "");
                 this->last_ret_v = console_execute(this);
                 if (this->last_ret_v == -ENODEV) {
                     // this->rxbuf[this->rx_idx - 1] = '\0';
@@ -258,7 +258,7 @@ static inline void console_update_normal(console_t* this, char ch)
 
             this->rx_idx = 0;
             this->rxbuf[0] = '\0';
-            console_send_str(this, "\r\n");
+            console_send_strln(this, "");
             console_display_prefix(this);
             break;
 
@@ -275,8 +275,8 @@ static inline void console_update_normal(console_t* this, char ch)
 
         default:
             if (this->rx_idx >= this->buffer_size) {
-                console_send_str(this,
-                                 "console buffer full, drop previous data\r\n");
+                console_send_strln(this,
+                                   "console buffer full, drop previous data");
                 this->rx_idx = 0;
                 this->rxbuf[this->rx_idx] = '\0';
                 console_display_prefix(this);
@@ -295,19 +295,19 @@ static inline void console_update_033(console_t* this, char ch)
 
     switch (ch) {
         case 'A': // up arrow
-            // console_send_str(this, "up arrow\r\n");
+            // console_send_strln(this, "up arrow");
             break;
 
         case 'B': // down arrow
-            // console_send_str(this, "down arrow\r\n");
+            // console_send_strln(this, "down arrow");
             break;
 
         case 'C': // right arrow
-            // console_send_str(this, "right arrow\r\n");
+            // console_send_strln(this, "right arrow");
             break;
 
         case 'D': // left arrow
-            // console_send_str(this, "left arrow\r\n");
+            // console_send_strln(this, "left arrow");
             break;
 
         case '[': exit_033 = false; break;

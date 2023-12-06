@@ -12,7 +12,7 @@ static void iter_cb(map_key_t key, map_value_t value)
     console_send_str(cur_con, desc->cmd);
     console_send_str(cur_con, " - ");
     console_send_str(cur_con, desc->desc);
-    console_send_str(cur_con, "\r\n");
+    console_send_str(cur_con, "\r\n\r\n");
 }
 
 CONSOLE_CMD_DEF(help)

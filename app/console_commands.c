@@ -9,9 +9,9 @@ CONSOLE_CMD_DEF(run_all_testcases_warp)
     uint32_t all_num = get_all_testcases_num();
     uint32_t succ_num = run_all_testcases(NULL);
 
-    console_send_str(this, "test result: \r\n");
-    console_printf(this, "passed [%ld/%ld]\r\n", succ_num, all_num);
-    console_printf(this, "failed [%ld/%ld]\r\n", all_num - succ_num, all_num);
+    console_send_strln(this, "test result: ");
+    console_println(this, "passed [%ld/%ld]", succ_num, all_num);
+    console_println(this, "failed [%ld/%ld]", all_num - succ_num, all_num);
 
     return all_num == succ_num ? 0 : -EINVAL;
 }
@@ -22,10 +22,10 @@ CONSOLE_CMD_DEF(run_all_demo_warp)
 {
     CONSOLE_CMD_UNUSE_ARGS;
 
-    console_printf(this, "argc: %d\r\n", argc);
+    console_println(this, "argc: %d", argc);
 
     FOR_I ((uint32_t) argc) {
-        console_printf(this, "arg[%ld]: %s\r\n", i, argv[i]);
+        console_println(this, "arg[%ld]: %s", i, argv[i]);
     }
 
     run_all_demo();
