@@ -214,7 +214,7 @@ static int console_execute(console_t* this)
         map_search(this->command_table, this->rxbuf, (map_value_t*) &cmd_desc);
     RETURN_IF(search_res < 0, -ENODEV);
 
-    console_send_char(this, '\n');
+    console_send_str(this, "\r\n");
 
     cmd_res = cmd_desc->fn(this, arg_num, (const char**) arg_arr);
 
@@ -243,11 +243,11 @@ static inline void console_update_normal(console_t* this, char ch)
             }
             break;
 
-        case '\n':
+        case '\r':
             this->rxbuf[this->rx_idx - 1] = '\0';
 
             if (this->rx_idx > 1) {
-                console_send_char(this, '\n');
+                console_send_str(this, "\r\n");
                 this->last_ret_v = console_execute(this);
                 if (this->last_ret_v == -ENODEV) {
                     // this->rxbuf[this->rx_idx - 1] = '\0';
@@ -258,12 +258,12 @@ static inline void console_update_normal(console_t* this, char ch)
 
             this->rx_idx = 0;
             this->rxbuf[0] = '\0';
-            console_send_char(this, '\n');
+            console_send_str(this, "\r\n");
             console_display_prefix(this);
             break;
 
         /* ignore list */
-        case '\r':
+        case '\n':
         case '\t':
         case '\026': this->rx_idx--; break;
 
