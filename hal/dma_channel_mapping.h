@@ -64,8 +64,8 @@
 #define TIM8_UP_DMA_CHAN   DMA2_Channel1
 
 // dma2 channel2
-#define SPI3_RX_DMA_CHAN   DMA2_Channel2
-#define I2S3_RX_DMA_CHAN   DMA2_Channel2
+#define SPI3_TX_DMA_CHAN   DMA2_Channel2
+#define I2S3_TX_DMA_CHAN   DMA2_Channel2
 #define TIM5_CH3_DMA_CHAN  DMA2_Channel2
 #define TIM5_UP_DMA_CHAN   DMA2_Channel2
 #define TIM8_CH4_DMA_CHAN  DMA2_Channel2
