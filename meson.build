@@ -1,5 +1,7 @@
 project('demo', 'c',
     version: '0.1',
+    license: 'GPL-3.0',
+    license_files: 'LICENSE',
     default_options: ['warning_level=3']
 )
 
@@ -174,6 +176,7 @@ c_args = [
     '-std=gnu99',
     '-fdata-sections',
     '-ffunction-sections',
+    '-std=gnu99',
 ]
 c_args += configs
 
