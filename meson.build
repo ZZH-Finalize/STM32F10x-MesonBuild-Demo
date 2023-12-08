@@ -173,7 +173,6 @@ c_args = [
     '-DSTM32F10X_' + capacity,
     '-DUSE_STDPERIPH_DRIVER',
     '-DPROJECT_VERSION=' + '"' + meson.project_version() + '"',
-    '-std=gnu99',
     '-fdata-sections',
     '-ffunction-sections',
     '-std=gnu99',
@@ -183,6 +182,7 @@ c_args += configs
 # link args apply to the project
 link_args = [
     '-mcpu=' + host_machine.cpu(),
+    '-nostartfiles',
 ]
 
 # get memory configuration from cross file
