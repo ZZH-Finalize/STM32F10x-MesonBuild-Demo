@@ -9,7 +9,7 @@ static int map_basic_test(void *arg)
     test_data_t *test_data = generate_test_data(TEST_DATA_SIZE);
     CHECK_PTR_GOTO(test_data, data_err);
 
-    map_t *map = map_create_in_pool(31, bkdr_hash, CONFIG_TEST_CASE_MEMPOOLS);
+    map_t *map = map_create_in_pool(31, bkdr_hash, CONFIG_TEST_CASE_MEMPOOL);
     CHECK_PTR_GOTO(map, map_err);
 
     retv = 0;

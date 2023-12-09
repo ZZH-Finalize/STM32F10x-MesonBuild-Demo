@@ -94,8 +94,9 @@ test_cases_srcs = [
 # start files
 start_file_fmt = 'startup_stm32f10x_@0@.c'
 start_file_srcs = [
-    'stack_trace/stack_trace.c',
     'init_calls.s',
+    'stack_trace/stack_trace.c',
+    'sys_funcs.c',
 ]
 
 # applicaton src files
@@ -176,6 +177,7 @@ c_args = [
     '-fdata-sections',
     '-ffunction-sections',
     '-std=gnu99',
+    '-Wall', '-Wextra',
 ]
 c_args += configs
 
@@ -202,7 +204,6 @@ target_dict = {
             '-D__DEBUG',
             '-DVECT_TAB_SRAM',
             '-g3',
-            '-Wa,-g3'
         ],
         'link_args': ['-Wl,-Map,memory_ram.map', '--specs=nano.specs'],
         'linker_script': 'linker_ram_new.ld',
