@@ -87,7 +87,7 @@ int console_printf(console_t* this, const char* fmt, ...) GNU_PRINTF(2, 3);
 
 #define console_send_strln(this, str) console_send_str(this, str "\r\n")
 #define console_println(this, fmt, ...) \
-    console_printf(this, fmt "\r\n", __VA_ARGS__)
+    console_printf(this, fmt "\r\n", ##__VA_ARGS__)
 
 static inline int console_set_color(console_t* this, console_color_t font_color,
                                     console_color_t back_color)
