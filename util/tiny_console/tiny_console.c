@@ -6,6 +6,7 @@
 #include "util/value_ops.h"
 #include "util/iterators.h"
 #include "util/linker_tools.h"
+#include "util/strarg.h"
 
 void console_register_all_cmds(console_t* this)
 {
@@ -144,6 +145,8 @@ int console_printf(console_t* this, const char* fmt, ...)
     va_list vargs;
     va_start(vargs, fmt);
 
+    console_flush(this);
+
     uint32_t txbuf_free_size = this->buffer_size - this->tx_idx;
     int len =
         vsnprintf(&this->txbuf[this->tx_idx], txbuf_free_size, fmt, vargs);
@@ -176,47 +179,130 @@ static uint32_t parse_arg_num(const char* str)
     return arg_num;
 }
 
+static int parse_arg_desc(const char* arg_desc, uint32_t* min_arg_num,
+                          uint32_t* max_arg_num)
+{
+    CHECK_PTR(min_arg_num, -EINVAL);
+    CHECK_PTR(max_arg_num, -EINVAL);
+
+    *min_arg_num = 0;
+    *max_arg_num = 0;
+
+    RETURN_IF(NULL == arg_desc, 0);
+
+    uint32_t arg_num = 0;
+    uint32_t optional_arg_num = 0;
+    uint32_t* counter = &arg_num;
+
+    while (*arg_desc) {
+        switch (*arg_desc) {
+            case 'd': // number
+            case 's': // string
+                (*counter)++;
+                break;
+
+            case '[': // switch to optional_arg
+                counter = &optional_arg_num;
+                break;
+
+            case ']': // end of parse
+                goto done;
+
+            case 'f': return -ENOTSUP;
+
+            default: return -EINVAL;
+        }
+
+        arg_desc++;
+    }
+
+done:
+    *min_arg_num = arg_num;
+    *max_arg_num = arg_num + optional_arg_num;
+    return 0;
+}
+
 static int console_execute(console_t* this)
 {
-    char** arg_arr = NULL;
+    void** arg_arr = NULL;
     uint32_t arg_num = 0;
 
     char* first_arg = strchr(this->rxbuf, ' ');
+
     arg_num = parse_arg_num(first_arg);
+
+    if (NULL != first_arg) {
+        *first_arg = '\0';
+    }
+
+    console_cmd_desc_t* cmd_desc = NULL;
+    int search_res =
+        map_search(this->command_table, this->rxbuf, (map_value_t*) &cmd_desc);
+    RETURN_IF(search_res < 0, search_res);
+
+    uint32_t min_arg_num = 0, max_arg_num = 0;
+    int parse_res =
+        parse_arg_desc(cmd_desc->arg_desc, &min_arg_num, &max_arg_num);
+    RETURN_IF_NZERO(parse_res, parse_res);
+
+    if (arg_num > max_arg_num || arg_num < min_arg_num) {
+        console_println(this, "arg num error: %ld give, needs [%ld - %ld]",
+                        arg_num, min_arg_num, max_arg_num);
+        return -EINVAL;
+    }
+
+    first_arg++;
 
     if (0 != arg_num) {
         arg_arr = memAlloc(sizeof(char*) * arg_num, this->mem_pool);
         CHECK_PTR(arg_arr, -ENOMEM);
 
+        // replace all spaces to \0
+        for (char* ch = first_arg; '\0' != *ch; ch++) {
+            if (' ' == *ch)
+                *ch = '\0';
+        }
+
         char* cur_arg = first_arg;
-        uint32_t arg_idx = 0;
+        const char* arg_type = cmd_desc->arg_desc;
 
-        while ('\0' != *cur_arg) {
-            if (' ' == *cur_arg) {
-                *cur_arg = '\0';
-                arg_arr[arg_idx] = cur_arg + 1;
-                arg_idx++;
+        FOR_I (arg_num) {
+            // skip optional symbol
+            while ('[' == *arg_type) arg_type++;
 
-                if (arg_idx == arg_num)
+            // convert arg by type
+            switch (*arg_type++) {
+                case 'd': {
+                    int conv_res = getNum(cur_arg, (uint32_t*) &arg_arr[i]);
+
+                    if (1 != conv_res) {
+                        console_send_strln(this, "arg format error");
+                        memFree(arg_arr);
+                        return -EINVAL;
+                    }
+
                     break;
+                }
+
+                case 's': {
+                    arg_arr[i] = (void*) cur_arg;
+                    break;
+                }
+
+                default: break;
             }
 
+            // skip next chars
+            while ('\0' != *cur_arg) cur_arg++;
+
+            // skip \0
             cur_arg++;
         }
     }
 
-    if (NULL != first_arg)
-        *first_arg = '\0';
-
-    console_cmd_desc_t* cmd_desc = NULL;
-    int cmd_res = 0;
-    int search_res =
-        map_search(this->command_table, this->rxbuf, (map_value_t*) &cmd_desc);
-    RETURN_IF(search_res < 0, -ENODEV);
-
     console_send_strln(this, "");
 
-    cmd_res = cmd_desc->fn(this, arg_num, (const char**) arg_arr);
+    int cmd_res = cmd_desc->fn(this, arg_num, (const void**) arg_arr);
 
     if (NULL != arg_arr)
         memFree(arg_arr);

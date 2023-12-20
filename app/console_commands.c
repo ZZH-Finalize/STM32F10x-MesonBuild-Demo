@@ -16,21 +16,38 @@ CONSOLE_CMD_DEF(run_all_testcases_warp)
     return all_num == succ_num ? 0 : -EINVAL;
 }
 
-EXPORT_CONSOLE_CMD("run_tc", run_all_testcases_warp, "Run all testcases");
+EXPORT_CONSOLE_CMD("run_tc", run_all_testcases_warp, "Run all testcases", NULL);
 
 CONSOLE_CMD_DEF(run_all_demo_warp)
 {
     CONSOLE_CMD_UNUSE_ARGS;
-
-    console_println(this, "argc: %d", argc);
-
-    FOR_I ((uint32_t) argc) {
-        console_println(this, "arg[%ld]: %s", i, argv[i]);
-    }
 
     run_all_demo();
 
     return 0;
 }
 
-EXPORT_CONSOLE_CMD("run_demo", run_all_demo_warp, "Run all demo");
+EXPORT_CONSOLE_CMD("run_demo", run_all_demo_warp, "Run all demo", NULL);
+
+CONSOLE_CMD_DEF(test)
+{
+    CONSOLE_CMD_UNUSE_ARGS;
+
+    console_println(this, "argc: %d", argc);
+    console_println(this, "argv[0]: %ld", (uint32_t) argv[0]);
+    console_println(this, "argv[1]: %ld", (uint32_t) argv[1]);
+    console_println(this, "argv[2]: %s", (char *) argv[2]);
+    console_println(this, "argv[3]: %ld", (uint32_t) argv[3]);
+
+    if (argc > 4) {
+        console_println(this, "argv[4]: %ld", (uint32_t) argv[4]);
+    }
+
+    if (argc > 5) {
+        console_println(this, "argv[5]: %s", (char *) argv[5]);
+    }
+
+    return 0;
+}
+
+EXPORT_CONSOLE_CMD("test", test, "test the console command", "ddsd[ds]");

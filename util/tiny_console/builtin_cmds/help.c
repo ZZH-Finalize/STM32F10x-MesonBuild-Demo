@@ -26,4 +26,4 @@ CONSOLE_CMD_DEF(help)
     return 0;
 }
 
-EXPORT_CONSOLE_BUILTIN_CMD("help", help, "Get all command usages");
+EXPORT_CONSOLE_BUILTIN_CMD("help", help, "Get all command usages", NULL);

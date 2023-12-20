@@ -108,12 +108,13 @@ void console_display_prefix(console_t* this);
 // return 0 when succ
 // return negative value when fail
 typedef int (*console_cmdfn_t)(console_t* this, const int argc,
-                               const char** argv);
+                               const void** argv);
 
 typedef struct
 {
     const char* cmd;
     const char* desc;
+    const char* arg_desc;
     console_cmdfn_t fn;
 } console_cmd_desc_t;
 
