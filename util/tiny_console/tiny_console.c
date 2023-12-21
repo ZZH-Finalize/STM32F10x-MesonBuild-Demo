@@ -224,7 +224,7 @@ done:
 
 static int console_execute(console_t* this)
 {
-    void** arg_arr = NULL;
+    console_cmd_arg_t* arg_arr = NULL;
     uint32_t arg_num = 0;
 
     char* first_arg = strchr(this->rxbuf, ' ');
@@ -273,7 +273,8 @@ static int console_execute(console_t* this)
             // convert arg by type
             switch (*arg_type++) {
                 case 'd': {
-                    int conv_res = getNum(cur_arg, (uint32_t*) &arg_arr[i]);
+                    int conv_res =
+                        getNum(cur_arg, (uint32_t*) &arg_arr[i].unum);
 
                     if (1 != conv_res) {
                         console_send_strln(this, "arg format error");
@@ -285,7 +286,7 @@ static int console_execute(console_t* this)
                 }
 
                 case 's': {
-                    arg_arr[i] = (void*) cur_arg;
+                    arg_arr[i].str = cur_arg;
                     break;
                 }
 

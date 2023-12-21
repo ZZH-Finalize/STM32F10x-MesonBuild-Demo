@@ -34,17 +34,17 @@ CONSOLE_CMD_DEF(test)
     CONSOLE_CMD_UNUSE_ARGS;
 
     console_println(this, "argc: %d", argc);
-    console_println(this, "argv[0]: %ld", (uint32_t) argv[0]);
-    console_println(this, "argv[1]: %ld", (uint32_t) argv[1]);
-    console_println(this, "argv[2]: %s", (char *) argv[2]);
-    console_println(this, "argv[3]: %ld", (uint32_t) argv[3]);
+    console_println(this, "argv[0]: %ld", argv[0].unum);
+    console_println(this, "argv[1]: %ld", argv[1].unum);
+    console_println(this, "argv[2]: %s", argv[2].str);
+    console_println(this, "argv[3]: %ld", argv[3].unum);
 
     if (argc > 4) {
-        console_println(this, "argv[4]: %ld", (uint32_t) argv[4]);
+        console_println(this, "argv[4]: %ld", (uint32_t) argv[4].unum);
     }
 
     if (argc > 5) {
-        console_println(this, "argv[5]: %s", (char *) argv[5]);
+        console_println(this, "argv[5]: %s", (char *) argv[5].str);
     }
 
     return 0;
