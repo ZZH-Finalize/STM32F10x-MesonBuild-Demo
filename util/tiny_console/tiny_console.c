@@ -303,7 +303,7 @@ static int console_execute(console_t* this)
 
     console_send_strln(this, "");
 
-    int cmd_res = cmd_desc->fn(this, arg_num, (const void**) arg_arr);
+    int cmd_res = cmd_desc->fn(this, arg_num, arg_arr);
 
     if (NULL != arg_arr)
         memFree(arg_arr);

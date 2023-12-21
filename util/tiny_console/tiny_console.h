@@ -105,10 +105,19 @@ static inline int console_cancel_color(console_t* this)
 
 void console_display_prefix(console_t* this);
 
+typedef union
+{
+    const void* vp;
+    const uint32_t unum;
+    const int32_t num;
+    const float fnum;
+    const char* str;
+} console_cmd_arg_t;
+
 // return 0 when succ
 // return negative value when fail
 typedef int (*console_cmdfn_t)(console_t* this, const int argc,
-                               const void** argv);
+                               const console_cmd_arg_t* argv);
 
 typedef struct
 {

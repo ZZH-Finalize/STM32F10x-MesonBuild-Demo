@@ -4,14 +4,6 @@
 #include "tiny_console.h"
 #include "util/gnu_attributes.h"
 
-typedef union{
-    const void* vp;
-    const uint32_t unum;
-    const int32_t num;
-    const float fnum;
-    const char* str;
-} console_cmd_arg_t;
-
 #define CONSOLE_CMD_DEF(name) \
     int name(console_t* this, const int argc, const console_cmd_arg_t* argv)
 
