@@ -106,10 +106,13 @@ app_srcs = [
     'app/isr.c',
 ]
 
+toolchain_path = fs.parent(find_program('c').full_path())
+
 srcs = app_srcs
 inc_dirs = [
     'app',
-    'test_cases'
+    'test_cases',
+    toolchain_path / '../arm-none-eabi/include',
 ]
 
 # append start files

@@ -8,6 +8,13 @@
         "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild",
         "C_Cpp.default.compileCommands": "builddir\\compile_commands.json",
         "C_Cpp.formatting": "clangFormat",
+        "C_Cpp.intelliSenseEngine": "disabled",
+        "clangd.onConfigChanged": "restart",
+        "clangd.arguments": [
+            "--compile-commands-dir=builddir",
+            "--function-arg-placeholders=1",
+            "--clang-tidy"
+        ],
         "files.associations": {
             "*.s": "arm"
         },
