@@ -102,7 +102,7 @@
                 "MIMode": "gdb",
                 "miDebuggerPath": "@gdb_path@",
                 "miDebuggerServerAddress": "127.0.0.1:3333",
-                "svdPath": "proj_files/STM32F103xx.svd",
+                "svdPath": "${workspaceFolder}/proj_files/STM32F103xx.svd",
                 "hardwareBreakpoints": {
                     "limit": 6,
                     "require": false
@@ -176,7 +176,7 @@
                 "MIMode": "gdb",
                 "miDebuggerPath": "@gdb_path@",
                 "miDebuggerServerAddress": "127.0.0.1:3333",
-                "svdPath": "proj_files/STM32F103xx.svd",
+                "svdPath": "${workspaceFolder}/proj_files/STM32F103xx.svd",
                 "hardwareBreakpoints": {
                     "limit": 6,
                     "require": true
