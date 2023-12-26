@@ -102,6 +102,7 @@
                 "MIMode": "gdb",
                 "miDebuggerPath": "@gdb_path@",
                 "miDebuggerServerAddress": "127.0.0.1:3333",
+                "svdPath": "proj_files/STM32F103xx.svd",
                 "hardwareBreakpoints": {
                     "limit": 6,
                     "require": false
@@ -132,10 +133,10 @@
                         "text": "monitor init",
                         "description": "初始化"
                     },
-                    // {
-                    //     "text": "monitor reset",
-                    //     "description": "复位芯片"
-                    // },
+                    {
+                        "text": "monitor reset",
+                        "description": "复位芯片"
+                    },
                     {
                         "text": "monitor mww 0xE000ED0C 0x5FA0004",
                         "description": "软复位"
@@ -161,17 +162,7 @@
                         "text": "tb main",
                         "description": "在main处停止",
                         "ignoreFailures": true
-                    },
-                    // {
-                    //     "text": "b HardFault_Handler",
-                    //     "description": "进入内核异常时停止"
-                    // },
-                    // {
-                    //     "text": "set $sp = __stack",
-                    // },
-                    // {
-                    //     "text": "set $pc = Reset_Handler",
-                    // },
+                    }
                 ]
             },
             {
@@ -185,6 +176,7 @@
                 "MIMode": "gdb",
                 "miDebuggerPath": "@gdb_path@",
                 "miDebuggerServerAddress": "127.0.0.1:3333",
+                "svdPath": "proj_files/STM32F103xx.svd",
                 "hardwareBreakpoints": {
                     "limit": 6,
                     "require": true
@@ -253,7 +245,10 @@
     "extensions": {
         "recommendations": [
             "ms-vscode.cpptools",
-            "mesonbuild.mesonbuild"
+            "ms-vscode.vscode-embedded-tools",
+            "mesonbuild.mesonbuild",
+            "Arm.device-manager",
+            "Arm.embedded-debug",
         ]
     }
 }
