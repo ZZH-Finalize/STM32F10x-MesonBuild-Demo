@@ -69,7 +69,7 @@ void usart_init(void)
     USART_Cmd(USART1, ENABLE);
 }
 
-void nvic_init()
+void nvic_init(void)
 {
     NVIC_SetPriorityGrouping(NVIC_PriorityGroup_4);
 
@@ -98,7 +98,7 @@ int console_output(console_t* this, const char* str, uint32_t len)
     return 0;
 }
 
-int main()
+int main(void)
 {
     clock_init();
     gpio_init();

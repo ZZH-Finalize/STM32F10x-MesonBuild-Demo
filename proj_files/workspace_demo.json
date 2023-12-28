@@ -13,7 +13,9 @@
         "clangd.arguments": [
             "--compile-commands-dir=builddir",
             "--function-arg-placeholders=1",
-            "--clang-tidy"
+            "--clang-tidy",
+            "--all-scopes-completion",
+            "--enable-config",
         ],
         "files.associations": {
             "*.s": "arm"
