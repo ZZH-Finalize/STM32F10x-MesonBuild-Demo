@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "util/gnu_attributes.h"
 #include "mem_pools.h"
 
 #ifdef __cplusplus
@@ -37,7 +38,7 @@ typedef struct
 
 #define PoolByArray(pool, arr) [pool] = ArrayMem(arr)
 
-void* memAlloc(size_t size, const uint32_t pool);
+void* memAlloc(size_t size, const uint32_t pool) GNU_ATTR(__malloc__);
 void memFree(void* pMem);
 bool memIsClean(const uint32_t pool);
 bool memIsCleanAll(void);
