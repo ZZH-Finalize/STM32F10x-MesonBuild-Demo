@@ -10,11 +10,11 @@
 #define LINKER_SYMBOL32(sym)          LINKER_SYMBOL_TYPE(sym, uint32_t)
 
 #define EXPORT_FUNC_WITH_LEVEL(fn, type, section, level) \
-    GNU_ARRT(__section__("." #section "." #level))       \
+    GNU_ATTR(__section__("." #section "." #level))       \
     const type __##section##_ptr_to_##fn = fn
 
 #define EXPORT_FUNC_WITH_NAME_LEVEL(fn, type, section, level)   \
-    GNU_ARRT(__section__("." #section "." #level)) const struct \
+    GNU_ATTR(__section__("." #section "." #level)) const struct \
     {                                                           \
         const char* name;                                       \
         type func;                                              \

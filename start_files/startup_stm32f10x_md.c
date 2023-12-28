@@ -14,10 +14,11 @@
 extern int main(void);
 extern void do_init_calls(void);
 
-#define ISR_VEC             GNU_SECTION(.isr_vector)
-#define HANDLER_ALIAS(name) __attribute__((__alias__(#name), __weak__))
-#define NULL_HANDLER(name)  void name(void) HANDLER_ALIAS(Null_Handler)
-#define LOOP_HANDLER(name)  void name(void) HANDLER_ALIAS(Default_Handler)
+#define ISR_VEC GNU_SECTION(.isr_vector)
+#define HANDLER_ALIAS(name) \
+    __attribute__((__alias__(#name), __weak__, __interrupt__("IRQ")))
+#define NULL_HANDLER(name) void name(void) HANDLER_ALIAS(Null_Handler)
+#define LOOP_HANDLER(name) void name(void) HANDLER_ALIAS(Default_Handler)
 
 LINKER_SYMBOL32(__stack);
 LINKER_SYMBOL32(__estack); // smaller than __stack

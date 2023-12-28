@@ -1,10 +1,11 @@
 #include "stm32f10x.h"
+#include "util/arm_isr_attr.h"
 #include "util/tiny_console/tiny_console.h"
 
 extern console_t* console;
 extern volatile uint8_t rcv_flag;
 
-void USART1_IRQHandler(void)
+void ARM_IRQ USART1_IRQHandler(void)
 {
     if (USART_GetITStatus(USART1, USART_IT_RXNE)) {
         USART_ClearITPendingBit(USART1, USART_IT_RXNE);

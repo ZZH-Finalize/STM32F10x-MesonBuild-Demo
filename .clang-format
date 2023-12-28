@@ -48,7 +48,7 @@ AttributeMacros: [
   'static',
   'inline',
   '__attribute__',
-  'GNU_ARRT',
+  'GNU_ATTR',
   'GNU_SECTION',
   'GNU_WEAK',
   'GNU_HOT',
