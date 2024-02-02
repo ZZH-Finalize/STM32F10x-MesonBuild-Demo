@@ -179,7 +179,7 @@ c_args = [
     '-DPROJECT_VERSION=' + '"' + meson.project_version() + '"',
     '-fdata-sections',
     '-ffunction-sections',
-    '-std=gnu99',
+    '-std=gnu17',
     '-Wall', '-Wextra',
 ]
 c_args += configs
