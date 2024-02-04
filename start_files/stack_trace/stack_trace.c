@@ -1,6 +1,6 @@
 #include "stack_trace.h"
-#include "util/linker_tools.h"
-#include "util/usart/prints.h"
+#include "utils/linker_tools.h"
+#include "utils/usart/prints.h"
 
 LINKER_SYMBOL32(__stack);
 

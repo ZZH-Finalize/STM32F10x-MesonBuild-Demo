@@ -7,9 +7,9 @@
 
 #include "test_frame.h"
 
-#include "util/delay/delay.h"
-#include "util/iterators.h"
-#include "util/tiny_console/tiny_console.h"
+#include "utils/delay/delay.h"
+#include "utils/iterators.h"
+#include "utils/tiny_console/tiny_console.h"
 
 console_t* console = NULL;
 volatile uint8_t rcv_flag = 0;

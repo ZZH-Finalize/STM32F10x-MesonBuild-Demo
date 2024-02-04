@@ -1,6 +1,6 @@
 #include "test_frame.h"
-#include "util/tiny_console/tiny_console_cmd.h"
-#include "util/iterators.h"
+#include "utils/tiny_console/tiny_console_cmd.h"
+#include "utils/iterators.h"
 
 CONSOLE_CMD_DEF(run_all_testcases_warp)
 {

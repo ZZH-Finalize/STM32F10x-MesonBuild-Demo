@@ -1,10 +1,10 @@
 #include <stdint.h>
-#include "util/linker_tools.h"
-#include "util/gnu_attributes.h"
-#include "util/iterators.h"
-#include "util/asm_bridge.h"
+#include "utils/linker_tools.h"
+#include "utils/gnu_attributes.h"
+#include "utils/iterators.h"
+#include "utils/asm_bridge.h"
 #include "stack_trace/stack_trace.h"
-#include "util/usart/prints.h"
+#include "utils/usart/prints.h"
 
 #include "system_stm32f10x.h"
 #include "stm32f10x.h"

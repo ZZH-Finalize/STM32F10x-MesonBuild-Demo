@@ -65,7 +65,7 @@ foreach module, enable : stm32_modules
 endforeach
 
 # utils
-util_srcs = [
+utils_srcs = [
     'mem_mana/mem_mana.c',
     'bitmap/bitmap.c',
     'usart/prints.c',
@@ -111,7 +111,7 @@ toolchain_path = fs.parent(find_program('c').full_path())
 srcs = app_srcs
 inc_dirs = [
     'app',
-    'test_cases',
+    'utils' / 'test_cases',
     toolchain_path / '../arm-none-eabi/include',
 ]
 
@@ -122,13 +122,13 @@ foreach src : start_file_srcs
 endforeach
 
 # append utils
-foreach src : util_srcs
-    srcs += 'util' / src
+foreach src : utils_srcs
+    srcs += 'utils' / src
 endforeach
 
 # append test cases
 foreach src : test_cases_srcs
-    srcs += 'test_cases' / src
+    srcs += 'utils' / 'test_cases' / src
 endforeach
 
 # append stm32 lib src files to all src list
