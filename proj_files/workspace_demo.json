@@ -13,9 +13,14 @@
         "clangd.arguments": [
             "--compile-commands-dir=builddir",
             "--function-arg-placeholders=1",
-            "--clang-tidy",
+            "--header-insertion=iwyu", //enable: iwyu, disable: never
+            "--clang-tidy=1",
             "--all-scopes-completion",
             "--enable-config",
+            "--cross-file-rename",
+            "--background-index",
+            // "--log=verbose",
+            "--pretty"
         ],
         "files.associations": {
             "*.s": "arm"
