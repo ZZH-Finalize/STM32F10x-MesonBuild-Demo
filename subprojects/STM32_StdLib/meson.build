@@ -1,7 +1,7 @@
 project('STM32_StdLib', 'c',
     version: '3.5.0',
     default_options: {
-        'warning_level': '3',
+        'warning_level': '0',
         'c_std': 'gnu17',
     }
 )
@@ -63,7 +63,7 @@ lib = static_library(proj_name,
     dependencies: lib_src.dependencies(),
 )
 
-STM32_StdLib_dep = declare_dependency(
+stm32_stdlib_dep = declare_dependency(
     link_with: lib,
     include_directories: include_directories
 )

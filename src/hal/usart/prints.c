@@ -1,4 +1,5 @@
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdio.h>
 #include "prints.h"
 
@@ -10,12 +11,12 @@ void print_str(USART_TypeDef* usartx, const char* str)
 void print_hex(USART_TypeDef* usartx, uint32_t num)
 {
     for (int i = 0; i < 8; i++) {
-        uint8_t val = (num & 0xF0000000) >> 28;
+        uint32_t val = (num & 0xF0000000) >> 28;
 
         if (val > 9)
-            print_char(usartx, (val - 10) + 'A');
+            print_char(usartx, (char) ((val - 10) + 'A'));
         else
-            print_char(usartx, val + '0');
+            print_char(usartx, (char) (val + '0'));
 
         num <<= 4;
     }
@@ -27,13 +28,13 @@ void print_dec(USART_TypeDef* usartx, uint32_t num)
     uint8_t num_flag = 0;
 
     for (int i = 0; i < 10; i++) {
-        uint8_t val = (num / power) % 10;
+        uint32_t val = (num / power) % 10;
 
         if (0 != val)
             num_flag = 1;
 
         if (0 != num_flag)
-            print_char(usartx, val + '0');
+            print_char(usartx, (char) (val + '0'));
 
         power /= 10;
     }

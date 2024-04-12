@@ -3,8 +3,8 @@ project('demo', 'c',
     license: 'GPL-3.0',
     license_files: 'LICENSE',
     default_options: {
-        'warning_level': 'everything',
-        'c_std': 'gnu17'
+        'warning_level': '3',
+        'c_std': 'gnu17',
     }
 )
 
@@ -105,6 +105,7 @@ embed_utils_lib = subproject('embed-utils',
     default_options: {
         'buildtype': 'release',
         'default_library': 'static',
+        'warning_level': '0',
     },
     required: true
 )
@@ -115,10 +116,11 @@ stm32_lib = subproject('STM32_StdLib',
     default_options: {
         'buildtype': 'release',
         'default_library': 'static',
+        'warning_level': '0',
     },
     required: true
 )
-stm32_dep = stm32_lib.get_variable('STM32_StdLib_dep')
+stm32_dep = stm32_lib.get_variable('stm32_stdlib_dep')
 project_ss.add(stm32_dep)
 
 # Get memory configuration from cross file
@@ -193,6 +195,7 @@ foreach target_name, options : target_dict
 
     exe = executable(
         exe_name,
+        name_suffix: exe_sufix,
         link_depends: lds,
         sources: target_srcs.sources(),
         dependencies: target_srcs.dependencies(),
@@ -207,7 +210,7 @@ foreach target_name, options : target_dict
         command: [
             objdump_tool.full_path(),
             '-SD',
-            build_dir / exe.name()
+            exe.full_path()
         ],
         output: fs.replace_suffix(exe.name(), '.s')
     )
@@ -217,7 +220,7 @@ foreach target_name, options : target_dict
         depends: dis,
         command: [
             size_tool.full_path(),
-            build_dir / exe.name(),
+            exe.full_path(),
         ]
     )
 
@@ -229,7 +232,7 @@ foreach target_name, options : target_dict
         command: [
             objcopy_tool.full_path(),
             '-O', 'binary',
-            build_dir / exe.name(),
+            exe.full_path(),
             build_dir / '@OUTPUT@'
         ],
         output: fs.replace_suffix(exe.name(), '.bin')

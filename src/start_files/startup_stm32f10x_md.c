@@ -18,7 +18,8 @@ extern void do_init_calls(void);
 #define HANDLER_ALIAS(name) \
     __attribute__((__alias__(#name), __weak__, __interrupt__("IRQ")))
 #define NULL_HANDLER(name) void name(void) HANDLER_ALIAS(Null_Handler)
-#define LOOP_HANDLER(name) void name(void) HANDLER_ALIAS(Default_Handler)
+#define LOOP_HANDLER(name) \
+    GNU_NORETURN void name(void) HANDLER_ALIAS(Default_Handler)
 
 LINKER_SYMBOL32(__stack);
 LINKER_SYMBOL32(__estack); // smaller than __stack
@@ -29,7 +30,7 @@ LINKER_SYMBOL32(__load_end);
 LINKER_SYMBOL32(__load_addr);
 LINKER_SYMBOL32(__isr_vector_offset);
 
-GNU_WEAK void Default_Handler(void)
+GNU_WEAK GNU_NORETURN void Default_Handler(void)
 {
     volatile uint32_t r[4];
     volatile uint32_t lr_val = 0, xpsr = 0;
@@ -42,19 +43,19 @@ GNU_WEAK void Default_Handler(void)
     ASM_READ_REG("lr", lr_val);
     ASM_READ_XREG("xpsr", xpsr);
 
-    uint32_t* stack_pointer = 0;
+    uint32_t stack_pointer = 0;
 
     if (lr_val == 0xFFFFFFF9) {
-        stack_pointer = (uint32_t*) __get_MSP();
+        stack_pointer = __get_MSP();
     } else if (lr_val == 0xFFFFFFFD) {
-        stack_pointer = (uint32_t*) __get_PSP();
+        stack_pointer = __get_PSP();
     }
 
     print_str(DUMP_INFO_USART_SEL, __func__);
 
     for (int i = 0; i < 4; i++) {
         print_str(DUMP_INFO_USART_SEL, "\nr");
-        print_char(DUMP_INFO_USART_SEL, i + '0');
+        print_char(DUMP_INFO_USART_SEL, (char) (i + '0'));
         print_str(DUMP_INFO_USART_SEL, ": 0x");
         print_hex(DUMP_INFO_USART_SEL, r[i]);
     }
@@ -69,10 +70,10 @@ GNU_WEAK void Default_Handler(void)
     print_hex(DUMP_INFO_USART_SEL, __get_PSP());
 
     print_str(DUMP_INFO_USART_SEL, "\nstack_dump at (0x");
-    print_hex(DUMP_INFO_USART_SEL, (uint32_t) stack_pointer);
+    print_hex(DUMP_INFO_USART_SEL, stack_pointer);
     print_str(DUMP_INFO_USART_SEL, "):\n");
 
-    print_stack_trace(DUMP_INFO_USART_SEL, stack_pointer);
+    print_stack_trace(DUMP_INFO_USART_SEL, (uint32_t*) stack_pointer);
 
     while (1) {
         // *(uint32_t*)0xE000ED0C = 0x5FA0005;

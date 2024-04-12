@@ -5,11 +5,11 @@
 extern console_t* console;
 extern volatile uint8_t rcv_flag;
 
-void ARM_IRQ USART1_IRQHandler(void)
+static void ARM_IRQ USART1_IRQHandler(void)
 {
     if (USART_GetITStatus(USART1, USART_IT_RXNE)) {
         USART_ClearITPendingBit(USART1, USART_IT_RXNE);
-        console_input_char(console, USART_ReceiveData(USART1));
+        console_input_char(console, (char) USART_ReceiveData(USART1));
         rcv_flag = 1;
     }
 
