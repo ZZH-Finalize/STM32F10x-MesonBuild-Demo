@@ -19,8 +19,9 @@
             "--enable-config",
             "--cross-file-rename",
             "--background-index",
+            "--query-driver=@toolchain_path@"
             // "--log=verbose",
-            "--pretty"
+            // "--pretty",
         ],
         "files.associations": {
             "*.s": "arm"

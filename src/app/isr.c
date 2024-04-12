@@ -1,6 +1,6 @@
 #include "stm32f10x.h"
-#include "utils/arm_isr_attr.h"
-#include "utils/tiny_console/tiny_console.h"
+#include "arm_isr_attr.h"
+#include "tiny_console/tiny_console.h"
 
 extern console_t* console;
 extern volatile uint8_t rcv_flag;

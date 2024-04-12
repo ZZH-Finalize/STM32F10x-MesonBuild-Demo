@@ -2,195 +2,126 @@ project('demo', 'c',
     version: '0.1',
     license: 'GPL-3.0',
     license_files: 'LICENSE',
-    default_options: ['warning_level=3']
+    default_options: {
+        'warning_level': 'everything',
+        'c_std': 'gnu17'
+    }
 )
 
-# check cross compile
+# Check cross compile
 assert(meson.is_cross_build(),
     'This project must be cross compile!\n' +
     'add --cross-file= to switch to corss compile'
 )
 
-# check compile for STM32
+# Check compile for STM32
 target_mcu = meson.get_external_property('target_mcu', 'null')
 assert(target_mcu.contains('stm32f10'),
     'This project is only for STM32 F10x series(your selection: @0@)\n'.format(target_mcu) + 
     'Please select your MCU cross file in cross_files subdir'
 )
 
-# check specific device info
+# Check specific device info
 capacity = meson.get_external_property('capacity', 'null')
-allowed_capacity_list = ['LD', 'LD_VL', 'MD', 'MD_VL',
-                         'HD', 'HD_VL', 'XL', 'CL']
+allowed_capacity_list = ['LD', 'LD_VL', 'MD', 'MD_VL', 'HD', 'HD_VL', 'XL', 'CL']
 if false == allowed_capacity_list.contains(capacity)
     error('Unsupport capacity (your selection: @0@)\r\n'.format(capacity),
             'supported capacities are: ', allowed_capacity_list)
 endif
 
-fs = import('fs')
-
-# stm32 lib path
-dir_prefix = 'STM32_StdLib/'
-
-# stm32 lib include dirs
-incs = [
-    'CMSIS/CoreSupport',
-    'CMSIS/DeviceSupport',
-    'Driver/inc'
-]
-
-# peripheral drvs
-stm32_mod_path = 'Driver/src/stm32f10x_@0@.c'
-stm32_modules = {
-    'adc': true, 'bkp': true, 'can': true, 'cec': true, 'crc': true,
-    'dac': true, 'dbgmcu': true, 'dma': true, 'exti': true, 'flash': true,
-    'fsmc': true, 'gpio': true, 'i2c': true, 'iwdg': true, 'pwr': true,
-    'rcc': true, 'rtc': true, 'sdio': true, 'spi': true, 'tim': true,
-    'usart': true, 'wwdg': true,
-}
-
-# other support files
-stm32_std_lib_srcs = [
-    # 'CMSIS/DeviceSupport/startup/startup_stm32f10x_md.s',
-    'CMSIS/DeviceSupport/system_stm32f10x.c',
-    'CMSIS/CoreSupport/core_cm3.c',
-    'Driver/src/misc.c',
-]
-
-# add enabled module files to compile list
-foreach module, enable : stm32_modules
-    if enable
-        stm32_std_lib_srcs += stm32_mod_path.format(module)
-    endif
-endforeach
-
-# utils
-utils_srcs = [
-    'mem_mana/mem_mana.c',
-    'bitmap/bitmap.c',
-    'usart/prints.c',
-    'ringbuf/ringbuf.c',
-    'tiny_console/tiny_console.c',
-    'tiny_console/builtin_cmds/help.c',
-    'delay/delay.c',
-    'hash/str_hash.c',
-    'map/map.c',
-    'value_ops.c',
-    'strarg.c',
-]
-
-# test cases
-test_cases_srcs = [
-    'test_frame.c',
-    'hash/demo.c',
-    'bitmap/bitmap_basic.c',
-    'bitmap/bitmap_clear.c',
-    'map/map_test_data.c',
-    'map/map_basic_test.c',
-    'map/map_detete_clear_test.c',
-    'map/map_duplcate_key.c',
-]
-
-# start files
-start_file_fmt = 'startup_stm32f10x_@0@.c'
-start_file_srcs = [
-    'init_calls.s',
-    'stack_trace/stack_trace.c',
-    'sys_funcs.c',
-]
-
-# applicaton src files
-app_srcs = [
-    'app/main.c',
-    'app/console_commands.c',
-    'app/isr.c',
-]
-
-toolchain_path = fs.parent(find_program('c').full_path())
-
-srcs = app_srcs
-inc_dirs = [
-    'app',
-    'utils' / 'test_cases',
-    toolchain_path / '../arm-none-eabi/include',
-]
-
-# append start files
-srcs += 'start_files' / start_file_fmt.format(capacity.to_lower())
-foreach src : start_file_srcs
-    srcs += 'start_files' / src
-endforeach
-
-# append utils
-foreach src : utils_srcs
-    srcs += 'utils' / src
-endforeach
-
-# append test cases
-foreach src : test_cases_srcs
-    srcs += 'utils' / 'test_cases' / src
-endforeach
-
-# append stm32 lib src files to all src list
-foreach src : stm32_std_lib_srcs
-    srcs += dir_prefix / src
-endforeach
-
-# append stm32 lib inc files to all include dirs
-foreach inc : incs
-    inc_dirs += dir_prefix / inc
-endforeach
-
-# message('srcs:', srcs)
-# message('inc_dirs:', inc_dirs)
-
-# read .config and generate marcos
-configs = []
-if fs.exists('.config')
-    config_lines = fs.read('.config')
-    # message('configs:', configs)
-    foreach line: config_lines.split('\n')
-        if line.contains('=')
-            line = line.strip()
-            # message('config line: ', line)
-            configs += '-DCONFIG_' + line
-        endif
-    endforeach
-endif
-
-# message('using configs: ', configs)
-
-# get cross tools from cross file
-objcopy_tool = find_program('objcopy')
-objdump_tool = find_program('objdump')
-size_tool = find_program('size')
-gdb_tool = find_program('gdb')
-
+# Project informations
 proj_name = meson.project_name()
 src_dir = meson.current_source_dir()
 build_dir = meson.current_build_dir()
 exe_sufix = meson.get_external_property('exe_sufix', 'elf')
 
-# c_args apply to all src files
-c_args = [
+# Get cross tools from cross file
+objcopy_tool = find_program('objcopy')
+objdump_tool = find_program('objdump')
+size_tool = find_program('size')
+gdb_tool = find_program('gdb')
+ls_tool = find_program(
+    'list_files.py',
+    dirs: [src_dir / 'tools'],
+    required: true
+)
+
+# Import modules
+fs = import('fs')
+ssmod = import('sourceset')
+
+# Global informations
+project_ss = ssmod.source_set()
+global_config = {}
+
+global_c_flags = [
     '-mcpu=' + host_machine.cpu(),
     '-DSTM32F10X_' + capacity,
     '-DUSE_STDPERIPH_DRIVER',
     '-DPROJECT_VERSION=' + '"' + meson.project_version() + '"',
     '-fdata-sections',
     '-ffunction-sections',
-    '-std=gnu17',
-    '-Wall', '-Wextra',
 ]
-c_args += configs
 
-# link args apply to the project
-link_args = [
+global_link_flags = [
     '-mcpu=' + host_machine.cpu(),
     '-nostartfiles',
+    '-Wl,--gc-sections',
+    '-lm',
 ]
 
-# get memory configuration from cross file
+# Read .config and generate marcos
+if fs.exists('.config')
+
+    config_lines = fs.read('.config')
+
+    foreach line: config_lines.splitlines()
+        if line.contains('=') and not line.startswith('#')
+            line = line.strip()
+
+            part = line.split('=')
+            global_config += {part[0]: part[1]}
+            global_c_flags += '-DCONFIG_' + line
+
+        endif
+
+    endforeach
+
+endif
+
+# Add all flags, srcs, incs to meson
+add_global_arguments(global_c_flags, language: 'c')
+add_global_link_arguments(global_link_flags, language: 'c')
+
+# toolchain_path = fs.parent(fs.parent(find_program('c').full_path()))
+# toolchain_inc = toolchain_path / 'arm-none-eabi/include'
+# message(toolchain_inc)
+# project_ss.add(declare_dependency(include_directories: toolchain_inc))
+
+# Process subdirs and subprojects
+subdir('src')
+
+embed_utils_lib = subproject('embed-utils',
+    default_options: {
+        'buildtype': 'release',
+        'default_library': 'static',
+    },
+    required: true
+)
+util_dep = embed_utils_lib.get_variable('embed_utils_dep')
+project_ss.add(util_dep)
+
+stm32_lib = subproject('STM32_StdLib',
+    default_options: {
+        'buildtype': 'release',
+        'default_library': 'static',
+    },
+    required: true
+)
+stm32_dep = stm32_lib.get_variable('STM32_StdLib_dep')
+project_ss.add(stm32_dep)
+
+# Get memory configuration from cross file
 mem_cfg = {
     'flash_base': meson.get_external_property('flash_base'),
     'flash_size': meson.get_external_property('flash_size'),
@@ -204,17 +135,20 @@ target_dict = {
     'dbg': {
         'c_args': [
             '-Og',
-            '-D__DEBUG',
             '-DVECT_TAB_SRAM',
             '-g3',
         ],
-        'link_args': ['-Wl,-Map,memory_ram.map', '--specs=nano.specs'],
+        'link_args': [
+            '--specs=nano.specs'
+        ],
         'linker_script': 'linker_ram_new.ld',
         'debug': true,
     },
     'rel': {
         'c_args': ['-O2'],
-        'link_args': ['-Wl,-Map,memory.map', '--specs=nano.specs'],
+        'link_args': [
+            '--specs=nano.specs'
+        ],
         'linker_script': 'linker_new.ld',
         'download': true,
     }
@@ -226,9 +160,30 @@ dl_target = ''
 
 # generate all target build setup
 foreach target_name, options : target_dict
-    target_srcs = srcs + options.get('srcs', [])
-    exe_name = proj_name + '_@0@.@1@'.format(target_name, exe_sufix)
+
+    # Specify target informations
+    exe_name = proj_name + '_@0@'.format(target_name)
     lds_name = target_name + '_' + options['linker_script']
+    target_c_args = options.get('c_args', [])
+    target_link_args = options.get('link_args', [])
+
+    # Handle configs
+    target_configs = global_config + options.get('configs', {})
+
+    # Handle source set
+    target_src_set = ssmod.source_set()
+    target_src_set.add_all(project_ss)
+    target_src_set.add(files(options.get('srcs', [])))
+    target_srcs = target_src_set.apply(target_configs)
+
+    # Handle debug flags
+    if options.get('debug', false)
+        target_c_args += '-D__DEBUG'
+    endif
+
+    # Handle map file and linker script
+    target_link_args += '-Wl,-Map,memory_@0@.map'.format(target_name)
+    target_link_args += '-T' + (build_dir / lds_name)
 
     lds = configure_file(
         input: 'linker_sct' / options['linker_script'],
@@ -236,16 +191,17 @@ foreach target_name, options : target_dict
         configuration: mem_cfg
     )
 
-    lds_arg = '-T' + (build_dir / lds_name)
-
-    exe = executable(exe_name, target_srcs,
-        include_directories: inc_dirs,
+    exe = executable(
+        exe_name,
         link_depends: lds,
-        c_args: c_args + options.get('c_args', []),
-        link_args: link_args + lds_arg + options.get('link_args', [])
+        sources: target_srcs.sources(),
+        dependencies: target_srcs.dependencies(),
+        c_args: target_c_args,
+        link_args: target_link_args
     )
 
-    dis = custom_target(target_name + '_dis',
+    dis = custom_target(
+        target_name + '_dis',
         depends: exe,
         capture: true,
         command: [
@@ -256,7 +212,8 @@ foreach target_name, options : target_dict
         output: fs.replace_suffix(exe.name(), '.s')
     )
 
-    size = run_target(target_name + '_size',
+    run_target(
+        target_name + '_size',
         depends: dis,
         command: [
             size_tool.full_path(),
@@ -266,7 +223,8 @@ foreach target_name, options : target_dict
 
     top_objs += dis
 
-    bin = custom_target(target_name + '_bin',
+    bin = custom_target(
+        target_name + '_bin',
         depends: dis,
         command: [
             objcopy_tool.full_path(),
@@ -288,7 +246,8 @@ foreach target_name, options : target_dict
 endforeach
 
 # custom target to build all target in the 'target_dict'
-run_target('top_all',
+run_target(
+    'top_all',
     depends: top_objs,
     command: ['echo', 'all target built done']
 )
@@ -308,7 +267,8 @@ configure_file(
         'dfp_file': dfp_file,
         'device_name': device_name,
         'debugger_file': debugger_file,
-        'debugger_file_ini': fs.replace_suffix(debugger_file, '.ini')
+        'debugger_file_ini': fs.replace_suffix(debugger_file, '.ini'),
+        'toolchain_path': find_program('c').full_path(),
     },
 )
 
@@ -332,7 +292,8 @@ supported_tools = {
 }
 
 foreach tool, cfg : supported_tools
-    run_target(tool + ' - download',
+    run_target(
+        tool + ' - download',
         depends: dl_target,
         command: [
             'openocd',

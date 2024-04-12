@@ -1,6 +1,8 @@
-#include "test_frame.h"
-#include "utils/tiny_console/tiny_console_cmd.h"
-#include "utils/iterators.h"
+#include "test_cases/test_frame.h"
+#include "tiny_console/tiny_console_cmd.h"
+#include "iterators.h"
+
+#if CONFIG_ENABLE_TEST_CASES == 1
 
 CONSOLE_CMD_DEF(run_all_testcases_warp)
 {
@@ -18,6 +20,10 @@ CONSOLE_CMD_DEF(run_all_testcases_warp)
 
 EXPORT_CONSOLE_CMD("run_tc", run_all_testcases_warp, "Run all testcases", NULL);
 
+#endif
+
+#if CONFIG_ENABLE_DEMO == 1
+
 CONSOLE_CMD_DEF(run_all_demo_warp)
 {
     CONSOLE_CMD_UNUSE_ARGS;
@@ -28,6 +34,8 @@ CONSOLE_CMD_DEF(run_all_demo_warp)
 }
 
 EXPORT_CONSOLE_CMD("run_demo", run_all_demo_warp, "Run all demo", NULL);
+
+#endif
 
 CONSOLE_CMD_DEF(test)
 {
