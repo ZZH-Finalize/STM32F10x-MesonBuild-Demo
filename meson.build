@@ -101,26 +101,28 @@ add_global_link_arguments(global_link_flags, language: 'c')
 # Process subdirs and subprojects
 subdir('src')
 
-embed_utils_lib = subproject('embed-utils',
+util_dep = dependency('embed-utils-full',
     default_options: {
         'buildtype': 'release',
         'default_library': 'static',
         'warning_level': '0',
+        'embed-utils-tests': true
     },
+    method: 'builtin',
     required: true
 )
-util_dep = embed_utils_lib.get_variable('embed_utils_dep')
 project_ss.add(util_dep)
 
-stm32_lib = subproject('STM32_StdLib',
+stm32_dep = dependency('STM32_StdLib',
+    version: '3.5.0',
     default_options: {
         'buildtype': 'release',
         'default_library': 'static',
         'warning_level': '0',
     },
+    method: 'builtin',
     required: true
 )
-stm32_dep = stm32_lib.get_variable('stm32_stdlib_dep')
 project_ss.add(stm32_dep)
 
 # Get memory configuration from cross file

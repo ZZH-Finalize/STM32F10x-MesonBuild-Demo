@@ -1,0 +1,8 @@
+[wrap-git]
+url = git@github.com:ZZH-Finalize/embed-utils.git
+revision = head
+depth = 1
+
+[provide]
+embed-utils = embed_utils_dep
+embed-utils-full = embed_utils_whole_dep

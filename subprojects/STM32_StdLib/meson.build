@@ -11,8 +11,6 @@ proj_name = meson.project_name()
 src_dir = meson.current_source_dir()
 build_dir = meson.current_build_dir()
 
-message(get_option('c_args'))
-
 # Import modules
 ssmod = import('sourceset')
 

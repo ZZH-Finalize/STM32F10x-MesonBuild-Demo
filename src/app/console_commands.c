@@ -1,15 +1,35 @@
+#include "test_case_conf.h"
 #include "test_cases/test_frame.h"
+#include "tiny_console/tiny_console.h"
 #include "tiny_console/tiny_console_cmd.h"
+#include <stdarg.h>
 #include "iterators.h"
 
 #if CONFIG_ENABLE_TEST_CASES == 1
+
+static console_t* __dbg_console = NULL;
+
+static int print(const char *fmt, ...)
+{
+    va_list vargs;
+    va_start(vargs, fmt);
+    int len = console_vprintf(__dbg_console, fmt, vargs);
+    va_end(vargs);
+
+    return len;
+}
 
 CONSOLE_CMD_DEF(run_all_testcases_warp)
 {
     CONSOLE_CMD_UNUSE_ARGS;
 
+    test_case_arg_t arg = {
+        .args = NULL,
+        .print = print
+    };
+
     uint32_t all_num = get_all_testcases_num();
-    uint32_t succ_num = run_all_testcases(NULL);
+    uint32_t succ_num = run_all_testcases(&arg);
 
     console_send_strln(this, "test result: ");
     console_println(this, "passed [%ld/%ld]", succ_num, all_num);
