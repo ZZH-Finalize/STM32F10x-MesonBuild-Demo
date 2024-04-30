@@ -7,7 +7,7 @@
 
 #if CONFIG_ENABLE_TEST_CASES == 1
 
-static console_t* __dbg_console = NULL;
+static console_t *__dbg_console = NULL;
 
 static int print(const char *fmt, ...)
 {
@@ -23,10 +23,7 @@ CONSOLE_CMD_DEF(run_all_testcases_warp)
 {
     CONSOLE_CMD_UNUSE_ARGS;
 
-    test_case_arg_t arg = {
-        .args = NULL,
-        .print = print
-    };
+    test_case_arg_t arg = {.args = NULL, .print = print};
 
     uint32_t all_num = get_all_testcases_num();
     uint32_t succ_num = run_all_testcases(&arg);
@@ -63,19 +60,22 @@ CONSOLE_CMD_DEF(test)
 
     console_println(this, "argc: %d", argc);
     console_println(this, "argv[0]: %lu", argv[0].unum);
-    console_println(this, "argv[1]: %lu", argv[1].unum);
-    console_println(this, "argv[2]: %s", argv[2].str);
-    console_println(this, "argv[3]: %lu", argv[3].unum);
+
+    if (argc > 1)
+        console_println(this, "argv[1]: %d", argv[1].num);
+    if (argc > 2)
+        console_println(this, "argv[2]: %lu",
+                        (uint32_t) (argv[2].fnum * 1000000.0));
+    if (argc > 3)
+        console_println(this, "argv[3]: %s", argv[3].str);
 
     if (argc > 4) {
-        console_println(this, "argv[4]: %lu", (uint32_t) argv[4].unum);
-    }
-
-    if (argc > 5) {
-        console_println(this, "argv[5]: %s", argv[5].str);
+        for (int i = 0; i < argc - 4; i++) {
+            console_println(this, "argv[%d]: %s", i + 4, argv[i + 4].str);
+        }
     }
 
     return 0;
 }
 
-EXPORT_CONSOLE_CMD("test", test, "test the console command", "ddsd[ds]");
+EXPORT_CONSOLE_CMD("test", test, "test the console command", "u[dfs]+");
