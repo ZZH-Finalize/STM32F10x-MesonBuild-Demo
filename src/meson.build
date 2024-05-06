@@ -7,7 +7,7 @@ find_srcs = find_res.stdout().splitlines()
 
 dep = declare_dependency(
     sources: files(find_srcs),
-    include_directories: include_directories(['hal', 'app'])
+    include_directories: include_directories(['.', 'app'])
 )
 
 project_ss.add(dep)

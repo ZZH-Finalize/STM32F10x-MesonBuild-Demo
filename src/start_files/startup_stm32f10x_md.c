@@ -4,7 +4,7 @@
 #include "iterators.h"
 #include "asm_bridge.h"
 #include "stack_trace/stack_trace.h"
-#include "usart/prints.h"
+#include "hal/usart/prints.h"
 
 #include "system_stm32f10x.h"
 #include "stm32f10x.h"
