@@ -1,5 +1,0 @@
-[wrap-file]
-
-
-[provide]
-STM32_StdLib = stm32_stdlib_dep

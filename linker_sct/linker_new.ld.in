@@ -3,11 +3,12 @@ ENTRY(Reset_Handler)
 
 MEMORY
 {
-    FLASH (rx) : ORIGIN = @flash_base@, LENGTH = @flash_size@ 
-    RAM (wx) : ORIGIN = @ram_base@, LENGTH = @ram_size@
+    FLASH (rx) : ORIGIN = 0x08000000, LENGTH = ${flash_size}
+    RAM (wxa) : ORIGIN = 0x20000000, LENGTH = ${ram_size}
+    FSMC (wxa) : ORIGIN = 0x60000000, LENGTH = 1024M
 }
 
-PHDRS 
+PHDRS
 {
     text PT_LOAD;
     data PT_LOAD;
@@ -24,7 +25,7 @@ SECTIONS
         PROVIDE(__sisr_vector = .);
         KEEP(*(.isr_vector));
         PROVIDE(__eisr_vector = .);
-    } > FLASH :boot
+    } > ${REGION_BOOT} :boot
 
     .text : {
         . = ALIGN(4);
@@ -43,7 +44,7 @@ SECTIONS
         PROVIDE(__edtor = .);
 
         PROVIDE(__etext = .);
-    } > FLASH :text
+    } > ${REGION_TEXT} AT > ${REGION_TEXT_AT} :text
 
     .rodata : {
         . = ALIGN(4);
@@ -74,15 +75,15 @@ SECTIONS
         __econsole_cmd = .;
 
         PROVIDE(__erodata = .);
-    } > FLASH :rodata
+    } > ${REGION_RODATA} AT > ${REGION_TEXT_AT} :rodata
 
     .stack (NOLOAD): {
         PROVIDE(__estack = .);
         /* stack size 0x400 */
-        . += @stack_size@;
+        . += ${stack_size};
         . = ALIGN(0x4);
         PROVIDE(__stack = .);
-    } > RAM :stack
+    } > ${REGION_STACK} :stack
 
     .data : {
         . = ALIGN(4);
@@ -93,7 +94,7 @@ SECTIONS
         *(.data*)
         PROVIDE(__edata = .);
         PROVIDE(__load_end = .);
-    } > RAM AT > FLASH :data
+    } > ${REGION_DATA} AT > ${REGION_DATA_AT} :data
 
     PROVIDE(__load_addr = LOADADDR(.data));
 
@@ -105,7 +106,7 @@ SECTIONS
         *(.bss*)
         *(COMMON)
         PROVIDE(__ebss = .);
-    } > RAM :data
+    } > ${REGION_BSS} AT > ${REGION_BSS} :data
 
     PROVIDE(end = .);
 }

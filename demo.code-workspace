@@ -5,13 +5,11 @@
         }
     ],
     "settings": {
-        "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild",
-        "C_Cpp.default.compileCommands": "builddir\\compile_commands.json",
         "C_Cpp.formatting": "clangFormat",
         "C_Cpp.intelliSenseEngine": "disabled",
         "clangd.onConfigChanged": "restart",
         "clangd.arguments": [
-            "--compile-commands-dir=builddir",
+            "--compile-commands-dir=build",
             "--function-arg-placeholders=1",
             "--header-insertion=iwyu", //enable: iwyu, disable: never
             "--clang-tidy=1",
@@ -19,31 +17,27 @@
             "--enable-config",
             "--cross-file-rename",
             "--background-index",
-            "--query-driver=@toolchain_path@"
+            "--query-driver=D:/SysGCC/arm-none-eabi/bin/arm-none-eabi-gcc"
             // "--log=verbose",
             // "--pretty",
         ],
         "files.associations": {
-            "*.s": "arm"
+            "*.s": "arm",
+            "*.lua": "xmake",
+            "*.ld.in": "linkerscript"
         },
-        "mesonbuild.configureOptions": [
-            "--cross-file",
-            "cross_files/toolchain.ini",
-            "--cross-file",
-            "cross_files/stm32f10x.ini",
-            "--cross-file",
-            "cross_files/debugger/@debugger_file_ini@",
-            "--cross-file",
-            "@cross_file@"
-        ]
+        "todo-tree.tree.scanMode": "workspace"
     },
     "tasks": {
         "version": "2.0.0",
         "tasks": [
             {
-                "label": "meson - build",
-                "type": "meson",
-                "mode": "build",
+                "label": "build",
+                "type": "shell",
+                "command": "xmake",
+                "args": [
+                    "b"
+                ],
                 "group": {
                     "kind": "build",
                     "isDefault": true
@@ -59,12 +53,14 @@
                     "focus": true,
                     "clear": true
                 },
-                "target": "dbg_size:run"
             },
             {
-                "label": "meson - clean",
-                "type": "meson",
-                "mode": "clean",
+                "label": "clean",
+                "type": "shell",
+                "command": "xmake",
+                "args": [
+                    "clean"
+                ],
                 "isBackground": true,
                 "presentation": {
                     "clear": true,
@@ -83,7 +79,7 @@
                 "command": "openocd",
                 "args": [
                     "-f",
-                    "openocd_cfg/@debugger_file@",
+                    "openocd_cfg/cmsis-dap.cfg",
                     "-f",
                     "openocd_cfg/stm32f1x.cfg"
                 ],
@@ -110,12 +106,12 @@
                 "name": "openocd - ram",
                 "type": "cppdbg",
                 "request": "launch",
-                "program": "${workspaceFolder}/builddir/@debug_file@",
+                "program": "${workspaceFolder}/builddir/demo_dbg",
                 "cwd": "${workspaceFolder}/builddir",
                 "environment": [],
                 "externalConsole": false,
                 "MIMode": "gdb",
-                "miDebuggerPath": "@gdb_path@",
+                "miDebuggerPath": "D:/SysGCC/arm-none-eabi/bin/arm-none-eabi-gdb.exe",
                 "miDebuggerServerAddress": "127.0.0.1:3333",
                 "svdPath": "${workspaceFolder}/proj_files/STM32F103xx.svd",
                 "hardwareBreakpoints": {
@@ -184,12 +180,12 @@
                 "name": "openocd - flash",
                 "type": "cppdbg",
                 "request": "launch",
-                "program": "${workspaceFolder}/builddir/@debug_file@",
+                "program": "${workspaceFolder}/builddir/demo_dbg",
                 "cwd": "${workspaceFolder}/builddir",
                 "environment": [],
                 "externalConsole": false,
                 "MIMode": "gdb",
-                "miDebuggerPath": "@gdb_path@",
+                "miDebuggerPath": "D:/SysGCC/arm-none-eabi/bin/arm-none-eabi-gdb.exe",
                 "miDebuggerServerAddress": "127.0.0.1:3333",
                 "svdPath": "${workspaceFolder}/proj_files/STM32F103xx.svd",
                 "hardwareBreakpoints": {
@@ -250,9 +246,9 @@
                 "name": "arm - debugger",
                 "type": "embedded-debug",
                 "request": "launch",
-                "program": "${workspaceFolder}/builddir/@debug_file@",
-                "cmsisPack": "@dfp_file@",
-                "deviceName": "@device_name@"
+                "program": "${workspaceFolder}/builddir/demo_dbg",
+                "cmsisPack": "D:/SysGCC/DFP/Keil.STM32F1xx_DFP.2.4.1.pack",
+                "deviceName": "STM32F103C8"
             }
         ],
         "compounds": []
@@ -261,7 +257,8 @@
         "recommendations": [
             "ms-vscode.cpptools",
             "ms-vscode.vscode-embedded-tools",
-            "mesonbuild.mesonbuild",
+            "llvm-vs-code-extensions.vscode-clangd",
+            "tboox.xmake-vscode",
             "Arm.device-manager",
             "Arm.embedded-debug",
         ]

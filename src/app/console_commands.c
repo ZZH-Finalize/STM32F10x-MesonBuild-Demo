@@ -1,11 +1,11 @@
-#include "test_case_conf.h"
+// #include "test_case_conf.h"
 #include "test_cases/test_frame.h"
 #include "tiny_console/tiny_console.h"
 #include "tiny_console/tiny_console_cmd.h"
 #include <stdarg.h>
 #include "iterators.h"
 
-#if CONFIG_ENABLE_TEST_CASES == 1
+#ifdef CONFIG_ENABLE_TEST_CASES
 
 static console_t *__dbg_console = NULL;
 
