@@ -18,6 +18,12 @@ includes('cross_files/toolchain.lua')
 includes('subprojects/embed-utils')
 includes('subprojects/STM32_StdLib')
 
+add_options(
+    'target_mcu',
+    'stack_size',
+    'memory_map'
+)
+
 add_cxflags(
     '-mcpu=cortex-m3',
     '-ftree-vectorize',
@@ -45,7 +51,7 @@ add_ldflags(
 
 -- Debug mode specific settings
 if is_mode('debug') then
-    add_cxflags('-Og', '-DVECT_TAB_SRAM', '-g3')
+    add_cxflags('-Og', '-g3')
 end
 
 -- Release mode specific settings
@@ -61,12 +67,6 @@ target('demo')
     -- Add source files
     add_files('src/**.c', 'src/**.s')
     add_includedirs('src')
-
-    add_options(
-        'target_mcu',
-        'stack_size',
-        'memory_map'
-    )
 
     after_load(function (target)
         -- generate linker file
@@ -86,18 +86,20 @@ target('demo')
 
     -- custom rules for objdump and size
     after_build(function(target)
-        os.cd(target:targetdir())
+        local builddir = target:targetdir()
+        local elf_file = target:targetfile()
+        local elf_name = target:name()
 
         os.runv(
             '$(toolchain)-objcopy',
-            {'-O', 'binary', target:targetfile(), target:name() .. '.bin'}
+            {'-O', 'binary', elf_file, path.join(builddir, elf_name .. '.bin')}
         )
 
         os.runv(
             '$(toolchain)-objdump', 
-            {'-Sd', '--visualize-jumps', target:targetfile()}, 
-            {stdout = target:name() .. '.s'}
+            {'-Sd', '--visualize-jumps', elf_file}, 
+            {stdout = path.join(builddir, elf_name .. '.s')}
         )
 
-        os.execv('$(toolchain)-size', {target:targetfile()})
+        os.execv('$(toolchain)-size', {elf_file})
     end)

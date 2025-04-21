@@ -17,6 +17,8 @@ option('memory_map')
     local map = memory_map[get_config('memory_map')]
 
     if map then
+        add_defines(map.defines, {public = true})
+
         set_configvar('REGION_BOOT', map.REGION_BOOT)
         set_configvar('REGION_TEXT', map.REGION_TEXT)
         set_configvar('REGION_TEXT_AT', map.REGION_TEXT_AT)

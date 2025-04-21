@@ -15,14 +15,8 @@ add_includedirs(
 -- targets
 target('STM32_StdLib')
     set_kind('static')
-
-    local dev_info = device_table[get_config('target_mcu')]
-
-    if dev_info then
-        add_defines('STM32F10X_' .. dev_info.memory.capacity, {public = true})
-    end
-
     add_defines('USE_STDPERIPH_DRIVER', {public = true})
+    add_options('target_mcu')
 
     -- add source files
     add_files('**.c')
@@ -36,5 +30,6 @@ option('target_mcu')
     if dev_info then
         set_configvar('flash_size', dev_info.memory.flash_size)
         set_configvar('ram_size', dev_info.memory.ram_size)
+        add_defines('STM32F10X_' .. dev_info.memory.capacity)
     end
     

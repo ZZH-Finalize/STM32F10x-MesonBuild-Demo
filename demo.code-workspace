@@ -8,6 +8,8 @@
         "C_Cpp.formatting": "clangFormat",
         "C_Cpp.intelliSenseEngine": "disabled",
         "clangd.onConfigChanged": "restart",
+        "xmake.compileCommandsBackend": "clangd",
+        "xmake.compileCommandsDirectory": "build",
         "clangd.arguments": [
             "--compile-commands-dir=build",
             "--function-arg-placeholders=1",
@@ -26,29 +28,43 @@
             "*.lua": "xmake",
             "*.ld.in": "linkerscript"
         },
-        "todo-tree.tree.scanMode": "workspace"
     },
     "tasks": {
         "version": "2.0.0",
         "tasks": [
             {
+                "label": "xmake-build cdb",
+                "type": "shell",
+                "command": "xmake",
+                "args": [
+                    "project",
+                    "-k",
+                    "compile_commands",
+                    "--lsp=clangd",
+                    "build"
+                ],
+                "isBackground": true,
+                "presentation": {
+                    "clear": true,
+                    "close": true,
+                    "reveal": "silent",
+                    "panel": "shared"
+                },
+            },
+            {
                 "label": "build",
                 "type": "shell",
                 "command": "xmake",
                 "args": [
-                    "b"
+                    "b",
+                    "-v"
                 ],
+                // "dependsOn": "xmake-build cdb",
                 "group": {
                     "kind": "build",
                     "isDefault": true
                 },
-                "problemMatcher": {
-                    "base": "$gcc",
-                    "fileLocation": [
-                        "relative",
-                        "${workspaceFolder}/builddir"
-                    ]
-                },
+                "problemMatcher": "$gcc",
                 "presentation": {
                     "focus": true,
                     "clear": true
