@@ -91,6 +91,5 @@ rule('generate.extrafiles')
     add_deps(
         'generate.map',
         'generate.bin',
-        'generate.disassemble',
-        'generate.sizeinfo'
+        'generate.disassemble'
     )

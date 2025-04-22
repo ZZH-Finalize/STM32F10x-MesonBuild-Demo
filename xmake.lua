@@ -68,6 +68,7 @@ target('demo')
 
     add_rules(
         'generate.extrafiles',
+        'generate.sizeinfo',
         'generate.lds'
     )
 
