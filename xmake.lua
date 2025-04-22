@@ -7,14 +7,16 @@ set_warnings('everything')
 
 set_policy('check.auto_ignore_flags', false)
 
+includes('cross_files/options.lua')
+includes('cross_files/dynamic_lds.lua')
+includes('cross_files/toolchain.lua')
+
 -- Global configurations
 add_rules('mode.debug', 'mode.release')
 set_defaultmode('debug')
 set_defaultplat('cross')
 set_defaultarchs('arm')
 
-includes('cross_files/options.lua')
-includes('cross_files/toolchain.lua')
 includes('subprojects/embed-utils')
 includes('subprojects/STM32_StdLib')
 
@@ -68,13 +70,18 @@ target('demo')
     add_files('src/**.c', 'src/**.s')
     add_includedirs('src')
 
-    after_load(function (target)
+    -- on_load(function (target) 
+    --     target:add('files', path.join(target:targetdir(), 'linker_new.ld'))
+    -- end)
+
+    on_load(function (target)
         -- generate linker file
         target:set('configdir', target:targetdir())
         target:add('configfiles', 'linker_sct/linker_new.ld.in')
 
         -- add linker file to ldflags
         target:add('ldflags', '-T' .. path.join(target:targetdir(), 'linker_new.ld'))
+        target:data_add('linkdepfiles', path.join(target:targetdir(), 'linker_new.ld'))
 
         -- add map file
         target:add('ldflags', '-Wl,-Map,' .. path.join(target:targetdir(), target:name() .. '.map'))
