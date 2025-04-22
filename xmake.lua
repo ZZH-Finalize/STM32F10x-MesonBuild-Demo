@@ -8,7 +8,7 @@ set_warnings('everything')
 set_policy('check.auto_ignore_flags', false)
 
 includes('cross_files/options.lua')
-includes('cross_files/dynamic_lds.lua')
+includes('cross_files/generate_rules.lua')
 includes('cross_files/toolchain.lua')
 
 -- Global configurations
@@ -66,47 +66,18 @@ target('demo')
     set_kind('binary')
     set_extension('.elf')
 
+    add_rules(
+        'generate.extrafiles',
+        'generate.lds'
+    )
+
     -- Add source files
     add_files('src/**.c', 'src/**.s')
     add_includedirs('src')
 
-    -- on_load(function (target) 
-    --     target:add('files', path.join(target:targetdir(), 'linker_new.ld'))
-    -- end)
-
-    on_load(function (target)
-        -- generate linker file
-        target:set('configdir', target:targetdir())
-        target:add('configfiles', 'linker_sct/linker_new.ld.in')
-
-        -- add linker file to ldflags
-        target:add('ldflags', '-T' .. path.join(target:targetdir(), 'linker_new.ld'))
-        target:data_add('linkdepfiles', path.join(target:targetdir(), 'linker_new.ld'))
-
-        -- add map file
-        target:add('ldflags', '-Wl,-Map,' .. path.join(target:targetdir(), target:name() .. '.map'))
-    end)
+    -- add linker script template
+    add_files('linker_sct/linker_new.ld.in')
 
     -- Add dependencies
     add_deps('embed-utils', 'STM32_StdLib')
     add_linkgroups('embed-utils', {whole = true})
-
-    -- custom rules for objdump and size
-    after_build(function(target)
-        local builddir = target:targetdir()
-        local elf_file = target:targetfile()
-        local elf_name = target:name()
-
-        os.runv(
-            '$(toolchain)-objcopy',
-            {'-O', 'binary', elf_file, path.join(builddir, elf_name .. '.bin')}
-        )
-
-        os.runv(
-            '$(toolchain)-objdump', 
-            {'-Sd', '--visualize-jumps', elf_file}, 
-            {stdout = path.join(builddir, elf_name .. '.s')}
-        )
-
-        os.execv('$(toolchain)-size', {elf_file})
-    end)

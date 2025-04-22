@@ -57,7 +57,7 @@
                 "command": "xmake",
                 "args": [
                     "b",
-                    "-v"
+                    // "-v"
                 ],
                 // "dependsOn": "xmake-build cdb",
                 "group": {
