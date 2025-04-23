@@ -6,6 +6,7 @@ set_languages('gnu23')
 set_warnings('everything')
 
 set_policy('check.auto_ignore_flags', false)
+set_policy('build.always_update_configfiles', true)
 
 includes('cross_files/options.lua')
 includes('cross_files/generate_rules.lua')
@@ -19,12 +20,6 @@ set_defaultarchs('arm')
 
 includes('subprojects/embed-utils')
 includes('subprojects/STM32_StdLib')
-
-add_options(
-    'target_mcu',
-    'stack_size',
-    'memory_map'
-)
 
 add_cxflags(
     '-mcpu=cortex-m3',
@@ -65,6 +60,12 @@ end
 target('demo')
     set_kind('binary')
     set_extension('.elf')
+
+    add_options(
+        'target_mcu',
+        'stack_size',
+        'memory_map'
+    )
 
     add_rules(
         'generate.extrafiles',

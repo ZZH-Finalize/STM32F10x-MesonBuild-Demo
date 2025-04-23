@@ -95,7 +95,8 @@
                 "command": "openocd",
                 "args": [
                     "-f",
-                    "openocd_cfg/cmsis-dap.cfg",
+                    // "openocd_cfg/cmsis-dap.cfg",
+                    "openocd_cfg/stlink.cfg",
                     "-f",
                     "openocd_cfg/stm32f1x.cfg"
                 ],
@@ -122,8 +123,8 @@
                 "name": "openocd - ram",
                 "type": "cppdbg",
                 "request": "launch",
-                "program": "${workspaceFolder}/builddir/demo_dbg",
-                "cwd": "${workspaceFolder}/builddir",
+                "program": "${workspaceFolder}/build/cross/arm/debug/demo.elf",
+                "cwd": "${workspaceFolder}/build",
                 "environment": [],
                 "externalConsole": false,
                 "MIMode": "gdb",
@@ -164,18 +165,18 @@
                         "text": "monitor reset",
                         "description": "复位芯片"
                     },
-                    {
-                        "text": "monitor mww 0xE000ED0C 0x5FA0004",
-                        "description": "软复位"
-                    },
+                    // {
+                    //     "text": "monitor mww 0xE000ED0C 0x5FA0004",
+                    //     "description": "软复位"
+                    // },
                     {
                         "text": "monitor halt",
                         "description": "暂停运行"
                     },
-                    {
-                        "text": "monitor init",
-                        "description": "初始化"
-                    },
+                    // {
+                    //     "text": "monitor init",
+                    //     "description": "初始化"
+                    // },
                     // {
                     //     "text": "monitor adapter speed 40000",
                     //     "description": "提高JTAG速度",
