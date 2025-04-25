@@ -25,11 +25,11 @@ target('STM32_StdLib')
 option('target_mcu')
     set_default('STM32F103C8')
     set_values(devices)
-    local dev_info = device_table[get_config('target_mcu')]
+    -- local dev_info = device_table[get_config('target_mcu')]
 
-    if dev_info then
-        set_configvar('flash_size', dev_info.memory.flash_size)
-        set_configvar('ram_size', dev_info.memory.ram_size)
-        add_defines('STM32F10X_' .. dev_info.memory.capacity)
-    end
+    -- if dev_info then
+    --     set_configvar('flash_size', dev_info.memory.flash_size)
+    --     set_configvar('ram_size', dev_info.memory.ram_size)
+    --     add_defines('STM32F10X_' .. dev_info.memory.capacity)
+    -- end
     

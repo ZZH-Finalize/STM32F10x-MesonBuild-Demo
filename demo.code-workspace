@@ -19,7 +19,7 @@
             "--enable-config",
             "--cross-file-rename",
             "--background-index",
-            "--query-driver=D:/SysGCC/arm-none-eabi/bin/arm-none-eabi-gcc"
+            "--query-driver=D:/SysGCC/arm-none-eabi/bin/arm-none-eabi-gcc.exe",
             // "--log=verbose",
             // "--pretty",
         ],
@@ -153,10 +153,10 @@
                     }
                 ],
                 "postRemoteConnectCommands": [
-                    // {
-                    //     "text": "monitor adapter srst pulse_width 20",
-                    //     "description": "复位芯片(硬复位)"
-                    // },
+                    {
+                        "text": "monitor adapter srst pulse_width 20",
+                        "description": "复位芯片(硬复位)"
+                    },
                     {
                         "text": "monitor init",
                         "description": "初始化"

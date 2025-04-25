@@ -56,16 +56,42 @@ if is_mode('release') then
     add_cxflags('-O2')
 end
 
+set_configvar('stack_size', '$(stack_size)')
+
+local map = memory_map[get_config('memory_map')]
+
+if map then
+    add_defines(map.defines, {public = true})
+
+    set_configvar('REGION_BOOT', map.REGION_BOOT)
+    set_configvar('REGION_TEXT', map.REGION_TEXT)
+    set_configvar('REGION_TEXT_AT', map.REGION_TEXT_AT)
+    set_configvar('REGION_RODATA', map.REGION_RODATA)
+    set_configvar('REGION_RODATA_AT', map.REGION_RODATA_AT)
+    set_configvar('REGION_STACK', map.REGION_STACK)
+    set_configvar('REGION_DATA', map.REGION_DATA)
+    set_configvar('REGION_DATA_AT', map.REGION_DATA_AT)
+    set_configvar('REGION_BSS', map.REGION_BSS)
+end
+
+local dev_info = device_table[get_config('target_mcu')]
+
+if dev_info then
+    set_configvar('flash_size', dev_info.memory.flash_size)
+    set_configvar('ram_size', dev_info.memory.ram_size)
+    add_defines('STM32F10X_' .. dev_info.memory.capacity)
+end
+
 -- Target configurations
 target('demo')
     set_kind('binary')
     set_extension('.elf')
 
-    add_options(
-        'target_mcu',
-        'stack_size',
-        'memory_map'
-    )
+    -- add_options(
+    --     'target_mcu',
+    --     'stack_size',
+    --     'memory_map'
+    -- )
 
     add_rules(
         'generate.extrafiles',
