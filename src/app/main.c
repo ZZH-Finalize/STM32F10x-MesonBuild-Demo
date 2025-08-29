@@ -10,15 +10,17 @@
 #include "delay/delay.h"
 #include "iterators.h"
 #include "tiny_console/tiny_console.h"
+#include "hal/usart/usart.h"
 
 console_t* console = NULL;
+usart_dev_t console_usart;
 volatile uint8_t rcv_flag = 0;
 
 void clock_init(void)
 {
     RCC_DeInit();
 
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+    // RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
@@ -43,18 +45,18 @@ void gpio_init(void)
     init_param.GPIO_Mode = GPIO_Mode_AF_PP;
 
     // USART1 - TXD
-    init_param.GPIO_Pin = GPIO_Pin_9;
-    GPIO_Init(GPIOA, &init_param);
+    // init_param.GPIO_Pin = GPIO_Pin_9;
+    // GPIO_Init(GPIOA, &init_param);
 
     // 浮空输入
     init_param.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 
     // USART1 - RXD
-    init_param.GPIO_Pin = GPIO_Pin_10;
-    GPIO_Init(GPIOA, &init_param);
+    // init_param.GPIO_Pin = GPIO_Pin_10;
+    // GPIO_Init(GPIOA, &init_param);
 }
 
-void usart_init(void)
+void b_usart_init(void)
 {
     USART_InitTypeDef init_param = {
         .USART_BaudRate = 115200,
@@ -87,14 +89,15 @@ void nvic_init(void)
 
 int console_output(console_t* this, const char* str, uint32_t len)
 {
-    (void) this;
+    // (void) this;
+    USART_TypeDef* usartx = console_get_data(this);
 
     for (uint32_t i = 0; i < len; i++) {
-        while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TC))
-            ;
-        USART_ClearFlag(USART1, USART_FLAG_TC);
-        USART_SendData(USART1, str[i]);
+        while (RESET == USART_GetFlagStatus(usartx, USART_FLAG_TC));
+        USART_ClearFlag(usartx, USART_FLAG_TC);
+        USART_SendData(usartx, str[i]);
     }
+
     return 0;
 }
 
@@ -102,13 +105,14 @@ int main(void)
 {
     clock_init();
     gpio_init();
-    usart_init();
+    // usart_init(&console_usart, USART1, NULL);
     nvic_init();
 
     // run_all_demo();
     // run_all_testcases(NULL);
 
     console = console_create(64, console_output, "root@stm32");
+    console_bind_data(console, &console_usart);
     console_display_prefix(console);
     console_flush(console);
 
