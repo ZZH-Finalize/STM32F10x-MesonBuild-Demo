@@ -2,6 +2,10 @@ includes('memory_map.lua')
 
 set_toolchains('$(toolchain)')
 
+option('build_demo')
+    set_default(false)
+    set_description('build demo program')
+
 option('toolchain')
     set_default('arm-none-eabi')
     set_description('select compile toolchain')

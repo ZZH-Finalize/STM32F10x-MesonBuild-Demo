@@ -18,6 +18,8 @@ set_defaultmode('debug')
 set_defaultplat('cross')
 set_defaultarchs('arm')
 
+set_toolchains('$(toolchain)')
+
 includes('subprojects/embed-utils')
 includes('subprojects/STM32_StdLib')
 
@@ -82,30 +84,35 @@ if dev_info then
     add_defines('STM32F10X_' .. dev_info.memory.capacity)
 end
 
--- Target configurations
-target('demo')
-    set_kind('binary')
-    set_extension('.elf')
-
-    -- add_options(
-    --     'target_mcu',
-    --     'stack_size',
-    --     'memory_map'
-    -- )
-
-    add_rules(
-        'generate.extrafiles',
-        'generate.sizeinfo',
-        'generate.lds'
-    )
+target('basic')
+    set_kind('object')
 
     -- Add source files
-    add_files('src/**.c', 'src/**.s')
-    add_includedirs('src')
+    add_files('src/**.c|app/**.c')
+    add_files('src/**.s|app/**.s')
+    add_includedirs('src', {public = true})
 
     -- add linker script template
     add_files('linker_sct/linker_new.ld.in')
+    add_rules('generate.lds')
 
     -- Add dependencies
     add_deps('embed-utils', 'STM32_StdLib')
     add_linkgroups('embed-utils', {whole = true})
+
+-- Target configurations
+target('demo')
+    set_kind('binary')
+    set_extension('.elf')
+    set_enabled(get_config('build_demo'))
+
+    add_files('src/app/*.c')
+
+    add_deps('basic')
+    add_linkgroups('embed-utils', {whole = true})
+
+    add_rules(
+        'generate.lds',
+        'generate.extrafiles',
+        'generate.sizeinfo'
+    )

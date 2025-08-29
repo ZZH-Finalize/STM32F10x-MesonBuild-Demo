@@ -35,7 +35,7 @@ CONSOLE_CMD_DEF(run_all_testcases_warp)
     return all_num == succ_num ? 0 : -EINVAL;
 }
 
-EXPORT_CONSOLE_CMD("run_tc", run_all_testcases_warp, "Run all testcases", NULL);
+EXPORT_CONSOLE_CMD(run_tc, run_all_testcases_warp, "Run all testcases", NULL);
 
 #endif
 
@@ -45,12 +45,14 @@ CONSOLE_CMD_DEF(run_all_demo_warp)
 {
     CONSOLE_CMD_UNUSE_ARGS;
 
-    run_all_demo();
+    test_case_arg_t arg = {.print = NULL};
+
+    run_all_demo(&arg);
 
     return 0;
 }
 
-EXPORT_CONSOLE_CMD("run_demo", run_all_demo_warp, "Run all demo", NULL);
+EXPORT_CONSOLE_CMD(run_demo, run_all_demo_warp, "Run all demo", NULL);
 
 #endif
 
@@ -78,4 +80,4 @@ CONSOLE_CMD_DEF(test)
     return 0;
 }
 
-EXPORT_CONSOLE_CMD("test", test, "test the console command", "u[dfs]+");
+EXPORT_CONSOLE_CMD_FN(test, "test the console command", "u[dfs]+");
