@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include "async/async.h"
 #include "stm32f10x.h"
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_gpio.h"
@@ -104,6 +105,8 @@ int main(void)
     gpio_init();
     usart_init();
     nvic_init();
+
+    trigger_svc();
 
     // run_all_demo();
     // run_all_testcases(NULL);
