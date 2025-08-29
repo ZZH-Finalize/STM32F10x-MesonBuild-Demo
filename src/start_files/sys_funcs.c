@@ -1,6 +1,6 @@
 #include <errno.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 
 #define UNUSED_PARAM \
@@ -23,12 +23,16 @@ IO_IMP(_close);
 IO_IMP(_write);
 IO_IMP(_read);
 
-IO_IMP(_exit);
+void _exit(int fd)
+{
+    (void) fd;
+    while (1);
+}
+
 IO_IMP(_getpid);
 IO_IMP(_sbrk);
 IO_IMP(_kill);
 
 IO_IMP(_isatty);
-IO_IMP(_fstat);
+// IO_IMP(_fstat);
 IO_IMP(_lseek);
-
